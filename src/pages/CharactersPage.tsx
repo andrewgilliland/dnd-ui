@@ -95,7 +95,7 @@ export function CharactersPage() {
 
       {filteredCharacters.length === 0 ? (
         <Surface as="section" className="mt-6 p-6 text-center">
-          <p className="text-slate-700">
+          <p className="text-slate-700 dark:text-slate-300">
             No characters match your current filters.
           </p>
         </Surface>

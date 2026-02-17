@@ -17,10 +17,10 @@ export function DetailPageHeader({
   return (
     <header>
       <BackLink to={backTo}>{backLabel}</BackLink>
-      <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
+      <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
         {title}
       </h2>
-      <p className="mt-1 text-slate-600">{subtitle}</p>
+      <p className="mt-1 text-slate-600 dark:text-slate-400">{subtitle}</p>
     </header>
   );
 }

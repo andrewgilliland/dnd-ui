@@ -55,31 +55,43 @@ export function MonsterDetailPage() {
       />
 
       <DetailSection title="Core Stats">
-        <dl className="grid grid-cols-1 gap-3 text-sm text-slate-700 sm:grid-cols-2 lg:grid-cols-3">
+        <dl className="grid grid-cols-1 gap-3 text-sm text-slate-700 dark:text-slate-300 sm:grid-cols-2 lg:grid-cols-3">
           <div>
-            <dt className="font-medium text-slate-500">Armor Class</dt>
+            <dt className="font-medium text-slate-500 dark:text-slate-400">
+              Armor Class
+            </dt>
             <dd>{monster.armor_class}</dd>
           </div>
           <div>
-            <dt className="font-medium text-slate-500">Hit Points</dt>
+            <dt className="font-medium text-slate-500 dark:text-slate-400">
+              Hit Points
+            </dt>
             <dd>
               {monster.hit_points} ({monster.hit_dice})
             </dd>
           </div>
           <div>
-            <dt className="font-medium text-slate-500">Speed</dt>
+            <dt className="font-medium text-slate-500 dark:text-slate-400">
+              Speed
+            </dt>
             <dd>{formatSpeed(monster.speed)}</dd>
           </div>
           <div>
-            <dt className="font-medium text-slate-500">Saving Throws</dt>
+            <dt className="font-medium text-slate-500 dark:text-slate-400">
+              Saving Throws
+            </dt>
             <dd>{formatMap(monster.saving_throws)}</dd>
           </div>
           <div>
-            <dt className="font-medium text-slate-500">Skills</dt>
+            <dt className="font-medium text-slate-500 dark:text-slate-400">
+              Skills
+            </dt>
             <dd>{formatMap(monster.skills)}</dd>
           </div>
           <div>
-            <dt className="font-medium text-slate-500">Senses</dt>
+            <dt className="font-medium text-slate-500 dark:text-slate-400">
+              Senses
+            </dt>
             <dd>
               {Object.entries(monster.senses)
                 .map(([key, value]) => `${key} ${value}`)
@@ -87,7 +99,9 @@ export function MonsterDetailPage() {
             </dd>
           </div>
           <div>
-            <dt className="font-medium text-slate-500">Languages</dt>
+            <dt className="font-medium text-slate-500 dark:text-slate-400">
+              Languages
+            </dt>
             <dd>
               {monster.languages.length > 0
                 ? monster.languages.join(", ")
@@ -95,11 +109,15 @@ export function MonsterDetailPage() {
             </dd>
           </div>
           <div>
-            <dt className="font-medium text-slate-500">Challenge Rating</dt>
+            <dt className="font-medium text-slate-500 dark:text-slate-400">
+              Challenge Rating
+            </dt>
             <dd>{monster.challenge_rating}</dd>
           </div>
           <div>
-            <dt className="font-medium text-slate-500">XP</dt>
+            <dt className="font-medium text-slate-500 dark:text-slate-400">
+              XP
+            </dt>
             <dd>{monster.experience_points}</dd>
           </div>
         </dl>
@@ -110,10 +128,12 @@ export function MonsterDetailPage() {
       </DetailSection>
 
       <DetailSection title="Special Abilities">
-        <ul className="space-y-3 text-slate-700">
+        <ul className="space-y-3 text-slate-700 dark:text-slate-300">
           {monster.special_abilities.map((ability) => (
             <li key={ability.name}>
-              <p className="font-medium text-slate-900">{ability.name}</p>
+              <p className="font-medium text-slate-900 dark:text-slate-100">
+                {ability.name}
+              </p>
               <p className="text-sm">{ability.description}</p>
             </li>
           ))}
@@ -121,15 +141,17 @@ export function MonsterDetailPage() {
       </DetailSection>
 
       <DetailSection title="Actions">
-        <ul className="space-y-3 text-slate-700">
+        <ul className="space-y-3 text-slate-700 dark:text-slate-300">
           {monster.actions.map((action) => (
             <li key={action.name}>
-              <p className="font-medium text-slate-900">{action.name}</p>
+              <p className="font-medium text-slate-900 dark:text-slate-100">
+                {action.name}
+              </p>
               <p className="text-sm">{action.description}</p>
               {(action.damage_dice ||
                 action.damage_type ||
                 typeof action.attack_bonus === "number") && (
-                <p className="mt-1 text-sm text-slate-600">
+                <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
                   {typeof action.attack_bonus === "number"
                     ? `Attack Bonus: +${action.attack_bonus} · `
                     : ""}

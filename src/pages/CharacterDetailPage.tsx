@@ -35,7 +35,9 @@ export function CharacterDetailPage() {
       />
 
       <DetailSection title="Description">
-        <p className="text-slate-700">{character.description}</p>
+        <p className="text-slate-700 dark:text-slate-300">
+          {character.description}
+        </p>
       </DetailSection>
 
       <DetailSection title="Ability Scores">

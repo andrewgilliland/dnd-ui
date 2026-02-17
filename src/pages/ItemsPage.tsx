@@ -90,7 +90,9 @@ export function ItemsPage() {
 
       {filteredItems.length === 0 ? (
         <Surface as="section" className="mt-6 p-6 text-center">
-          <p className="text-slate-700">No items match your current filters.</p>
+          <p className="text-slate-700 dark:text-slate-300">
+            No items match your current filters.
+          </p>
         </Surface>
       ) : null}
     </section>

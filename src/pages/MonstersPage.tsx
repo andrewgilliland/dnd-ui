@@ -96,7 +96,7 @@ export function MonstersPage() {
 
       {filteredMonsters.length === 0 ? (
         <Surface as="section" className="mt-6 p-6 text-center">
-          <p className="text-slate-700">
+          <p className="text-slate-700 dark:text-slate-300">
             No monsters match your current filters.
           </p>
         </Surface>

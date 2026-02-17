@@ -34,22 +34,28 @@ export function ItemDetailPage() {
       />
 
       <DetailSection title="Description">
-        <p className="text-slate-700">{item.description}</p>
+        <p className="text-slate-700 dark:text-slate-300">{item.description}</p>
       </DetailSection>
 
       <DetailSection title="Details">
-        <dl className="grid grid-cols-1 gap-3 text-sm text-slate-700 sm:grid-cols-2">
+        <dl className="grid grid-cols-1 gap-3 text-sm text-slate-700 dark:text-slate-300 sm:grid-cols-2">
           <div>
-            <dt className="font-medium text-slate-500">Cost</dt>
+            <dt className="font-medium text-slate-500 dark:text-slate-400">
+              Cost
+            </dt>
             <dd>{item.cost} gp</dd>
           </div>
           <div>
-            <dt className="font-medium text-slate-500">Weight</dt>
+            <dt className="font-medium text-slate-500 dark:text-slate-400">
+              Weight
+            </dt>
             <dd>{item.weight} lb</dd>
           </div>
           {item.damage ? (
             <div>
-              <dt className="font-medium text-slate-500">Damage</dt>
+              <dt className="font-medium text-slate-500 dark:text-slate-400">
+                Damage
+              </dt>
               <dd>
                 {item.damage}
                 {item.damage_type ? ` ${item.damage_type}` : ""}
@@ -58,23 +64,29 @@ export function ItemDetailPage() {
           ) : null}
           {typeof item.armor_class === "number" ? (
             <div>
-              <dt className="font-medium text-slate-500">Armor Class</dt>
+              <dt className="font-medium text-slate-500 dark:text-slate-400">
+                Armor Class
+              </dt>
               <dd>{item.armor_class}</dd>
             </div>
           ) : null}
           <div>
-            <dt className="font-medium text-slate-500">Magic</dt>
+            <dt className="font-medium text-slate-500 dark:text-slate-400">
+              Magic
+            </dt>
             <dd>{item.magic ? "Yes" : "No"}</dd>
           </div>
           <div>
-            <dt className="font-medium text-slate-500">Attunement</dt>
+            <dt className="font-medium text-slate-500 dark:text-slate-400">
+              Attunement
+            </dt>
             <dd>{item.attunement_required ? "Required" : "Not required"}</dd>
           </div>
         </dl>
       </DetailSection>
 
       <DetailSection title="Properties">
-        <ul className="list-disc space-y-1 pl-5 text-slate-700">
+        <ul className="list-disc space-y-1 pl-5 text-slate-700 dark:text-slate-300">
           {item.properties.map((property) => (
             <li key={property}>{property}</li>
           ))}

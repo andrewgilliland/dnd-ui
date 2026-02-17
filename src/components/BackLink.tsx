@@ -8,7 +8,7 @@ interface BackLinkProps {
 }
 
 const baseClassName =
-  "text-sm font-medium text-slate-900 underline decoration-slate-300 underline-offset-4";
+  "text-sm font-medium text-slate-900 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-900 dark:text-slate-100 dark:decoration-slate-600 dark:hover:decoration-slate-200";
 
 export function BackLink({ to, children, className }: BackLinkProps) {
   return (

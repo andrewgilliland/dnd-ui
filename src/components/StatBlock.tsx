@@ -19,12 +19,14 @@ export function StatBlock({ stats }: StatBlockProps) {
       {STAT_LABELS.map((key) => (
         <div
           key={key}
-          className="rounded-md border border-slate-200 bg-white p-3 text-center"
+          className="rounded-md border border-slate-200 bg-white p-3 text-center dark:border-slate-700 dark:bg-slate-800"
         >
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
             {key.slice(0, 3)}
           </p>
-          <p className="mt-1 text-lg font-bold text-slate-900">{stats[key]}</p>
+          <p className="mt-1 text-lg font-bold text-slate-900 dark:text-slate-100">
+            {stats[key]}
+          </p>
         </div>
       ))}
     </div>
