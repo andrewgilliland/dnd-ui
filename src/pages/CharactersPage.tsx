@@ -1,12 +1,15 @@
 import { Link } from "react-router";
-import charactersData from "../data/characters.json";
+import { PageHeader } from "../components/PageHeader";
+import { Surface } from "../components/Surface";
+import { ROUTES } from "../constants/routes";
+import { characters } from "../data/characters";
 import type { Character, Characters } from "../types";
 
-const characters: Characters = charactersData as Characters;
+const characterList: Characters = characters;
 
 function CharacterCard({ character }: { character: Character }) {
   return (
-    <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <Surface className="p-5">
       <div className="flex items-start justify-between gap-4">
         <div>
           <h3 className="text-lg font-semibold text-slate-900">
@@ -22,27 +25,25 @@ function CharacterCard({ character }: { character: Character }) {
       </div>
       <p className="mt-3 text-sm text-slate-700">{character.description}</p>
       <Link
-        to={`/characters/${character.id}`}
+        to={ROUTES.characterDetail(character.id)}
         className="mt-4 inline-flex text-sm font-medium text-slate-900 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-900"
       >
         View details
       </Link>
-    </article>
+    </Surface>
   );
 }
 
 export function CharactersPage() {
   return (
     <section>
-      <h2 className="text-3xl font-bold tracking-tight text-slate-900">
-        Characters
-      </h2>
-      <p className="mt-2 text-slate-600">
-        {characters.length} heroes and villains.
-      </p>
+      <PageHeader
+        title="Characters"
+        subtitle={`${characterList.length} heroes and villains.`}
+      />
 
       <div className="mt-6 grid gap-4 md:grid-cols-2">
-        {characters.map((character) => (
+        {characterList.map((character) => (
           <CharacterCard key={character.id} character={character} />
         ))}
       </div>

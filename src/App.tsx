@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from "react-router";
+import { ROUTES } from "./constants/routes";
 import { Layout } from "./components/Layout";
 import { CharacterDetailPage } from "./pages/CharacterDetailPage";
 import { CharactersPage } from "./pages/CharactersPage";
@@ -13,15 +14,21 @@ function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/characters" element={<CharactersPage />} />
-        <Route path="/characters/:id" element={<CharacterDetailPage />} />
-        <Route path="/items" element={<ItemsPage />} />
-        <Route path="/items/:id" element={<ItemDetailPage />} />
-        <Route path="/monsters" element={<MonstersPage />} />
-        <Route path="/monsters/:id" element={<MonsterDetailPage />} />
-        <Route path="/404" element={<NotFoundPage />} />
-        <Route path="*" element={<Navigate to="/404" replace />} />
+        <Route path={ROUTES.home} element={<HomePage />} />
+        <Route path={ROUTES.characters} element={<CharactersPage />} />
+        <Route
+          path={`${ROUTES.characters}/:id`}
+          element={<CharacterDetailPage />}
+        />
+        <Route path={ROUTES.items} element={<ItemsPage />} />
+        <Route path={`${ROUTES.items}/:id`} element={<ItemDetailPage />} />
+        <Route path={ROUTES.monsters} element={<MonstersPage />} />
+        <Route
+          path={`${ROUTES.monsters}/:id`}
+          element={<MonsterDetailPage />}
+        />
+        <Route path={ROUTES.notFound} element={<NotFoundPage />} />
+        <Route path="*" element={<Navigate to={ROUTES.notFound} replace />} />
       </Route>
     </Routes>
   );

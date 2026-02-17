@@ -1,41 +1,34 @@
-import { Link, useParams } from "react-router";
+import { useParams } from "react-router";
+import { BackLink } from "../components/BackLink";
+import { NotFoundState } from "../components/NotFoundState";
 import { StatBlock } from "../components/StatBlock";
-import charactersData from "../data/characters.json";
+import { Surface } from "../components/Surface";
+import { ROUTES } from "../constants/routes";
+import { characters } from "../data/characters";
 import type { Characters } from "../types";
 
-const characters: Characters = charactersData as Characters;
+const characterList: Characters = characters;
 
 export function CharacterDetailPage() {
   const { id } = useParams();
   const characterId = Number(id);
-  const character = characters.find((entry) => entry.id === characterId);
+  const character = characterList.find((entry) => entry.id === characterId);
 
   if (!character) {
     return (
-      <section className="rounded-lg border border-slate-200 bg-white p-8 shadow-sm">
-        <h2 className="text-2xl font-bold text-slate-900">
-          Character not found
-        </h2>
-        <p className="mt-2 text-slate-600">No character exists for id: {id}</p>
-        <Link
-          to="/characters"
-          className="mt-4 inline-flex text-sm font-medium text-slate-900 underline decoration-slate-300 underline-offset-4"
-        >
-          Back to characters
-        </Link>
-      </section>
+      <NotFoundState
+        title="Character not found"
+        description={`No character exists for id: ${id}`}
+        backTo={ROUTES.characters}
+        backLabel="Back to characters"
+      />
     );
   }
 
   return (
     <section className="space-y-6">
       <div>
-        <Link
-          to="/characters"
-          className="text-sm font-medium text-slate-900 underline decoration-slate-300 underline-offset-4"
-        >
-          ← Back to characters
-        </Link>
+        <BackLink to={ROUTES.characters}>← Back to characters</BackLink>
         <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
           {character.name}
         </h2>
@@ -44,17 +37,17 @@ export function CharacterDetailPage() {
         </p>
       </div>
 
-      <article className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+      <Surface className="p-6">
         <h3 className="text-lg font-semibold text-slate-900">Description</h3>
         <p className="mt-2 text-slate-700">{character.description}</p>
-      </article>
+      </Surface>
 
-      <article className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+      <Surface className="p-6">
         <h3 className="text-lg font-semibold text-slate-900">Ability Scores</h3>
         <div className="mt-4">
           <StatBlock stats={character.stats} />
         </div>
-      </article>
+      </Surface>
     </section>
   );
 }

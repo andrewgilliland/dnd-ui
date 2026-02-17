@@ -1,38 +1,33 @@
-import { Link, useParams } from "react-router";
-import itemsData from "../data/items.json";
+import { useParams } from "react-router";
+import { BackLink } from "../components/BackLink";
+import { NotFoundState } from "../components/NotFoundState";
+import { Surface } from "../components/Surface";
+import { ROUTES } from "../constants/routes";
+import { items } from "../data/items";
 import type { Items } from "../types";
 
-const items: Items = itemsData as Items;
+const itemList: Items = items;
 
 export function ItemDetailPage() {
   const { id } = useParams();
   const itemId = Number(id);
-  const item = items.find((entry) => entry.id === itemId);
+  const item = itemList.find((entry) => entry.id === itemId);
 
   if (!item) {
     return (
-      <section className="rounded-lg border border-slate-200 bg-white p-8 shadow-sm">
-        <h2 className="text-2xl font-bold text-slate-900">Item not found</h2>
-        <p className="mt-2 text-slate-600">No item exists for id: {id}</p>
-        <Link
-          to="/items"
-          className="mt-4 inline-flex text-sm font-medium text-slate-900 underline decoration-slate-300 underline-offset-4"
-        >
-          Back to items
-        </Link>
-      </section>
+      <NotFoundState
+        title="Item not found"
+        description={`No item exists for id: ${id}`}
+        backTo={ROUTES.items}
+        backLabel="Back to items"
+      />
     );
   }
 
   return (
     <section className="space-y-6">
       <div>
-        <Link
-          to="/items"
-          className="text-sm font-medium text-slate-900 underline decoration-slate-300 underline-offset-4"
-        >
-          ← Back to items
-        </Link>
+        <BackLink to={ROUTES.items}>← Back to items</BackLink>
         <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
           {item.name}
         </h2>
@@ -41,12 +36,12 @@ export function ItemDetailPage() {
         </p>
       </div>
 
-      <article className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+      <Surface className="p-6">
         <h3 className="text-lg font-semibold text-slate-900">Description</h3>
         <p className="mt-2 text-slate-700">{item.description}</p>
-      </article>
+      </Surface>
 
-      <article className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+      <Surface className="p-6">
         <h3 className="text-lg font-semibold text-slate-900">Details</h3>
         <dl className="mt-4 grid grid-cols-1 gap-3 text-sm text-slate-700 sm:grid-cols-2">
           <div>
@@ -81,16 +76,16 @@ export function ItemDetailPage() {
             <dd>{item.attunement_required ? "Required" : "Not required"}</dd>
           </div>
         </dl>
-      </article>
+      </Surface>
 
-      <article className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+      <Surface className="p-6">
         <h3 className="text-lg font-semibold text-slate-900">Properties</h3>
         <ul className="mt-3 list-disc space-y-1 pl-5 text-slate-700">
           {item.properties.map((property) => (
             <li key={property}>{property}</li>
           ))}
         </ul>
-      </article>
+      </Surface>
     </section>
   );
 }

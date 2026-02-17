@@ -1,4 +1,5 @@
 import { NavLink, Outlet } from "react-router";
+import { ROUTES } from "../constants/routes";
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   [
@@ -17,13 +18,13 @@ export function Layout() {
             D&D Compendium
           </h1>
           <nav className="flex items-center gap-2">
-            <NavLink to="/characters" className={navLinkClass}>
+            <NavLink to={ROUTES.characters} className={navLinkClass}>
               Characters
             </NavLink>
-            <NavLink to="/items" className={navLinkClass}>
+            <NavLink to={ROUTES.items} className={navLinkClass}>
               Items
             </NavLink>
-            <NavLink to="/monsters" className={navLinkClass}>
+            <NavLink to={ROUTES.monsters} className={navLinkClass}>
               Monsters
             </NavLink>
           </nav>

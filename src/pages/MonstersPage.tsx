@@ -1,12 +1,15 @@
 import { Link } from "react-router";
-import monstersData from "../data/monsters.json";
+import { PageHeader } from "../components/PageHeader";
+import { Surface } from "../components/Surface";
+import { ROUTES } from "../constants/routes";
+import { monsters } from "../data/monsters";
 import type { Monster, Monsters } from "../types";
 
-const monsters: Monsters = monstersData as unknown as Monsters;
+const monsterList: Monsters = monsters;
 
 function MonsterCard({ monster }: { monster: Monster }) {
   return (
-    <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <Surface className="p-5">
       <div className="flex items-start justify-between gap-4">
         <div>
           <h3 className="text-lg font-semibold text-slate-900">
@@ -33,27 +36,25 @@ function MonsterCard({ monster }: { monster: Monster }) {
       </dl>
 
       <Link
-        to={`/monsters/${monster.id}`}
+        to={ROUTES.monsterDetail(monster.id)}
         className="mt-4 inline-flex text-sm font-medium text-slate-900 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-900"
       >
         View details
       </Link>
-    </article>
+    </Surface>
   );
 }
 
 export function MonstersPage() {
   return (
     <section>
-      <h2 className="text-3xl font-bold tracking-tight text-slate-900">
-        Monsters
-      </h2>
-      <p className="mt-2 text-slate-600">
-        {monsters.length} creatures in the bestiary.
-      </p>
+      <PageHeader
+        title="Monsters"
+        subtitle={`${monsterList.length} creatures in the bestiary.`}
+      />
 
       <div className="mt-6 grid gap-4 md:grid-cols-2">
-        {monsters.map((monster) => (
+        {monsterList.map((monster) => (
           <MonsterCard key={monster.id} monster={monster} />
         ))}
       </div>

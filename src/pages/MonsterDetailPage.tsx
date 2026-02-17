@@ -1,9 +1,13 @@
-import { Link, useParams } from "react-router";
+import { useParams } from "react-router";
+import { BackLink } from "../components/BackLink";
+import { NotFoundState } from "../components/NotFoundState";
 import { StatBlock } from "../components/StatBlock";
-import monstersData from "../data/monsters.json";
+import { Surface } from "../components/Surface";
+import { ROUTES } from "../constants/routes";
+import { monsters } from "../data/monsters";
 import type { Monsters } from "../types";
 
-const monsters: Monsters = monstersData as unknown as Monsters;
+const monsterList: Monsters = monsters;
 
 type MonsterEntry = Monsters[number];
 
@@ -13,7 +17,9 @@ function formatSpeed(speed: MonsterEntry["speed"]) {
     .join(", ");
 }
 
-function formatMap(values?: MonsterEntry["saving_throws"] | MonsterEntry["skills"]) {
+function formatMap(
+  values?: MonsterEntry["saving_throws"] | MonsterEntry["skills"],
+) {
   if (!values || Object.keys(values).length === 0) {
     return "None";
   }
@@ -26,39 +32,32 @@ function formatMap(values?: MonsterEntry["saving_throws"] | MonsterEntry["skills
 export function MonsterDetailPage() {
   const { id } = useParams();
   const monsterId = Number(id);
-  const monster = monsters.find((entry) => entry.id === monsterId);
+  const monster = monsterList.find((entry) => entry.id === monsterId);
 
   if (!monster) {
     return (
-      <section className="rounded-lg border border-slate-200 bg-white p-8 shadow-sm">
-        <h2 className="text-2xl font-bold text-slate-900">Monster not found</h2>
-        <p className="mt-2 text-slate-600">No monster exists for id: {id}</p>
-        <Link
-          to="/monsters"
-          className="mt-4 inline-flex text-sm font-medium text-slate-900 underline decoration-slate-300 underline-offset-4"
-        >
-          Back to monsters
-        </Link>
-      </section>
+      <NotFoundState
+        title="Monster not found"
+        description={`No monster exists for id: ${id}`}
+        backTo={ROUTES.monsters}
+        backLabel="Back to monsters"
+      />
     );
   }
 
   return (
     <section className="space-y-6">
       <div>
-        <Link
-          to="/monsters"
-          className="text-sm font-medium text-slate-900 underline decoration-slate-300 underline-offset-4"
-        >
-          ← Back to monsters
-        </Link>
-        <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">{monster.name}</h2>
+        <BackLink to={ROUTES.monsters}>← Back to monsters</BackLink>
+        <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
+          {monster.name}
+        </h2>
         <p className="mt-1 text-slate-600">
           {monster.size} {monster.type} · {monster.alignment}
         </p>
       </div>
 
-      <article className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+      <Surface className="p-6">
         <h3 className="text-lg font-semibold text-slate-900">Core Stats</h3>
         <dl className="mt-4 grid grid-cols-1 gap-3 text-sm text-slate-700 sm:grid-cols-2 lg:grid-cols-3">
           <div>
@@ -93,7 +92,11 @@ export function MonsterDetailPage() {
           </div>
           <div>
             <dt className="font-medium text-slate-500">Languages</dt>
-            <dd>{monster.languages.length > 0 ? monster.languages.join(", ") : "None"}</dd>
+            <dd>
+              {monster.languages.length > 0
+                ? monster.languages.join(", ")
+                : "None"}
+            </dd>
           </div>
           <div>
             <dt className="font-medium text-slate-500">Challenge Rating</dt>
@@ -104,17 +107,19 @@ export function MonsterDetailPage() {
             <dd>{monster.experience_points}</dd>
           </div>
         </dl>
-      </article>
+      </Surface>
 
-      <article className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+      <Surface className="p-6">
         <h3 className="text-lg font-semibold text-slate-900">Ability Scores</h3>
         <div className="mt-4">
           <StatBlock stats={monster.stats} />
         </div>
-      </article>
+      </Surface>
 
-      <article className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-        <h3 className="text-lg font-semibold text-slate-900">Special Abilities</h3>
+      <Surface className="p-6">
+        <h3 className="text-lg font-semibold text-slate-900">
+          Special Abilities
+        </h3>
         <ul className="mt-3 space-y-3 text-slate-700">
           {monster.special_abilities.map((ability) => (
             <li key={ability.name}>
@@ -123,26 +128,32 @@ export function MonsterDetailPage() {
             </li>
           ))}
         </ul>
-      </article>
+      </Surface>
 
-      <article className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+      <Surface className="p-6">
         <h3 className="text-lg font-semibold text-slate-900">Actions</h3>
         <ul className="mt-3 space-y-3 text-slate-700">
           {monster.actions.map((action) => (
             <li key={action.name}>
               <p className="font-medium text-slate-900">{action.name}</p>
               <p className="text-sm">{action.description}</p>
-              {(action.damage_dice || action.damage_type || typeof action.attack_bonus === "number") && (
+              {(action.damage_dice ||
+                action.damage_type ||
+                typeof action.attack_bonus === "number") && (
                 <p className="mt-1 text-sm text-slate-600">
-                  {typeof action.attack_bonus === "number" ? `Attack Bonus: +${action.attack_bonus} · ` : ""}
-                  {action.damage_dice ? `Damage Dice: ${action.damage_dice}` : ""}
+                  {typeof action.attack_bonus === "number"
+                    ? `Attack Bonus: +${action.attack_bonus} · `
+                    : ""}
+                  {action.damage_dice
+                    ? `Damage Dice: ${action.damage_dice}`
+                    : ""}
                   {action.damage_type ? ` ${action.damage_type}` : ""}
                 </p>
               )}
             </li>
           ))}
         </ul>
-      </article>
+      </Surface>
     </section>
   );
 }

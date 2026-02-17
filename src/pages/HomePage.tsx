@@ -1,35 +1,35 @@
 import { Link } from "react-router";
+import { PageHeader } from "../components/PageHeader";
+import { ROUTES } from "../constants/routes";
 
 const sections = [
   {
     title: "Characters",
     description:
       "Browse adventurers, races, classes, alignments, and ability scores.",
-    to: "/characters",
+    to: ROUTES.characters,
   },
   {
     title: "Items",
     description:
       "Review weapons, armor, wondrous items, rarity, and properties.",
-    to: "/items",
+    to: ROUTES.items,
   },
   {
     title: "Monsters",
     description:
       "Inspect creature stat blocks, senses, actions, and challenge ratings.",
-    to: "/monsters",
+    to: ROUTES.monsters,
   },
 ];
 
 export function HomePage() {
   return (
     <section>
-      <h2 className="text-3xl font-bold tracking-tight text-slate-900">
-        Entity Browser
-      </h2>
-      <p className="mt-2 text-slate-600">
-        Pick a category to explore the data.
-      </p>
+      <PageHeader
+        title="Entity Browser"
+        subtitle="Pick a category to explore the data."
+      />
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {sections.map((section) => (

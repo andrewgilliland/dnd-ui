@@ -1,12 +1,15 @@
 import { Link } from "react-router";
-import itemsData from "../data/items.json";
+import { PageHeader } from "../components/PageHeader";
+import { Surface } from "../components/Surface";
+import { ROUTES } from "../constants/routes";
+import { items } from "../data/items";
 import type { Item, Items } from "../types";
 
-const items: Items = itemsData as Items;
+const itemList: Items = items;
 
 function ItemCard({ item }: { item: Item }) {
   return (
-    <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <Surface className="p-5">
       <div className="flex items-start justify-between gap-4">
         <div>
           <h3 className="text-lg font-semibold text-slate-900">{item.name}</h3>
@@ -33,27 +36,25 @@ function ItemCard({ item }: { item: Item }) {
       </dl>
 
       <Link
-        to={`/items/${item.id}`}
+        to={ROUTES.itemDetail(item.id)}
         className="mt-4 inline-flex text-sm font-medium text-slate-900 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-900"
       >
         View details
       </Link>
-    </article>
+    </Surface>
   );
 }
 
 export function ItemsPage() {
   return (
     <section>
-      <h2 className="text-3xl font-bold tracking-tight text-slate-900">
-        Items
-      </h2>
-      <p className="mt-2 text-slate-600">
-        {items.length} items in the catalog.
-      </p>
+      <PageHeader
+        title="Items"
+        subtitle={`${itemList.length} items in the catalog.`}
+      />
 
       <div className="mt-6 grid gap-4 md:grid-cols-2">
-        {items.map((item) => (
+        {itemList.map((item) => (
           <ItemCard key={item.id} item={item} />
         ))}
       </div>
