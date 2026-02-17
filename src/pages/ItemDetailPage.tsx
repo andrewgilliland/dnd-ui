@@ -1,7 +1,7 @@
 import { useParams } from "react-router";
-import { BackLink } from "../components/BackLink";
+import { DetailPageHeader } from "../components/DetailPageHeader";
+import { DetailSection } from "../components/DetailSection";
 import { NotFoundState } from "../components/NotFoundState";
-import { Surface } from "../components/Surface";
 import { ROUTES } from "../constants/routes";
 import { items } from "../data/items";
 import type { Items } from "../types";
@@ -26,24 +26,19 @@ export function ItemDetailPage() {
 
   return (
     <section className="space-y-6">
-      <div>
-        <BackLink to={ROUTES.items}>← Back to items</BackLink>
-        <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
-          {item.name}
-        </h2>
-        <p className="mt-1 text-slate-600">
-          {item.type} · {item.category} · {item.rarity}
-        </p>
-      </div>
+      <DetailPageHeader
+        backTo={ROUTES.items}
+        backLabel="← Back to items"
+        title={item.name}
+        subtitle={`${item.type} · ${item.category} · ${item.rarity}`}
+      />
 
-      <Surface className="p-6">
-        <h3 className="text-lg font-semibold text-slate-900">Description</h3>
-        <p className="mt-2 text-slate-700">{item.description}</p>
-      </Surface>
+      <DetailSection title="Description">
+        <p className="text-slate-700">{item.description}</p>
+      </DetailSection>
 
-      <Surface className="p-6">
-        <h3 className="text-lg font-semibold text-slate-900">Details</h3>
-        <dl className="mt-4 grid grid-cols-1 gap-3 text-sm text-slate-700 sm:grid-cols-2">
+      <DetailSection title="Details">
+        <dl className="grid grid-cols-1 gap-3 text-sm text-slate-700 sm:grid-cols-2">
           <div>
             <dt className="font-medium text-slate-500">Cost</dt>
             <dd>{item.cost} gp</dd>
@@ -76,16 +71,15 @@ export function ItemDetailPage() {
             <dd>{item.attunement_required ? "Required" : "Not required"}</dd>
           </div>
         </dl>
-      </Surface>
+      </DetailSection>
 
-      <Surface className="p-6">
-        <h3 className="text-lg font-semibold text-slate-900">Properties</h3>
-        <ul className="mt-3 list-disc space-y-1 pl-5 text-slate-700">
+      <DetailSection title="Properties">
+        <ul className="list-disc space-y-1 pl-5 text-slate-700">
           {item.properties.map((property) => (
             <li key={property}>{property}</li>
           ))}
         </ul>
-      </Surface>
+      </DetailSection>
     </section>
   );
 }

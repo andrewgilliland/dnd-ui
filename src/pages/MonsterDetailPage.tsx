@@ -1,8 +1,8 @@
 import { useParams } from "react-router";
-import { BackLink } from "../components/BackLink";
+import { DetailPageHeader } from "../components/DetailPageHeader";
+import { DetailSection } from "../components/DetailSection";
 import { NotFoundState } from "../components/NotFoundState";
 import { StatBlock } from "../components/StatBlock";
-import { Surface } from "../components/Surface";
 import { ROUTES } from "../constants/routes";
 import { monsters } from "../data/monsters";
 import type { Monsters } from "../types";
@@ -47,19 +47,15 @@ export function MonsterDetailPage() {
 
   return (
     <section className="space-y-6">
-      <div>
-        <BackLink to={ROUTES.monsters}>← Back to monsters</BackLink>
-        <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
-          {monster.name}
-        </h2>
-        <p className="mt-1 text-slate-600">
-          {monster.size} {monster.type} · {monster.alignment}
-        </p>
-      </div>
+      <DetailPageHeader
+        backTo={ROUTES.monsters}
+        backLabel="← Back to monsters"
+        title={monster.name}
+        subtitle={`${monster.size} ${monster.type} · ${monster.alignment}`}
+      />
 
-      <Surface className="p-6">
-        <h3 className="text-lg font-semibold text-slate-900">Core Stats</h3>
-        <dl className="mt-4 grid grid-cols-1 gap-3 text-sm text-slate-700 sm:grid-cols-2 lg:grid-cols-3">
+      <DetailSection title="Core Stats">
+        <dl className="grid grid-cols-1 gap-3 text-sm text-slate-700 sm:grid-cols-2 lg:grid-cols-3">
           <div>
             <dt className="font-medium text-slate-500">Armor Class</dt>
             <dd>{monster.armor_class}</dd>
@@ -107,20 +103,14 @@ export function MonsterDetailPage() {
             <dd>{monster.experience_points}</dd>
           </div>
         </dl>
-      </Surface>
+      </DetailSection>
 
-      <Surface className="p-6">
-        <h3 className="text-lg font-semibold text-slate-900">Ability Scores</h3>
-        <div className="mt-4">
-          <StatBlock stats={monster.stats} />
-        </div>
-      </Surface>
+      <DetailSection title="Ability Scores">
+        <StatBlock stats={monster.stats} />
+      </DetailSection>
 
-      <Surface className="p-6">
-        <h3 className="text-lg font-semibold text-slate-900">
-          Special Abilities
-        </h3>
-        <ul className="mt-3 space-y-3 text-slate-700">
+      <DetailSection title="Special Abilities">
+        <ul className="space-y-3 text-slate-700">
           {monster.special_abilities.map((ability) => (
             <li key={ability.name}>
               <p className="font-medium text-slate-900">{ability.name}</p>
@@ -128,11 +118,10 @@ export function MonsterDetailPage() {
             </li>
           ))}
         </ul>
-      </Surface>
+      </DetailSection>
 
-      <Surface className="p-6">
-        <h3 className="text-lg font-semibold text-slate-900">Actions</h3>
-        <ul className="mt-3 space-y-3 text-slate-700">
+      <DetailSection title="Actions">
+        <ul className="space-y-3 text-slate-700">
           {monster.actions.map((action) => (
             <li key={action.name}>
               <p className="font-medium text-slate-900">{action.name}</p>
@@ -153,7 +142,7 @@ export function MonsterDetailPage() {
             </li>
           ))}
         </ul>
-      </Surface>
+      </DetailSection>
     </section>
   );
 }

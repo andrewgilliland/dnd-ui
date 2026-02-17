@@ -1,8 +1,8 @@
 import { useParams } from "react-router";
-import { BackLink } from "../components/BackLink";
+import { DetailPageHeader } from "../components/DetailPageHeader";
+import { DetailSection } from "../components/DetailSection";
 import { NotFoundState } from "../components/NotFoundState";
 import { StatBlock } from "../components/StatBlock";
-import { Surface } from "../components/Surface";
 import { ROUTES } from "../constants/routes";
 import { characters } from "../data/characters";
 import type { Characters } from "../types";
@@ -27,27 +27,20 @@ export function CharacterDetailPage() {
 
   return (
     <section className="space-y-6">
-      <div>
-        <BackLink to={ROUTES.characters}>← Back to characters</BackLink>
-        <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
-          {character.name}
-        </h2>
-        <p className="mt-1 text-slate-600">
-          {character.race} · {character.class} · {character.alignment}
-        </p>
-      </div>
+      <DetailPageHeader
+        backTo={ROUTES.characters}
+        backLabel="← Back to characters"
+        title={character.name}
+        subtitle={`${character.race} · ${character.class} · ${character.alignment}`}
+      />
 
-      <Surface className="p-6">
-        <h3 className="text-lg font-semibold text-slate-900">Description</h3>
-        <p className="mt-2 text-slate-700">{character.description}</p>
-      </Surface>
+      <DetailSection title="Description">
+        <p className="text-slate-700">{character.description}</p>
+      </DetailSection>
 
-      <Surface className="p-6">
-        <h3 className="text-lg font-semibold text-slate-900">Ability Scores</h3>
-        <div className="mt-4">
-          <StatBlock stats={character.stats} />
-        </div>
-      </Surface>
+      <DetailSection title="Ability Scores">
+        <StatBlock stats={character.stats} />
+      </DetailSection>
     </section>
   );
 }
