@@ -1,8 +1,9 @@
+import { Maximize2, Minimize2 } from "lucide-react";
 import type { CardDensity } from "../hooks/useCardDensity";
 
 const CARD_DENSITY_OPTIONS = [
-  { value: "comfortable", label: "Comfortable" },
-  { value: "compact", label: "Compact" },
+  { value: "comfortable", label: "Comfortable", Icon: Maximize2 },
+  { value: "compact", label: "Compact", Icon: Minimize2 },
 ] as const;
 
 interface CardDensityToggleProps {
@@ -24,6 +25,7 @@ export function CardDensityToggle({
       >
         {CARD_DENSITY_OPTIONS.map((option) => {
           const isActive = cardDensity === option.value;
+          const Icon = option.Icon;
 
           return (
             <button
@@ -33,12 +35,13 @@ export function CardDensityToggle({
               aria-checked={isActive}
               onClick={() => onCardDensityChange(option.value)}
               className={[
-                "rounded px-2 py-1 text-xs transition",
+                "inline-flex items-center gap-1 rounded px-2 py-1 text-xs transition",
                 isActive
                   ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900"
                   : "text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700",
               ].join(" ")}
             >
+              <Icon aria-hidden="true" className="h-3.5 w-3.5" />
               {option.label}
             </button>
           );

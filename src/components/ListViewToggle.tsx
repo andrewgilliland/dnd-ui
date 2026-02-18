@@ -1,8 +1,9 @@
+import { LayoutGrid, Table2 } from "lucide-react";
 import type { ListViewMode } from "../hooks/useListView";
 
 const LIST_VIEW_OPTIONS = [
-  { value: "cards", label: "Cards" },
-  { value: "table", label: "Table" },
+  { value: "cards", label: "Cards", Icon: LayoutGrid },
+  { value: "table", label: "Table", Icon: Table2 },
 ] as const;
 
 interface ListViewToggleProps {
@@ -24,6 +25,7 @@ export function ListViewToggle({
       >
         {LIST_VIEW_OPTIONS.map((option) => {
           const isActive = listViewMode === option.value;
+          const Icon = option.Icon;
 
           return (
             <button
@@ -33,12 +35,13 @@ export function ListViewToggle({
               aria-checked={isActive}
               onClick={() => onListViewModeChange(option.value)}
               className={[
-                "rounded px-2 py-1 text-xs transition",
+                "inline-flex items-center gap-1 rounded px-2 py-1 text-xs transition",
                 isActive
                   ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900"
                   : "text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700",
               ].join(" ")}
             >
+              <Icon aria-hidden="true" className="h-3.5 w-3.5" />
               {option.label}
             </button>
           );
