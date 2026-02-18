@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { getCharacters, getClasses, getRaces } from "../api/client";
 import { CharacterCard } from "../components/CharacterCard";
+import { ListCardSkeleton } from "../components/ListCardSkeleton";
 import { ListFilters } from "../components/ListFilters";
 import { PageHeader } from "../components/PageHeader";
 import { Surface } from "../components/Surface";
@@ -155,9 +156,11 @@ export function CharactersPage() {
       ) : null}
 
       {isLoading ? (
-        <Surface as="section" className="mt-6 p-6 text-center">
-          <p className="text-slate-700 dark:text-slate-300">Loading...</p>
-        </Surface>
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <ListCardSkeleton key={index} />
+          ))}
+        </div>
       ) : null}
 
       <div className="mt-6 grid gap-4 md:grid-cols-2">
