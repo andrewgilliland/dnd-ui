@@ -138,7 +138,7 @@ export function MonsterDetailPage() {
     <section className="space-y-6">
       <DetailPageHeader
         backTo={ROUTES.monsters}
-        backLabel="← Back to monsters"
+        backLabel="Back to monsters"
         title={monster.name}
         subtitle={`${monster.size} ${monster.type} · ${monster.alignment}`}
       />

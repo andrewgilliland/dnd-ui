@@ -1,9 +1,10 @@
+import { Monitor, Moon, Sun } from "lucide-react";
 import { useTheme } from "../hooks/useTheme";
 
 const THEME_OPTIONS = [
-  { value: "light", label: "Light", icon: "☀" },
-  { value: "dark", label: "Dark", icon: "☾" },
-  { value: "system", label: "System", icon: "🖥" },
+  { value: "light", label: "Light", Icon: Sun },
+  { value: "dark", label: "Dark", Icon: Moon },
+  { value: "system", label: "System", Icon: Monitor },
 ] as const;
 
 export function ThemeToggle() {
@@ -19,6 +20,7 @@ export function ThemeToggle() {
       >
         {THEME_OPTIONS.map((option) => {
           const isActive = themeMode === option.value;
+          const Icon = option.Icon;
 
           return (
             <button
@@ -34,7 +36,7 @@ export function ThemeToggle() {
                   : "text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700",
               ].join(" ")}
             >
-              <span aria-hidden="true">{option.icon}</span>
+              <Icon aria-hidden="true" className="h-3.5 w-3.5" />
               <span>{option.label}</span>
             </button>
           );

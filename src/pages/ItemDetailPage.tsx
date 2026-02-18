@@ -117,7 +117,7 @@ export function ItemDetailPage() {
     <section className="space-y-6">
       <DetailPageHeader
         backTo={ROUTES.items}
-        backLabel="← Back to items"
+        backLabel="Back to items"
         title={item.name}
         subtitle={`${item.type} · ${item.category} · ${item.rarity}`}
       />

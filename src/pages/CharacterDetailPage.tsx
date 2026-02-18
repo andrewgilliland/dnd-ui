@@ -120,7 +120,7 @@ export function CharacterDetailPage() {
     <section className="space-y-6">
       <DetailPageHeader
         backTo={ROUTES.characters}
-        backLabel="← Back to characters"
+        backLabel="Back to characters"
         title={character.name}
         subtitle={`${character.race} · ${character.class} · ${character.alignment}`}
       />

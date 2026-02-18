@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import type { ReactNode } from "react";
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { Surface } from "./Surface";
 
 type SortDirection = "asc" | "desc";
@@ -135,12 +136,19 @@ export function DataTable<Row>({
                     className="inline-flex items-center gap-1 text-left hover:text-slate-900 dark:hover:text-slate-200"
                   >
                     <span>{column.header}</span>
-                    <span aria-hidden="true" className="text-[10px]">
-                      {sortState.key === column.key
-                        ? sortState.direction === "asc"
-                          ? "▲"
-                          : "▼"
-                        : "↕"}
+                    <span
+                      aria-hidden="true"
+                      className="inline-flex items-center"
+                    >
+                      {sortState.key === column.key ? (
+                        sortState.direction === "asc" ? (
+                          <ArrowUp className="h-3 w-3" />
+                        ) : (
+                          <ArrowDown className="h-3 w-3" />
+                        )
+                      ) : (
+                        <ArrowUpDown className="h-3 w-3" />
+                      )}
                     </span>
                   </button>
                 ) : (
