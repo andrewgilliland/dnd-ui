@@ -32,18 +32,20 @@ export function DataTable<Row>({
   stickyHeader = false,
   className,
 }: DataTableProps<Row>) {
-  const firstSortableColumn = columns.find((column) => column.sortable);
-  const [sortKey, setSortKey] = useState<string | null>(
-    firstSortableColumn?.key ?? null,
-  );
-  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [sortState, setSortState] = useState<{
+    key: string | null;
+    direction: SortDirection;
+  }>({
+    key: null,
+    direction: "asc",
+  });
 
   const sortedRows = useMemo(() => {
-    if (!sortKey) {
+    if (!sortState.key) {
       return rows;
     }
 
-    const sortColumn = columns.find((column) => column.key === sortKey);
+    const sortColumn = columns.find((column) => column.key === sortState.key);
 
     if (!sortColumn || !sortColumn.sortable) {
       return rows;
@@ -53,7 +55,8 @@ export function DataTable<Row>({
       sortColumn.sortValue ??
       ((row: Row) => {
         const renderedValue = sortColumn.render(row);
-        return typeof renderedValue === "string" || typeof renderedValue === "number"
+        return typeof renderedValue === "string" ||
+          typeof renderedValue === "number"
           ? renderedValue
           : String(renderedValue);
       });
@@ -63,12 +66,12 @@ export function DataTable<Row>({
       const rightValue = getSortValue(rightRow);
 
       if (typeof leftValue === "number" && typeof rightValue === "number") {
-        return sortDirection === "asc"
+        return sortState.direction === "asc"
           ? leftValue - rightValue
           : rightValue - leftValue;
       }
 
-      return sortDirection === "asc"
+      return sortState.direction === "asc"
         ? String(leftValue).localeCompare(String(rightValue), undefined, {
             numeric: true,
             sensitivity: "base",
@@ -78,24 +81,25 @@ export function DataTable<Row>({
             sensitivity: "base",
           });
     });
-  }, [columns, rows, sortDirection, sortKey]);
+  }, [columns, rows, sortState.direction, sortState.key]);
 
   const toggleSort = (column: DataTableColumn<Row>) => {
     if (!column.sortable) {
       return;
     }
 
-    setSortKey((currentSortKey) => {
-      if (currentSortKey === column.key) {
-        setSortDirection((currentSortDirection) =>
-          currentSortDirection === "asc" ? "desc" : "asc",
-        );
-
-        return currentSortKey;
+    setSortState((currentSortState) => {
+      if (currentSortState.key === column.key) {
+        return {
+          key: currentSortState.key,
+          direction: currentSortState.direction === "asc" ? "desc" : "asc",
+        };
       }
 
-      setSortDirection("asc");
-      return column.key;
+      return {
+        key: column.key,
+        direction: "asc",
+      };
     });
   };
 
@@ -108,15 +112,17 @@ export function DataTable<Row>({
               <th
                 key={column.key}
                 aria-sort={
-                  column.sortable && sortKey === column.key
-                    ? sortDirection === "asc"
+                  column.sortable && sortState.key === column.key
+                    ? sortState.direction === "asc"
                       ? "ascending"
                       : "descending"
                     : "none"
                 }
                 className={[
                   headerCellBaseClassName,
-                  stickyHeader ? "sticky top-0 z-10 bg-white dark:bg-slate-900" : "",
+                  stickyHeader
+                    ? "sticky top-0 z-10 bg-white dark:bg-slate-900"
+                    : "",
                   column.headerClassName,
                 ]
                   .filter(Boolean)
@@ -130,8 +136,8 @@ export function DataTable<Row>({
                   >
                     <span>{column.header}</span>
                     <span aria-hidden="true" className="text-[10px]">
-                      {sortKey === column.key
-                        ? sortDirection === "asc"
+                      {sortState.key === column.key
+                        ? sortState.direction === "asc"
                           ? "▲"
                           : "▼"
                         : "↕"}
