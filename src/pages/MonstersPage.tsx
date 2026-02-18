@@ -1,68 +1,132 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { getMonsters } from "../api/client";
 import { ListFilters } from "../components/ListFilters";
 import { MonsterCard } from "../components/MonsterCard";
 import { PageHeader } from "../components/PageHeader";
 import { Surface } from "../components/Surface";
-import { monsters } from "../data/monsters";
 import { useQueryParamUpdater } from "../hooks/useQueryParamUpdater";
-import type { Monsters } from "../types";
+import type { Monster } from "../types";
 import {
   toFilterOptions,
   uniqueSortedNumbers,
   uniqueSortedStrings,
 } from "../utils/filterOptions";
-import {
-  matchesQuery,
-  matchesSelectedValue,
-  normalizeQuery,
-} from "../utils/filterPredicates";
 
-const monsterList: Monsters = monsters;
 export function MonstersPage() {
   const { searchParams, updateParam } = useQueryParamUpdater();
   const query = searchParams.get("q") ?? "";
   const selectedType = searchParams.get("type") ?? "";
   const selectedCr = searchParams.get("cr") ?? "";
 
-  const typeOptions = useMemo(
-    () =>
-      toFilterOptions(
-        uniqueSortedStrings(monsterList.map((entry) => entry.type)),
-      ),
-    [],
-  );
-  const crOptions = useMemo(
-    () =>
-      toFilterOptions(
-        uniqueSortedNumbers(monsterList.map((entry) => entry.challenge_rating)),
-      ),
-    [],
-  );
+  const [monsters, setMonsters] = useState<Monster[]>([]);
+  const [total, setTotal] = useState(0);
+  const [typeValues, setTypeValues] = useState<string[]>([]);
+  const [crValues, setCrValues] = useState<number[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const normalizedQuery = useMemo(() => normalizeQuery(query), [query]);
-  const filteredMonsters = useMemo(
-    () =>
-      monsterList.filter((monster) => {
-        const isQueryMatch = matchesQuery(normalizedQuery, [
-          monster.name,
-          monster.type,
-          monster.alignment,
-        ]);
-        const isTypeMatch = matchesSelectedValue(selectedType, monster.type);
-        const isCrMatch =
-          selectedCr.length === 0 ||
-          String(monster.challenge_rating) === selectedCr;
+  useEffect(() => {
+    const abortController = new AbortController();
 
-        return isQueryMatch && isTypeMatch && isCrMatch;
-      }),
-    [normalizedQuery, selectedType, selectedCr],
-  );
+    const loadMonsterMetadata = async () => {
+      try {
+        const response = await getMonsters(
+          { skip: 0, limit: 100 },
+          { signal: abortController.signal },
+        );
+
+        setTypeValues(
+          uniqueSortedStrings(response.monsters.map((entry) => entry.type)),
+        );
+        setCrValues(
+          uniqueSortedNumbers(
+            response.monsters.map((entry) => entry.challenge_rating),
+          ),
+        );
+      } catch {
+        // Leave metadata empty and derive from list data as fallback.
+      }
+    };
+
+    void loadMonsterMetadata();
+
+    return () => {
+      abortController.abort();
+    };
+  }, []);
+
+  useEffect(() => {
+    const abortController = new AbortController();
+
+    const loadMonsters = async () => {
+      setIsLoading(true);
+      setErrorMessage(null);
+
+      const crValue = selectedCr.length > 0 ? Number(selectedCr) : undefined;
+
+      try {
+        const response = await getMonsters(
+          {
+            skip: 0,
+            limit: 100,
+            type: selectedType || undefined,
+            name: query.trim() || undefined,
+            min_cr: crValue,
+            max_cr: crValue,
+          },
+          { signal: abortController.signal },
+        );
+
+        setMonsters(response.monsters);
+        setTotal(response.total);
+
+        if (typeValues.length === 0) {
+          setTypeValues(
+            uniqueSortedStrings(response.monsters.map((entry) => entry.type)),
+          );
+        }
+
+        if (crValues.length === 0) {
+          setCrValues(
+            uniqueSortedNumbers(
+              response.monsters.map((entry) => entry.challenge_rating),
+            ),
+          );
+        }
+      } catch (error) {
+        if (abortController.signal.aborted) {
+          return;
+        }
+
+        const message =
+          error instanceof Error ? error.message : "Failed to load monsters.";
+        setErrorMessage(message);
+      } finally {
+        if (!abortController.signal.aborted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    void loadMonsters();
+
+    return () => {
+      abortController.abort();
+    };
+  }, [query, selectedType, selectedCr, typeValues.length, crValues.length]);
+
+  const typeOptions = useMemo(() => toFilterOptions(typeValues), [typeValues]);
+  const crOptions = useMemo(() => toFilterOptions(crValues), [crValues]);
 
   return (
     <section>
       <PageHeader
         title="Monsters"
-        subtitle={`${filteredMonsters.length} of ${monsterList.length} creatures in the bestiary.`}
+        subtitle={
+          isLoading
+            ? "Loading monsters..."
+            : `${monsters.length} of ${total} creatures in the bestiary.`
+        }
       />
 
       <ListFilters
@@ -88,13 +152,25 @@ export function MonstersPage() {
         onSelectChange={updateParam}
       />
 
+      {errorMessage ? (
+        <Surface as="section" className="mt-6 p-6 text-center">
+          <p className="text-slate-700 dark:text-slate-300">{errorMessage}</p>
+        </Surface>
+      ) : null}
+
+      {isLoading ? (
+        <Surface as="section" className="mt-6 p-6 text-center">
+          <p className="text-slate-700 dark:text-slate-300">Loading...</p>
+        </Surface>
+      ) : null}
+
       <div className="mt-6 grid gap-4 md:grid-cols-2">
-        {filteredMonsters.map((monster) => (
+        {monsters.map((monster) => (
           <MonsterCard key={monster.id} monster={monster} />
         ))}
       </div>
 
-      {filteredMonsters.length === 0 ? (
+      {!isLoading && !errorMessage && monsters.length === 0 ? (
         <Surface as="section" className="mt-6 p-6 text-center">
           <p className="text-slate-700 dark:text-slate-300">
             No monsters match your current filters.

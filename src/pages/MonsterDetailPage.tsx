@@ -1,15 +1,15 @@
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { ApiError, getMonsterById } from "../api/client";
 import { DetailPageHeader } from "../components/DetailPageHeader";
 import { DetailSection } from "../components/DetailSection";
 import { NotFoundState } from "../components/NotFoundState";
 import { StatBlock } from "../components/StatBlock";
+import { Surface } from "../components/Surface";
 import { ROUTES } from "../constants/routes";
-import { monsters } from "../data/monsters";
-import type { Monsters } from "../types";
+import type { Monster } from "../types";
 
-const monsterList: Monsters = monsters;
-
-type MonsterEntry = Monsters[number];
+type MonsterEntry = Monster;
 
 function formatSpeed(speed: MonsterEntry["speed"]) {
   return Object.entries(speed)
@@ -32,7 +32,96 @@ function formatMap(
 export function MonsterDetailPage() {
   const { id } = useParams();
   const monsterId = Number(id);
-  const monster = monsterList.find((entry) => entry.id === monsterId);
+
+  const [monster, setMonster] = useState<Monster | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<ApiError | Error | null>(null);
+
+  useEffect(() => {
+    const abortController = new AbortController();
+
+    if (!Number.isFinite(monsterId)) {
+      setMonster(null);
+      setError(null);
+      setIsLoading(false);
+
+      return () => {
+        abortController.abort();
+      };
+    }
+
+    const loadMonster = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response = await getMonsterById(monsterId, {
+          signal: abortController.signal,
+        });
+        setMonster(response);
+      } catch (caughtError) {
+        if (abortController.signal.aborted) {
+          return;
+        }
+
+        setMonster(null);
+
+        if (caughtError instanceof Error) {
+          setError(caughtError);
+        } else {
+          setError(new Error("Failed to load monster."));
+        }
+      } finally {
+        if (!abortController.signal.aborted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    void loadMonster();
+
+    return () => {
+      abortController.abort();
+    };
+  }, [monsterId]);
+
+  if (!Number.isFinite(monsterId)) {
+    return (
+      <NotFoundState
+        title="Monster not found"
+        description={`No monster exists for id: ${id}`}
+        backTo={ROUTES.monsters}
+        backLabel="Back to monsters"
+      />
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <Surface as="section" className="p-8 text-center">
+        <p className="text-slate-700 dark:text-slate-300">Loading monster...</p>
+      </Surface>
+    );
+  }
+
+  if (error instanceof ApiError && error.status === 404) {
+    return (
+      <NotFoundState
+        title="Monster not found"
+        description={`No monster exists for id: ${id}`}
+        backTo={ROUTES.monsters}
+        backLabel="Back to monsters"
+      />
+    );
+  }
+
+  if (error) {
+    return (
+      <Surface as="section" className="p-8 text-center">
+        <p className="text-slate-700 dark:text-slate-300">{error.message}</p>
+      </Surface>
+    );
+  }
 
   if (!monster) {
     return (

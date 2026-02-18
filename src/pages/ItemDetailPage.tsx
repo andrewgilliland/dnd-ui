@@ -1,17 +1,106 @@
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { ApiError, getItemById } from "../api/client";
 import { DetailPageHeader } from "../components/DetailPageHeader";
 import { DetailSection } from "../components/DetailSection";
 import { NotFoundState } from "../components/NotFoundState";
+import { Surface } from "../components/Surface";
 import { ROUTES } from "../constants/routes";
-import { items } from "../data/items";
-import type { Items } from "../types";
-
-const itemList: Items = items;
+import type { Item } from "../types";
 
 export function ItemDetailPage() {
   const { id } = useParams();
   const itemId = Number(id);
-  const item = itemList.find((entry) => entry.id === itemId);
+
+  const [item, setItem] = useState<Item | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<ApiError | Error | null>(null);
+
+  useEffect(() => {
+    const abortController = new AbortController();
+
+    if (!Number.isFinite(itemId)) {
+      setItem(null);
+      setError(null);
+      setIsLoading(false);
+
+      return () => {
+        abortController.abort();
+      };
+    }
+
+    const loadItem = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response = await getItemById(itemId, {
+          signal: abortController.signal,
+        });
+        setItem(response);
+      } catch (caughtError) {
+        if (abortController.signal.aborted) {
+          return;
+        }
+
+        setItem(null);
+
+        if (caughtError instanceof Error) {
+          setError(caughtError);
+        } else {
+          setError(new Error("Failed to load item."));
+        }
+      } finally {
+        if (!abortController.signal.aborted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    void loadItem();
+
+    return () => {
+      abortController.abort();
+    };
+  }, [itemId]);
+
+  if (!Number.isFinite(itemId)) {
+    return (
+      <NotFoundState
+        title="Item not found"
+        description={`No item exists for id: ${id}`}
+        backTo={ROUTES.items}
+        backLabel="Back to items"
+      />
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <Surface as="section" className="p-8 text-center">
+        <p className="text-slate-700 dark:text-slate-300">Loading item...</p>
+      </Surface>
+    );
+  }
+
+  if (error instanceof ApiError && error.status === 404) {
+    return (
+      <NotFoundState
+        title="Item not found"
+        description={`No item exists for id: ${id}`}
+        backTo={ROUTES.items}
+        backLabel="Back to items"
+      />
+    );
+  }
+
+  if (error) {
+    return (
+      <Surface as="section" className="p-8 text-center">
+        <p className="text-slate-700 dark:text-slate-300">{error.message}</p>
+      </Surface>
+    );
+  }
 
   if (!item) {
     return (

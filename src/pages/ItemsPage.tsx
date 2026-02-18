@@ -1,62 +1,130 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { getItems } from "../api/client";
 import { ItemCard } from "../components/ItemCard";
 import { ListFilters } from "../components/ListFilters";
 import { PageHeader } from "../components/PageHeader";
 import { Surface } from "../components/Surface";
-import { items } from "../data/items";
 import { useQueryParamUpdater } from "../hooks/useQueryParamUpdater";
-import type { Items } from "../types";
+import type { Item } from "../types";
 import { toFilterOptions, uniqueSortedStrings } from "../utils/filterOptions";
-import {
-  matchesQuery,
-  matchesSelectedValue,
-  normalizeQuery,
-} from "../utils/filterPredicates";
 
-const itemList: Items = items;
 export function ItemsPage() {
   const { searchParams, updateParam } = useQueryParamUpdater();
   const query = searchParams.get("q") ?? "";
   const selectedType = searchParams.get("type") ?? "";
   const selectedRarity = searchParams.get("rarity") ?? "";
 
-  const typeOptions = useMemo(
-    () =>
-      toFilterOptions(uniqueSortedStrings(itemList.map((entry) => entry.type))),
-    [],
-  );
+  const [items, setItems] = useState<Item[]>([]);
+  const [total, setTotal] = useState(0);
+  const [typeValues, setTypeValues] = useState<string[]>([]);
+  const [rarityValues, setRarityValues] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const abortController = new AbortController();
+
+    const loadItemMetadata = async () => {
+      try {
+        const response = await getItems(
+          { skip: 0, limit: 100 },
+          { signal: abortController.signal },
+        );
+
+        setTypeValues(
+          uniqueSortedStrings(response.items.map((entry) => entry.type)),
+        );
+        setRarityValues(
+          uniqueSortedStrings(response.items.map((entry) => entry.rarity)),
+        );
+      } catch {
+        // Leave metadata empty and derive from list data as fallback.
+      }
+    };
+
+    void loadItemMetadata();
+
+    return () => {
+      abortController.abort();
+    };
+  }, []);
+
+  useEffect(() => {
+    const abortController = new AbortController();
+
+    const loadItems = async () => {
+      setIsLoading(true);
+      setErrorMessage(null);
+
+      try {
+        const response = await getItems(
+          {
+            skip: 0,
+            limit: 100,
+            type: selectedType || undefined,
+            rarity: selectedRarity || undefined,
+            name: query.trim() || undefined,
+          },
+          { signal: abortController.signal },
+        );
+
+        setItems(response.items);
+        setTotal(response.total);
+
+        if (typeValues.length === 0) {
+          setTypeValues(
+            uniqueSortedStrings(response.items.map((entry) => entry.type)),
+          );
+        }
+
+        if (rarityValues.length === 0) {
+          setRarityValues(
+            uniqueSortedStrings(response.items.map((entry) => entry.rarity)),
+          );
+        }
+      } catch (error) {
+        if (abortController.signal.aborted) {
+          return;
+        }
+
+        const message =
+          error instanceof Error ? error.message : "Failed to load items.";
+        setErrorMessage(message);
+      } finally {
+        if (!abortController.signal.aborted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    void loadItems();
+
+    return () => {
+      abortController.abort();
+    };
+  }, [
+    query,
+    selectedType,
+    selectedRarity,
+    typeValues.length,
+    rarityValues.length,
+  ]);
+
+  const typeOptions = useMemo(() => toFilterOptions(typeValues), [typeValues]);
   const rarityOptions = useMemo(
-    () =>
-      toFilterOptions(
-        uniqueSortedStrings(itemList.map((entry) => entry.rarity)),
-      ),
-    [],
-  );
-
-  const normalizedQuery = useMemo(() => normalizeQuery(query), [query]);
-  const filteredItems = useMemo(
-    () =>
-      itemList.filter((item) => {
-        const isQueryMatch = matchesQuery(normalizedQuery, [
-          item.name,
-          item.description,
-          item.type,
-          item.category,
-          item.rarity,
-        ]);
-        const isTypeMatch = matchesSelectedValue(selectedType, item.type);
-        const isRarityMatch = matchesSelectedValue(selectedRarity, item.rarity);
-
-        return isQueryMatch && isTypeMatch && isRarityMatch;
-      }),
-    [normalizedQuery, selectedType, selectedRarity],
+    () => toFilterOptions(rarityValues),
+    [rarityValues],
   );
 
   return (
     <section>
       <PageHeader
         title="Items"
-        subtitle={`${filteredItems.length} of ${itemList.length} items in the catalog.`}
+        subtitle={
+          isLoading
+            ? "Loading items..."
+            : `${items.length} of ${total} items in the catalog.`
+        }
       />
 
       <ListFilters
@@ -82,13 +150,25 @@ export function ItemsPage() {
         onSelectChange={updateParam}
       />
 
+      {errorMessage ? (
+        <Surface as="section" className="mt-6 p-6 text-center">
+          <p className="text-slate-700 dark:text-slate-300">{errorMessage}</p>
+        </Surface>
+      ) : null}
+
+      {isLoading ? (
+        <Surface as="section" className="mt-6 p-6 text-center">
+          <p className="text-slate-700 dark:text-slate-300">Loading...</p>
+        </Surface>
+      ) : null}
+
       <div className="mt-6 grid gap-4 md:grid-cols-2">
-        {filteredItems.map((item) => (
+        {items.map((item) => (
           <ItemCard key={item.id} item={item} />
         ))}
       </div>
 
-      {filteredItems.length === 0 ? (
+      {!isLoading && !errorMessage && items.length === 0 ? (
         <Surface as="section" className="mt-6 p-6 text-center">
           <p className="text-slate-700 dark:text-slate-300">
             No items match your current filters.
