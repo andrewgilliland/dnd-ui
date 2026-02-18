@@ -1,16 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
 import { getCharacters, getClasses, getRaces } from "../api/client";
+import { CardDensityToggle } from "../components/CardDensityToggle";
 import { CharacterCard } from "../components/CharacterCard";
 import { ListCardSkeleton } from "../components/ListCardSkeleton";
 import { ListFilters } from "../components/ListFilters";
 import { PageHeader } from "../components/PageHeader";
 import { Surface } from "../components/Surface";
+import { useCardDensity } from "../hooks/useCardDensity";
 import { useQueryParamUpdater } from "../hooks/useQueryParamUpdater";
 import type { Character } from "../types";
 import { toFilterOptions, uniqueSortedStrings } from "../utils/filterOptions";
 
 export function CharactersPage() {
   const { searchParams, updateParam } = useQueryParamUpdater();
+  const { cardDensity, setCardDensity } = useCardDensity();
   const query = searchParams.get("q") ?? "";
   const selectedClass = searchParams.get("class") ?? "";
   const selectedRace = searchParams.get("race") ?? "";
@@ -126,6 +129,13 @@ export function CharactersPage() {
         }
       />
 
+      <div className="mt-4 flex justify-end">
+        <CardDensityToggle
+          cardDensity={cardDensity}
+          onCardDensityChange={setCardDensity}
+        />
+      </div>
+
       <ListFilters
         searchValue={query}
         searchPlaceholder="Name, race, class, alignment..."
@@ -158,14 +168,18 @@ export function CharactersPage() {
       {isLoading ? (
         <div className="mt-6 grid gap-4 md:grid-cols-2">
           {Array.from({ length: 6 }).map((_, index) => (
-            <ListCardSkeleton key={index} />
+            <ListCardSkeleton key={index} cardDensity={cardDensity} />
           ))}
         </div>
       ) : null}
 
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         {characters.map((character) => (
-          <CharacterCard key={character.id} character={character} />
+          <CharacterCard
+            key={character.id}
+            character={character}
+            cardDensity={cardDensity}
+          />
         ))}
       </div>
 

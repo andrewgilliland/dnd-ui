@@ -1,16 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
 import { getItems } from "../api/client";
+import { CardDensityToggle } from "../components/CardDensityToggle";
 import { ItemCard } from "../components/ItemCard";
 import { ListCardSkeleton } from "../components/ListCardSkeleton";
 import { ListFilters } from "../components/ListFilters";
 import { PageHeader } from "../components/PageHeader";
 import { Surface } from "../components/Surface";
+import { useCardDensity } from "../hooks/useCardDensity";
 import { useQueryParamUpdater } from "../hooks/useQueryParamUpdater";
 import type { Item } from "../types";
 import { toFilterOptions, uniqueSortedStrings } from "../utils/filterOptions";
 
 export function ItemsPage() {
   const { searchParams, updateParam } = useQueryParamUpdater();
+  const { cardDensity, setCardDensity } = useCardDensity();
   const query = searchParams.get("q") ?? "";
   const selectedType = searchParams.get("type") ?? "";
   const selectedRarity = searchParams.get("rarity") ?? "";
@@ -128,6 +131,13 @@ export function ItemsPage() {
         }
       />
 
+      <div className="mt-4 flex justify-end">
+        <CardDensityToggle
+          cardDensity={cardDensity}
+          onCardDensityChange={setCardDensity}
+        />
+      </div>
+
       <ListFilters
         searchValue={query}
         searchPlaceholder="Name, type, rarity..."
@@ -160,14 +170,14 @@ export function ItemsPage() {
       {isLoading ? (
         <div className="mt-6 grid gap-4 md:grid-cols-2">
           {Array.from({ length: 6 }).map((_, index) => (
-            <ListCardSkeleton key={index} />
+            <ListCardSkeleton key={index} cardDensity={cardDensity} />
           ))}
         </div>
       ) : null}
 
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         {items.map((item) => (
-          <ItemCard key={item.id} item={item} />
+          <ItemCard key={item.id} item={item} cardDensity={cardDensity} />
         ))}
       </div>
 
