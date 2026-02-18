@@ -132,36 +132,48 @@ export function ItemsPage() {
       {
         key: "name",
         header: "Name",
+        sortable: true,
+        sortValue: (item) => item.name,
         cellClassName: `${tableCellClass} font-medium text-slate-900 dark:text-slate-100`,
         render: (item) => item.name,
       },
       {
         key: "type",
         header: "Type",
+        sortable: true,
+        sortValue: (item) => item.type,
         cellClassName: tableCellClass,
         render: (item) => item.type,
       },
       {
         key: "rarity",
         header: "Rarity",
+        sortable: true,
+        sortValue: (item) => item.rarity,
         cellClassName: tableCellClass,
         render: (item) => item.rarity,
       },
       {
         key: "cost",
         header: "Cost",
+        sortable: true,
+        sortValue: (item) => item.cost,
         cellClassName: tableCellClass,
         render: (item) => `${item.cost} gp`,
       },
       {
         key: "weight",
         header: "Weight",
+        sortable: true,
+        sortValue: (item) => item.weight,
         cellClassName: tableCellClass,
         render: (item) => `${item.weight} lb`,
       },
       {
         key: "id",
         header: "ID",
+        sortable: true,
+        sortValue: (item) => item.id,
         cellClassName: tableCellClass,
         render: (item) => `#${item.id}`,
       },
@@ -261,6 +273,7 @@ export function ItemsPage() {
           rows={items}
           columns={itemTableColumns}
           getRowKey={(item) => item.id}
+          stickyHeader
         />
       ) : null}
 

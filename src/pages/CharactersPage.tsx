@@ -130,30 +130,40 @@ export function CharactersPage() {
       {
         key: "name",
         header: "Name",
+        sortable: true,
+        sortValue: (character) => character.name,
         cellClassName: `${tableCellClass} font-medium text-slate-900 dark:text-slate-100`,
         render: (character) => character.name,
       },
       {
         key: "race",
         header: "Race",
+        sortable: true,
+        sortValue: (character) => character.race,
         cellClassName: tableCellClass,
         render: (character) => character.race,
       },
       {
         key: "class",
         header: "Class",
+        sortable: true,
+        sortValue: (character) => character.class,
         cellClassName: tableCellClass,
         render: (character) => character.class,
       },
       {
         key: "alignment",
         header: "Alignment",
+        sortable: true,
+        sortValue: (character) => character.alignment,
         cellClassName: tableCellClass,
         render: (character) => character.alignment,
       },
       {
         key: "id",
         header: "ID",
+        sortable: true,
+        sortValue: (character) => character.id,
         cellClassName: tableCellClass,
         render: (character) => `#${character.id}`,
       },
@@ -257,6 +267,7 @@ export function CharactersPage() {
           rows={characters}
           columns={characterTableColumns}
           getRowKey={(character) => character.id}
+          stickyHeader
         />
       ) : null}
 

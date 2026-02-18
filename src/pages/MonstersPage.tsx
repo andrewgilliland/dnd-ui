@@ -134,36 +134,48 @@ export function MonstersPage() {
       {
         key: "name",
         header: "Name",
+        sortable: true,
+        sortValue: (monster) => monster.name,
         cellClassName: `${tableCellClass} font-medium text-slate-900 dark:text-slate-100`,
         render: (monster) => monster.name,
       },
       {
         key: "type",
         header: "Type",
+        sortable: true,
+        sortValue: (monster) => monster.type,
         cellClassName: tableCellClass,
         render: (monster) => monster.type,
       },
       {
         key: "size",
         header: "Size",
+        sortable: true,
+        sortValue: (monster) => monster.size,
         cellClassName: tableCellClass,
         render: (monster) => monster.size,
       },
       {
         key: "cr",
         header: "CR",
+        sortable: true,
+        sortValue: (monster) => monster.challenge_rating,
         cellClassName: tableCellClass,
         render: (monster) => monster.challenge_rating,
       },
       {
         key: "ac",
         header: "AC",
+        sortable: true,
+        sortValue: (monster) => monster.armor_class,
         cellClassName: tableCellClass,
         render: (monster) => monster.armor_class,
       },
       {
         key: "hp",
         header: "HP",
+        sortable: true,
+        sortValue: (monster) => monster.hit_points,
         cellClassName: tableCellClass,
         render: (monster) => monster.hit_points,
       },
@@ -267,6 +279,7 @@ export function MonstersPage() {
           rows={monsters}
           columns={monsterTableColumns}
           getRowKey={(monster) => monster.id}
+          stickyHeader
         />
       ) : null}
 
