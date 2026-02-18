@@ -1,12 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router";
 import { getItems } from "../api/client";
 import { CardDensityToggle } from "../components/CardDensityToggle";
 import { ItemCard } from "../components/ItemCard";
 import { ListCardSkeleton } from "../components/ListCardSkeleton";
 import { ListFilters } from "../components/ListFilters";
+import { ListViewToggle } from "../components/ListViewToggle";
 import { PageHeader } from "../components/PageHeader";
 import { Surface } from "../components/Surface";
+import { ROUTES } from "../constants/routes";
 import { useCardDensity } from "../hooks/useCardDensity";
+import { useListView } from "../hooks/useListView";
 import { useQueryParamUpdater } from "../hooks/useQueryParamUpdater";
 import type { Item } from "../types";
 import { toFilterOptions, uniqueSortedStrings } from "../utils/filterOptions";
@@ -14,6 +18,7 @@ import { toFilterOptions, uniqueSortedStrings } from "../utils/filterOptions";
 export function ItemsPage() {
   const { searchParams, updateParam } = useQueryParamUpdater();
   const { cardDensity, setCardDensity } = useCardDensity();
+  const { listViewMode, setListViewMode } = useListView();
   const query = searchParams.get("q") ?? "";
   const selectedType = searchParams.get("type") ?? "";
   const selectedRarity = searchParams.get("rarity") ?? "";
@@ -119,6 +124,8 @@ export function ItemsPage() {
     () => toFilterOptions(rarityValues),
     [rarityValues],
   );
+  const tableCellClass =
+    cardDensity === "compact" ? "px-3 py-2 text-xs" : "px-4 py-3 text-sm";
 
   return (
     <section>
@@ -131,7 +138,11 @@ export function ItemsPage() {
         }
       />
 
-      <div className="mt-4 flex justify-end">
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+        <ListViewToggle
+          listViewMode={listViewMode}
+          onListViewModeChange={setListViewMode}
+        />
         <CardDensityToggle
           cardDensity={cardDensity}
           onCardDensityChange={setCardDensity}
@@ -168,18 +179,83 @@ export function ItemsPage() {
       ) : null}
 
       {isLoading ? (
+        listViewMode === "cards" ? (
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <ListCardSkeleton key={index} cardDensity={cardDensity} />
+            ))}
+          </div>
+        ) : (
+          <Surface as="section" className="mt-6 p-6 text-center">
+            <p className="text-slate-700 dark:text-slate-300">Loading...</p>
+          </Surface>
+        )
+      ) : null}
+
+      {!isLoading && listViewMode === "cards" ? (
         <div className="mt-6 grid gap-4 md:grid-cols-2">
-          {Array.from({ length: 6 }).map((_, index) => (
-            <ListCardSkeleton key={index} cardDensity={cardDensity} />
+          {items.map((item) => (
+            <ItemCard key={item.id} item={item} cardDensity={cardDensity} />
           ))}
         </div>
       ) : null}
 
-      <div className="mt-6 grid gap-4 md:grid-cols-2">
-        {items.map((item) => (
-          <ItemCard key={item.id} item={item} cardDensity={cardDensity} />
-        ))}
-      </div>
+      {!isLoading && listViewMode === "table" ? (
+        <Surface as="section" className="mt-6 overflow-x-auto">
+          <table className="min-w-full border-collapse">
+            <thead>
+              <tr className="border-b border-slate-200 dark:border-slate-800">
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
+                  Name
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
+                  Type
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
+                  Rarity
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
+                  Cost
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
+                  Weight
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
+                  ID
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item) => (
+                <tr
+                  key={item.id}
+                  className="border-b border-slate-100 text-slate-700 last:border-b-0 dark:border-slate-800 dark:text-slate-300"
+                >
+                  <td
+                    className={`${tableCellClass} font-medium text-slate-900 dark:text-slate-100`}
+                  >
+                    {item.name}
+                  </td>
+                  <td className={tableCellClass}>{item.type}</td>
+                  <td className={tableCellClass}>{item.rarity}</td>
+                  <td className={tableCellClass}>{item.cost} gp</td>
+                  <td className={tableCellClass}>{item.weight} lb</td>
+                  <td className={tableCellClass}>#{item.id}</td>
+                  <td className={tableCellClass}>
+                    <Link
+                      to={ROUTES.itemDetail(item.id)}
+                      className="font-medium text-slate-900 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-900 dark:text-slate-100 dark:decoration-slate-600 dark:hover:decoration-slate-200"
+                    >
+                      View
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Surface>
+      ) : null}
 
       {!isLoading && !errorMessage && items.length === 0 ? (
         <Surface as="section" className="mt-6 p-6 text-center">

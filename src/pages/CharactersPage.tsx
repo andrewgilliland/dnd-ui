@@ -1,12 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router";
 import { getCharacters, getClasses, getRaces } from "../api/client";
 import { CardDensityToggle } from "../components/CardDensityToggle";
 import { CharacterCard } from "../components/CharacterCard";
 import { ListCardSkeleton } from "../components/ListCardSkeleton";
 import { ListFilters } from "../components/ListFilters";
+import { ListViewToggle } from "../components/ListViewToggle";
 import { PageHeader } from "../components/PageHeader";
 import { Surface } from "../components/Surface";
+import { ROUTES } from "../constants/routes";
 import { useCardDensity } from "../hooks/useCardDensity";
+import { useListView } from "../hooks/useListView";
 import { useQueryParamUpdater } from "../hooks/useQueryParamUpdater";
 import type { Character } from "../types";
 import { toFilterOptions, uniqueSortedStrings } from "../utils/filterOptions";
@@ -14,6 +18,7 @@ import { toFilterOptions, uniqueSortedStrings } from "../utils/filterOptions";
 export function CharactersPage() {
   const { searchParams, updateParam } = useQueryParamUpdater();
   const { cardDensity, setCardDensity } = useCardDensity();
+  const { listViewMode, setListViewMode } = useListView();
   const query = searchParams.get("q") ?? "";
   const selectedClass = searchParams.get("class") ?? "";
   const selectedRace = searchParams.get("race") ?? "";
@@ -117,6 +122,8 @@ export function CharactersPage() {
     [classValues],
   );
   const raceOptions = useMemo(() => toFilterOptions(raceValues), [raceValues]);
+  const tableCellClass =
+    cardDensity === "compact" ? "px-3 py-2 text-xs" : "px-4 py-3 text-sm";
 
   return (
     <section>
@@ -129,7 +136,11 @@ export function CharactersPage() {
         }
       />
 
-      <div className="mt-4 flex justify-end">
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+        <ListViewToggle
+          listViewMode={listViewMode}
+          onListViewModeChange={setListViewMode}
+        />
         <CardDensityToggle
           cardDensity={cardDensity}
           onCardDensityChange={setCardDensity}
@@ -166,22 +177,83 @@ export function CharactersPage() {
       ) : null}
 
       {isLoading ? (
+        listViewMode === "cards" ? (
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <ListCardSkeleton key={index} cardDensity={cardDensity} />
+            ))}
+          </div>
+        ) : (
+          <Surface as="section" className="mt-6 p-6 text-center">
+            <p className="text-slate-700 dark:text-slate-300">Loading...</p>
+          </Surface>
+        )
+      ) : null}
+
+      {!isLoading && listViewMode === "cards" ? (
         <div className="mt-6 grid gap-4 md:grid-cols-2">
-          {Array.from({ length: 6 }).map((_, index) => (
-            <ListCardSkeleton key={index} cardDensity={cardDensity} />
+          {characters.map((character) => (
+            <CharacterCard
+              key={character.id}
+              character={character}
+              cardDensity={cardDensity}
+            />
           ))}
         </div>
       ) : null}
 
-      <div className="mt-6 grid gap-4 md:grid-cols-2">
-        {characters.map((character) => (
-          <CharacterCard
-            key={character.id}
-            character={character}
-            cardDensity={cardDensity}
-          />
-        ))}
-      </div>
+      {!isLoading && listViewMode === "table" ? (
+        <Surface as="section" className="mt-6 overflow-x-auto">
+          <table className="min-w-full border-collapse">
+            <thead>
+              <tr className="border-b border-slate-200 dark:border-slate-800">
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
+                  Name
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
+                  Race
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
+                  Class
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
+                  Alignment
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
+                  ID
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {characters.map((character) => (
+                <tr
+                  key={character.id}
+                  className="border-b border-slate-100 text-slate-700 last:border-b-0 dark:border-slate-800 dark:text-slate-300"
+                >
+                  <td
+                    className={`${tableCellClass} font-medium text-slate-900 dark:text-slate-100`}
+                  >
+                    {character.name}
+                  </td>
+                  <td className={tableCellClass}>{character.race}</td>
+                  <td className={tableCellClass}>{character.class}</td>
+                  <td className={tableCellClass}>{character.alignment}</td>
+                  <td className={tableCellClass}>#{character.id}</td>
+                  <td className={tableCellClass}>
+                    <Link
+                      to={ROUTES.characterDetail(character.id)}
+                      className="font-medium text-slate-900 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-900 dark:text-slate-100 dark:decoration-slate-600 dark:hover:decoration-slate-200"
+                    >
+                      View
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Surface>
+      ) : null}
 
       {!isLoading && !errorMessage && characters.length === 0 ? (
         <Surface as="section" className="mt-6 p-6 text-center">
