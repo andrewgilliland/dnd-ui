@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { getCharacters, getClasses, getRaces } from "../api/client";
 import { CardDensityToggle } from "../components/CardDensityToggle";
 import { CharacterCard } from "../components/CharacterCard";
+import { DataTable, type DataTableColumn } from "../components/DataTable";
 import { ListCardSkeleton } from "../components/ListCardSkeleton";
 import { ListFilters } from "../components/ListFilters";
 import { ListViewToggle } from "../components/ListViewToggle";
@@ -124,6 +125,54 @@ export function CharactersPage() {
   const raceOptions = useMemo(() => toFilterOptions(raceValues), [raceValues]);
   const tableCellClass =
     cardDensity === "compact" ? "px-3 py-2 text-xs" : "px-4 py-3 text-sm";
+  const characterTableColumns = useMemo<DataTableColumn<Character>[]>(
+    () => [
+      {
+        key: "name",
+        header: "Name",
+        cellClassName: `${tableCellClass} font-medium text-slate-900 dark:text-slate-100`,
+        render: (character) => character.name,
+      },
+      {
+        key: "race",
+        header: "Race",
+        cellClassName: tableCellClass,
+        render: (character) => character.race,
+      },
+      {
+        key: "class",
+        header: "Class",
+        cellClassName: tableCellClass,
+        render: (character) => character.class,
+      },
+      {
+        key: "alignment",
+        header: "Alignment",
+        cellClassName: tableCellClass,
+        render: (character) => character.alignment,
+      },
+      {
+        key: "id",
+        header: "ID",
+        cellClassName: tableCellClass,
+        render: (character) => `#${character.id}`,
+      },
+      {
+        key: "actions",
+        header: "",
+        cellClassName: tableCellClass,
+        render: (character) => (
+          <Link
+            to={ROUTES.characterDetail(character.id)}
+            className="font-medium text-slate-900 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-900 dark:text-slate-100 dark:decoration-slate-600 dark:hover:decoration-slate-200"
+          >
+            View
+          </Link>
+        ),
+      },
+    ],
+    [tableCellClass],
+  );
 
   return (
     <section>
@@ -203,56 +252,12 @@ export function CharactersPage() {
       ) : null}
 
       {!isLoading && listViewMode === "table" ? (
-        <Surface as="section" className="mt-6 overflow-x-auto">
-          <table className="min-w-full border-collapse">
-            <thead>
-              <tr className="border-b border-slate-200 dark:border-slate-800">
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
-                  Name
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
-                  Race
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
-                  Class
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
-                  Alignment
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
-                  ID
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {characters.map((character) => (
-                <tr
-                  key={character.id}
-                  className="border-b border-slate-100 text-slate-700 last:border-b-0 dark:border-slate-800 dark:text-slate-300"
-                >
-                  <td
-                    className={`${tableCellClass} font-medium text-slate-900 dark:text-slate-100`}
-                  >
-                    {character.name}
-                  </td>
-                  <td className={tableCellClass}>{character.race}</td>
-                  <td className={tableCellClass}>{character.class}</td>
-                  <td className={tableCellClass}>{character.alignment}</td>
-                  <td className={tableCellClass}>#{character.id}</td>
-                  <td className={tableCellClass}>
-                    <Link
-                      to={ROUTES.characterDetail(character.id)}
-                      className="font-medium text-slate-900 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-900 dark:text-slate-100 dark:decoration-slate-600 dark:hover:decoration-slate-200"
-                    >
-                      View
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Surface>
+        <DataTable
+          className="mt-6"
+          rows={characters}
+          columns={characterTableColumns}
+          getRowKey={(character) => character.id}
+        />
       ) : null}
 
       {!isLoading && !errorMessage && characters.length === 0 ? (

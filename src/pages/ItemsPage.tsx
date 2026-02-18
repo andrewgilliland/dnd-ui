@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
 import { getItems } from "../api/client";
 import { CardDensityToggle } from "../components/CardDensityToggle";
+import { DataTable, type DataTableColumn } from "../components/DataTable";
 import { ItemCard } from "../components/ItemCard";
 import { ListCardSkeleton } from "../components/ListCardSkeleton";
 import { ListFilters } from "../components/ListFilters";
@@ -126,6 +127,60 @@ export function ItemsPage() {
   );
   const tableCellClass =
     cardDensity === "compact" ? "px-3 py-2 text-xs" : "px-4 py-3 text-sm";
+  const itemTableColumns = useMemo<DataTableColumn<Item>[]>(
+    () => [
+      {
+        key: "name",
+        header: "Name",
+        cellClassName: `${tableCellClass} font-medium text-slate-900 dark:text-slate-100`,
+        render: (item) => item.name,
+      },
+      {
+        key: "type",
+        header: "Type",
+        cellClassName: tableCellClass,
+        render: (item) => item.type,
+      },
+      {
+        key: "rarity",
+        header: "Rarity",
+        cellClassName: tableCellClass,
+        render: (item) => item.rarity,
+      },
+      {
+        key: "cost",
+        header: "Cost",
+        cellClassName: tableCellClass,
+        render: (item) => `${item.cost} gp`,
+      },
+      {
+        key: "weight",
+        header: "Weight",
+        cellClassName: tableCellClass,
+        render: (item) => `${item.weight} lb`,
+      },
+      {
+        key: "id",
+        header: "ID",
+        cellClassName: tableCellClass,
+        render: (item) => `#${item.id}`,
+      },
+      {
+        key: "actions",
+        header: "",
+        cellClassName: tableCellClass,
+        render: (item) => (
+          <Link
+            to={ROUTES.itemDetail(item.id)}
+            className="font-medium text-slate-900 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-900 dark:text-slate-100 dark:decoration-slate-600 dark:hover:decoration-slate-200"
+          >
+            View
+          </Link>
+        ),
+      },
+    ],
+    [tableCellClass],
+  );
 
   return (
     <section>
@@ -201,60 +256,12 @@ export function ItemsPage() {
       ) : null}
 
       {!isLoading && listViewMode === "table" ? (
-        <Surface as="section" className="mt-6 overflow-x-auto">
-          <table className="min-w-full border-collapse">
-            <thead>
-              <tr className="border-b border-slate-200 dark:border-slate-800">
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
-                  Name
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
-                  Type
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
-                  Rarity
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
-                  Cost
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
-                  Weight
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
-                  ID
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((item) => (
-                <tr
-                  key={item.id}
-                  className="border-b border-slate-100 text-slate-700 last:border-b-0 dark:border-slate-800 dark:text-slate-300"
-                >
-                  <td
-                    className={`${tableCellClass} font-medium text-slate-900 dark:text-slate-100`}
-                  >
-                    {item.name}
-                  </td>
-                  <td className={tableCellClass}>{item.type}</td>
-                  <td className={tableCellClass}>{item.rarity}</td>
-                  <td className={tableCellClass}>{item.cost} gp</td>
-                  <td className={tableCellClass}>{item.weight} lb</td>
-                  <td className={tableCellClass}>#{item.id}</td>
-                  <td className={tableCellClass}>
-                    <Link
-                      to={ROUTES.itemDetail(item.id)}
-                      className="font-medium text-slate-900 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-900 dark:text-slate-100 dark:decoration-slate-600 dark:hover:decoration-slate-200"
-                    >
-                      View
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Surface>
+        <DataTable
+          className="mt-6"
+          rows={items}
+          columns={itemTableColumns}
+          getRowKey={(item) => item.id}
+        />
       ) : null}
 
       {!isLoading && !errorMessage && items.length === 0 ? (

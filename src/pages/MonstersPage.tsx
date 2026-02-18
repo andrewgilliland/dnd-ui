@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
 import { getMonsters } from "../api/client";
 import { CardDensityToggle } from "../components/CardDensityToggle";
+import { DataTable, type DataTableColumn } from "../components/DataTable";
 import { ListFilters } from "../components/ListFilters";
 import { ListCardSkeleton } from "../components/ListCardSkeleton";
 import { ListViewToggle } from "../components/ListViewToggle";
@@ -128,6 +129,60 @@ export function MonstersPage() {
   const crOptions = useMemo(() => toFilterOptions(crValues), [crValues]);
   const tableCellClass =
     cardDensity === "compact" ? "px-3 py-2 text-xs" : "px-4 py-3 text-sm";
+  const monsterTableColumns = useMemo<DataTableColumn<Monster>[]>(
+    () => [
+      {
+        key: "name",
+        header: "Name",
+        cellClassName: `${tableCellClass} font-medium text-slate-900 dark:text-slate-100`,
+        render: (monster) => monster.name,
+      },
+      {
+        key: "type",
+        header: "Type",
+        cellClassName: tableCellClass,
+        render: (monster) => monster.type,
+      },
+      {
+        key: "size",
+        header: "Size",
+        cellClassName: tableCellClass,
+        render: (monster) => monster.size,
+      },
+      {
+        key: "cr",
+        header: "CR",
+        cellClassName: tableCellClass,
+        render: (monster) => monster.challenge_rating,
+      },
+      {
+        key: "ac",
+        header: "AC",
+        cellClassName: tableCellClass,
+        render: (monster) => monster.armor_class,
+      },
+      {
+        key: "hp",
+        header: "HP",
+        cellClassName: tableCellClass,
+        render: (monster) => monster.hit_points,
+      },
+      {
+        key: "actions",
+        header: "",
+        cellClassName: tableCellClass,
+        render: (monster) => (
+          <Link
+            to={ROUTES.monsterDetail(monster.id)}
+            className="font-medium text-slate-900 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-900 dark:text-slate-100 dark:decoration-slate-600 dark:hover:decoration-slate-200"
+          >
+            View
+          </Link>
+        ),
+      },
+    ],
+    [tableCellClass],
+  );
 
   return (
     <section>
@@ -207,60 +262,12 @@ export function MonstersPage() {
       ) : null}
 
       {!isLoading && listViewMode === "table" ? (
-        <Surface as="section" className="mt-6 overflow-x-auto">
-          <table className="min-w-full border-collapse">
-            <thead>
-              <tr className="border-b border-slate-200 dark:border-slate-800">
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
-                  Name
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
-                  Type
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
-                  Size
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
-                  CR
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
-                  AC
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
-                  HP
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {monsters.map((monster) => (
-                <tr
-                  key={monster.id}
-                  className="border-b border-slate-100 text-slate-700 last:border-b-0 dark:border-slate-800 dark:text-slate-300"
-                >
-                  <td
-                    className={`${tableCellClass} font-medium text-slate-900 dark:text-slate-100`}
-                  >
-                    {monster.name}
-                  </td>
-                  <td className={tableCellClass}>{monster.type}</td>
-                  <td className={tableCellClass}>{monster.size}</td>
-                  <td className={tableCellClass}>{monster.challenge_rating}</td>
-                  <td className={tableCellClass}>{monster.armor_class}</td>
-                  <td className={tableCellClass}>{monster.hit_points}</td>
-                  <td className={tableCellClass}>
-                    <Link
-                      to={ROUTES.monsterDetail(monster.id)}
-                      className="font-medium text-slate-900 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-900 dark:text-slate-100 dark:decoration-slate-600 dark:hover:decoration-slate-200"
-                    >
-                      View
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Surface>
+        <DataTable
+          className="mt-6"
+          rows={monsters}
+          columns={monsterTableColumns}
+          getRowKey={(monster) => monster.id}
+        />
       ) : null}
 
       {!isLoading && !errorMessage && monsters.length === 0 ? (
