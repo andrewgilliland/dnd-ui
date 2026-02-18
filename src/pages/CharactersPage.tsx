@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { BookOpen, Fingerprint, Globe2, Scale, User } from "lucide-react";
 import { Link } from "react-router";
 import { getCharacters, getClasses, getRaces } from "../api/client";
 import { CardDensityToggle } from "../components/CardDensityToggle";
@@ -129,7 +130,12 @@ export function CharactersPage() {
     () => [
       {
         key: "name",
-        header: "Name",
+        header: (
+          <span className="inline-flex items-center gap-1">
+            <User aria-hidden="true" className="h-3.5 w-3.5" />
+            <span>Name</span>
+          </span>
+        ),
         sortable: true,
         sortValue: (character) => character.name,
         cellClassName: `${tableCellClass} font-medium text-slate-900 dark:text-slate-100`,
@@ -137,7 +143,12 @@ export function CharactersPage() {
       },
       {
         key: "race",
-        header: "Race",
+        header: (
+          <span className="inline-flex items-center gap-1">
+            <Globe2 aria-hidden="true" className="h-3.5 w-3.5" />
+            <span>Race</span>
+          </span>
+        ),
         sortable: true,
         sortValue: (character) => character.race,
         cellClassName: tableCellClass,
@@ -145,7 +156,12 @@ export function CharactersPage() {
       },
       {
         key: "class",
-        header: "Class",
+        header: (
+          <span className="inline-flex items-center gap-1">
+            <BookOpen aria-hidden="true" className="h-3.5 w-3.5" />
+            <span>Class</span>
+          </span>
+        ),
         sortable: true,
         sortValue: (character) => character.class,
         cellClassName: tableCellClass,
@@ -153,7 +169,12 @@ export function CharactersPage() {
       },
       {
         key: "alignment",
-        header: "Alignment",
+        header: (
+          <span className="inline-flex items-center gap-1">
+            <Scale aria-hidden="true" className="h-3.5 w-3.5" />
+            <span>Alignment</span>
+          </span>
+        ),
         sortable: true,
         sortValue: (character) => character.alignment,
         cellClassName: tableCellClass,
@@ -161,7 +182,12 @@ export function CharactersPage() {
       },
       {
         key: "id",
-        header: "ID",
+        header: (
+          <span className="inline-flex items-center gap-1">
+            <Fingerprint aria-hidden="true" className="h-3.5 w-3.5" />
+            <span>ID</span>
+          </span>
+        ),
         sortable: true,
         sortValue: (character) => character.id,
         cellClassName: tableCellClass,

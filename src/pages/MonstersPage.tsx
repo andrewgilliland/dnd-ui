@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Shield, Sword, Heart } from "lucide-react";
 import { Link } from "react-router";
 import { getMonsters } from "../api/client";
 import { CardDensityToggle } from "../components/CardDensityToggle";
@@ -157,7 +158,12 @@ export function MonstersPage() {
       },
       {
         key: "cr",
-        header: "CR",
+        header: (
+          <span className="inline-flex items-center gap-1">
+            <Sword aria-hidden="true" className="h-3.5 w-3.5" />
+            <span>CR</span>
+          </span>
+        ),
         sortable: true,
         sortValue: (monster) => monster.challenge_rating,
         cellClassName: tableCellClass,
@@ -165,7 +171,12 @@ export function MonstersPage() {
       },
       {
         key: "ac",
-        header: "AC",
+        header: (
+          <span className="inline-flex items-center gap-1">
+            <Shield aria-hidden="true" className="h-3.5 w-3.5" />
+            <span>AC</span>
+          </span>
+        ),
         sortable: true,
         sortValue: (monster) => monster.armor_class,
         cellClassName: tableCellClass,
@@ -173,7 +184,12 @@ export function MonstersPage() {
       },
       {
         key: "hp",
-        header: "HP",
+        header: (
+          <span className="inline-flex items-center gap-1">
+            <Heart aria-hidden="true" className="h-3.5 w-3.5" />
+            <span>HP</span>
+          </span>
+        ),
         sortable: true,
         sortValue: (monster) => monster.hit_points,
         cellClassName: tableCellClass,

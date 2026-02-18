@@ -7,7 +7,7 @@ type SortDirection = "asc" | "desc";
 
 export interface DataTableColumn<Row> {
   key: string;
-  header: string;
+  header: ReactNode;
   render: (row: Row) => ReactNode;
   sortable?: boolean;
   sortValue?: (row: Row) => string | number;

@@ -1,4 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
+import {
+  BadgeDollarSign,
+  Fingerprint,
+  Gem,
+  Package,
+  Scale,
+  ScrollText,
+} from "lucide-react";
 import { Link } from "react-router";
 import { getItems } from "../api/client";
 import { CardDensityToggle } from "../components/CardDensityToggle";
@@ -131,7 +139,12 @@ export function ItemsPage() {
     () => [
       {
         key: "name",
-        header: "Name",
+        header: (
+          <span className="inline-flex items-center gap-1">
+            <ScrollText aria-hidden="true" className="h-3.5 w-3.5" />
+            <span>Name</span>
+          </span>
+        ),
         sortable: true,
         sortValue: (item) => item.name,
         cellClassName: `${tableCellClass} font-medium text-slate-900 dark:text-slate-100`,
@@ -139,7 +152,12 @@ export function ItemsPage() {
       },
       {
         key: "type",
-        header: "Type",
+        header: (
+          <span className="inline-flex items-center gap-1">
+            <Package aria-hidden="true" className="h-3.5 w-3.5" />
+            <span>Type</span>
+          </span>
+        ),
         sortable: true,
         sortValue: (item) => item.type,
         cellClassName: tableCellClass,
@@ -147,7 +165,12 @@ export function ItemsPage() {
       },
       {
         key: "rarity",
-        header: "Rarity",
+        header: (
+          <span className="inline-flex items-center gap-1">
+            <Gem aria-hidden="true" className="h-3.5 w-3.5" />
+            <span>Rarity</span>
+          </span>
+        ),
         sortable: true,
         sortValue: (item) => item.rarity,
         cellClassName: tableCellClass,
@@ -155,7 +178,12 @@ export function ItemsPage() {
       },
       {
         key: "cost",
-        header: "Cost",
+        header: (
+          <span className="inline-flex items-center gap-1">
+            <BadgeDollarSign aria-hidden="true" className="h-3.5 w-3.5" />
+            <span>Cost</span>
+          </span>
+        ),
         sortable: true,
         sortValue: (item) => item.cost,
         cellClassName: tableCellClass,
@@ -163,7 +191,12 @@ export function ItemsPage() {
       },
       {
         key: "weight",
-        header: "Weight",
+        header: (
+          <span className="inline-flex items-center gap-1">
+            <Scale aria-hidden="true" className="h-3.5 w-3.5" />
+            <span>Weight</span>
+          </span>
+        ),
         sortable: true,
         sortValue: (item) => item.weight,
         cellClassName: tableCellClass,
@@ -171,7 +204,12 @@ export function ItemsPage() {
       },
       {
         key: "id",
-        header: "ID",
+        header: (
+          <span className="inline-flex items-center gap-1">
+            <Fingerprint aria-hidden="true" className="h-3.5 w-3.5" />
+            <span>ID</span>
+          </span>
+        ),
         sortable: true,
         sortValue: (item) => item.id,
         cellClassName: tableCellClass,
