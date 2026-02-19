@@ -1,73 +1,86 @@
-# React + TypeScript + Vite
+# DnD UI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + TypeScript + Vite frontend for browsing DnD characters, items, and monsters.
 
-Currently, two official plugins are available:
+## Local Development
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm ci
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Environment Variables
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+The frontend API base URL is configured at build time:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- `VITE_API_BASE_URL`
+
+Examples:
+
+- local dev in `.env` (ignored)
+- production in `.env.production`
+
+When deploying from CI, make sure your production build receives a value for `VITE_API_BASE_URL`.
+
+## Build & Validate
+
+```bash
+npm run typecheck
+npm run lint
+npm run build
 ```
+
+## AWS CDK Deployment (S3 + CloudFront)
+
+The repository includes CDK infrastructure in `infra/` for deploying the static Vite build to a private S3 bucket fronted by CloudFront.
+
+### What the stack creates
+
+- Private S3 bucket for static assets
+- CloudFront distribution with Origin Access Control (OAC)
+- SPA fallback for deep links (`403/404 -> /index.html`)
+- Long-lived caching for hashed assets and no-cache for `index.html`
+
+### One-time AWS account bootstrap
+
+Run once per account/region:
+
+```bash
+cd infra
+npm install
+npx cdk bootstrap aws://<AWS_ACCOUNT_ID>/<AWS_REGION>
+```
+
+### Deploy manually
+
+```bash
+# from repo root
+npm run build
+
+# deploy infra
+cd infra
+npm install
+npx cdk deploy FrontendStack
+```
+
+### CI/CD with GitHub Actions
+
+Workflow file: `.github/workflows/deploy-frontend.yml`
+
+Required GitHub configuration:
+
+- **Secret:** `AWS_DEPLOY_ROLE_ARN`
+- **Variable:** `AWS_REGION` (optional; defaults to `us-east-2`)
+
+The IAM role in `AWS_DEPLOY_ROLE_ARN` should trust GitHub OIDC (`token.actions.githubusercontent.com`) and allow CDK deployment permissions for CloudFormation, S3, CloudFront, and IAM pass-role as needed.
+
+The workflow:
+
+1. Builds the Vite app (`dist/`)
+2. Synthesizes CDK
+3. Deploys `FrontendStack`
+
+## Notes
+
+- This setup uses the CloudFront default domain.
+- If you add a custom domain later, add Route53 + ACM (certificate in `us-east-1`) to the stack.
