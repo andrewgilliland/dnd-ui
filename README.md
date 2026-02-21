@@ -83,4 +83,5 @@ The workflow:
 ## Notes
 
 - This setup uses the CloudFront default domain.
+- Current distribution URL: https://dry2eo3bwi7nf.cloudfront.net/
 - If you add a custom domain later, add Route53 + ACM (certificate in `us-east-1`) to the stack.
