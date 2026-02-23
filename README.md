@@ -30,6 +30,16 @@ npm run lint
 npm run build
 ```
 
+## npm Compatibility Note
+
+This repo currently uses React 19 with `visx`, and `visx` peer dependency ranges do not yet include React 19.
+
+To keep local and CI installs consistent, the repository includes `.npmrc` with:
+
+```ini
+legacy-peer-deps=true
+```
+
 ## AWS CDK Deployment (S3 + CloudFront)
 
 The repository includes CDK infrastructure in `infra/` for deploying the static Vite build to a private S3 bucket fronted by CloudFront.
@@ -63,22 +73,34 @@ npm install
 npx cdk deploy FrontendStack
 ```
 
-### CI/CD with GitHub Actions
+### CI/CD with AWS CodePipeline (CDK)
 
-Workflow file: `.github/workflows/deploy-frontend.yml`
+This repository uses a CDK pipeline stack (`FrontendPipelineStack`) to deploy from GitHub `main` using a CodeStar connection.
 
-Required GitHub configuration:
+Required context values when deploying the pipeline stack:
 
-- **Secret:** `AWS_DEPLOY_ROLE_ARN`
-- **Variable:** `AWS_REGION` (optional; defaults to `us-east-2`)
+- `connectionArn` (CodeStar connection ARN in the same region as the pipeline)
+- `viteApiBaseUrl` (value used for frontend production build)
 
-The IAM role in `AWS_DEPLOY_ROLE_ARN` should trust GitHub OIDC (`token.actions.githubusercontent.com`) and allow CDK deployment permissions for CloudFormation, S3, CloudFront, and IAM pass-role as needed.
+Optional context values:
 
-The workflow:
+- `repo` (defaults to `andrewgilliland/dnd-ui`)
+- `branch` (defaults to `main`)
 
-1. Builds the Vite app (`dist/`)
-2. Synthesizes CDK
-3. Deploys `FrontendStack`
+Deploy the pipeline stack:
+
+```bash
+cd infra
+npm install
+npx cdk deploy FrontendPipelineStack \
+	-c deployPipeline=true \
+	-c connectionArn=<CODESTAR_CONNECTION_ARN> \
+	-c viteApiBaseUrl=<VITE_API_BASE_URL> \
+	-c repo=andrewgilliland/dnd-ui \
+	-c branch=main
+```
+
+The pipeline synth step builds both app and infra, then deploys `FrontendStack`.
 
 ## Notes
 
