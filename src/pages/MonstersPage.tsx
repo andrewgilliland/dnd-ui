@@ -7,6 +7,10 @@ import { DataTable, type DataTableColumn } from "../components/DataTable";
 import { ListFilters } from "../components/ListFilters";
 import { ListCardSkeleton } from "../components/ListCardSkeleton";
 import { ListViewToggle } from "../components/ListViewToggle";
+import {
+  MonsterComparisonBarChart,
+  type MonsterComparisonMetric,
+} from "../components/MonsterComparisonBarChart";
 import { MonsterCard } from "../components/MonsterCard";
 import { PageHeader } from "../components/PageHeader";
 import { Surface } from "../components/Surface";
@@ -35,6 +39,8 @@ export function MonstersPage() {
   const [crValues, setCrValues] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [comparisonMetric, setComparisonMetric] =
+    useState<MonsterComparisonMetric>("hit_points");
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -256,6 +262,14 @@ export function MonstersPage() {
         ]}
         onSelectChange={updateParam}
       />
+
+      {!isLoading && !errorMessage && monsters.length > 1 ? (
+        <MonsterComparisonBarChart
+          monsters={monsters}
+          metric={comparisonMetric}
+          onMetricChange={setComparisonMetric}
+        />
+      ) : null}
 
       {errorMessage ? (
         <Surface as="section" className="mt-6 p-6 text-center">
