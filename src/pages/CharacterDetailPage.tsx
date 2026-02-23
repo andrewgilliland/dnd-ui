@@ -5,6 +5,7 @@ import { DetailPageHeader } from "../components/DetailPageHeader";
 import { DetailSection } from "../components/DetailSection";
 import { NotFoundState } from "../components/NotFoundState";
 import { StatBlock } from "../components/StatBlock";
+import { StatsRadarChart } from "../components/StatsRadarChart";
 import { Surface } from "../components/Surface";
 import { ROUTES } from "../constants/routes";
 import type { Character } from "../types";
@@ -132,7 +133,10 @@ export function CharacterDetailPage() {
       </DetailSection>
 
       <DetailSection title="Ability Scores">
-        <StatBlock stats={character.stats} />
+        <div className="space-y-6">
+          <StatBlock stats={character.stats} />
+          <StatsRadarChart stats={character.stats} />
+        </div>
       </DetailSection>
     </section>
   );

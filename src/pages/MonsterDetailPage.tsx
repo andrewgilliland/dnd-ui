@@ -5,6 +5,7 @@ import { DetailPageHeader } from "../components/DetailPageHeader";
 import { DetailSection } from "../components/DetailSection";
 import { NotFoundState } from "../components/NotFoundState";
 import { StatBlock } from "../components/StatBlock";
+import { StatsRadarChart } from "../components/StatsRadarChart";
 import { Surface } from "../components/Surface";
 import { ROUTES } from "../constants/routes";
 import type { Monster } from "../types";
@@ -213,7 +214,10 @@ export function MonsterDetailPage() {
       </DetailSection>
 
       <DetailSection title="Ability Scores">
-        <StatBlock stats={monster.stats} />
+        <div className="space-y-6">
+          <StatBlock stats={monster.stats} />
+          <StatsRadarChart stats={monster.stats} />
+        </div>
       </DetailSection>
 
       <DetailSection title="Special Abilities">
