@@ -82,26 +82,26 @@ export function MonsterComparisonBarChart({
           const widthPercent = (value / maxValue) * 100;
 
           return (
-            <li
-              key={monster.id}
-              className="grid grid-cols-[minmax(0,10rem)_minmax(0,1fr)_3rem] items-center gap-3"
-            >
+            <li key={monster.id}>
               <Link
                 to={ROUTES.monsterDetail(monster.id)}
-                className="truncate text-xs font-medium text-slate-700 underline decoration-slate-300 underline-offset-2 hover:decoration-slate-900 dark:text-slate-200 dark:decoration-slate-600 dark:hover:decoration-slate-200"
+                aria-label={`View ${monster.name} details`}
+                className="grid grid-cols-[minmax(0,10rem)_minmax(0,1fr)_3rem] items-center gap-3 rounded px-1 py-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-500"
               >
-                {monster.name}
+                <span className="truncate text-xs font-medium text-slate-700 underline decoration-slate-300 underline-offset-2 hover:decoration-slate-900 dark:text-slate-200 dark:decoration-slate-600 dark:hover:decoration-slate-200">
+                  {monster.name}
+                </span>
+                <div className="h-3 rounded bg-slate-200 transition-colors hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700">
+                  <div
+                    className="h-full rounded bg-slate-500 dark:bg-slate-400"
+                    style={{ width: `${widthPercent}%` }}
+                    aria-hidden="true"
+                  />
+                </div>
+                <span className="text-right text-xs font-semibold text-slate-700 dark:text-slate-200">
+                  {value}
+                </span>
               </Link>
-              <div className="h-3 rounded bg-slate-200 dark:bg-slate-800">
-                <div
-                  className="h-full rounded bg-slate-500 dark:bg-slate-400"
-                  style={{ width: `${widthPercent}%` }}
-                  aria-hidden="true"
-                />
-              </div>
-              <span className="text-right text-xs font-semibold text-slate-700 dark:text-slate-200">
-                {value}
-              </span>
             </li>
           );
         })}
