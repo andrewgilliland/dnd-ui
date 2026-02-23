@@ -13,6 +13,12 @@ interface Point {
   y: number;
 }
 
+interface TooltipState {
+  index: number;
+  x: number;
+  y: number;
+}
+
 const AXES: Array<{ key: keyof Stats; label: string }> = [
   { key: "strength", label: "STR" },
   { key: "dexterity", label: "DEX" },
@@ -34,6 +40,7 @@ export function StatsRadarChart({ stats, size = 280 }: StatsRadarChartProps) {
   const center = size / 2;
   const chartRadius = size * 0.34;
   const animationKey = AXES.map((axis) => stats[axis.key]).join("-");
+  const [tooltip, setTooltip] = useState<TooltipState | null>(null);
   const [animationState, setAnimationState] = useState({
     key: animationKey,
     progress: 0,
@@ -94,12 +101,25 @@ export function StatsRadarChart({ stats, size = 280 }: StatsRadarChartProps) {
   }, [animationKey, size]);
 
   const animationProgress =
-    animationState.key === animationKey ? animationState.progress : 70;
+    animationState.key === animationKey ? animationState.progress : 0;
 
   const animatedStatPoints = targetStatPoints.map((point) => ({
     x: center + (point.x - center) * animationProgress,
     y: center + (point.y - center) * animationProgress,
   }));
+
+  const tooltipText = tooltip
+    ? `${AXES[tooltip.index].label}: ${stats[AXES[tooltip.index].key]}`
+    : "";
+  const tooltipWidth = tooltipText.length * 7 + 16;
+  const tooltipHeight = 24;
+  const tooltipX = tooltip
+    ? Math.min(
+        Math.max(tooltip.x - tooltipWidth / 2, 4),
+        size - tooltipWidth - 4,
+      )
+    : 0;
+  const tooltipY = tooltip ? Math.max(tooltip.y - 34, 4) : 0;
 
   return (
     <div className="flex justify-center">
@@ -141,15 +161,47 @@ export function StatsRadarChart({ stats, size = 280 }: StatsRadarChartProps) {
           />
 
           {animatedStatPoints.map((point, index) => (
-            <circle
+            <g
               key={`point-${AXES[index].key}`}
-              cx={point.x}
-              cy={point.y}
-              r={2 + animationProgress}
-              className="fill-slate-700 dark:fill-slate-200"
-              style={{ opacity: 0.45 + animationProgress * 0.55 }}
-            />
+              onMouseEnter={() => setTooltip({ index, x: point.x, y: point.y })}
+              onMouseLeave={() => setTooltip(null)}
+              onFocus={() => setTooltip({ index, x: point.x, y: point.y })}
+              onBlur={() => setTooltip(null)}
+              tabIndex={0}
+              aria-label={`${AXES[index].label}: ${stats[AXES[index].key]}`}
+            >
+              <circle
+                cx={point.x}
+                cy={point.y}
+                r={2 + animationProgress}
+                className="fill-slate-700 dark:fill-slate-200"
+                style={{ opacity: 0.45 + animationProgress * 0.55 }}
+              />
+              <circle cx={point.x} cy={point.y} r={10} fill="transparent" />
+            </g>
           ))}
+
+          {tooltip && (
+            <g pointerEvents="none">
+              <rect
+                x={tooltipX}
+                y={tooltipY}
+                width={tooltipWidth}
+                height={tooltipHeight}
+                rx={6}
+                className="fill-slate-900/75 dark:fill-slate-100/75"
+              />
+              <text
+                x={tooltipX + tooltipWidth / 2}
+                y={tooltipY + tooltipHeight / 2}
+                textAnchor="middle"
+                dominantBaseline="middle"
+                className="fill-slate-100 text-xs font-semibold dark:fill-slate-900"
+              >
+                {tooltipText}
+              </text>
+            </g>
+          )}
 
           {AXES.map((axis, index) => {
             const labelPoint = getPoint(index, MAX_SCORE + 4, MAX_SCORE + 4);
