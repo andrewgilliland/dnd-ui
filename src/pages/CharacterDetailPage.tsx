@@ -133,9 +133,12 @@ export function CharacterDetailPage() {
       </DetailSection>
 
       <DetailSection title="Ability Scores">
-        <div className="space-y-6">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
           <StatBlock stats={character.stats} />
-          <StatsRadarChart stats={character.stats} />
+
+          <div className="rounded-md border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-900/50">
+            <StatsRadarChart stats={character.stats} size={250} />
+          </div>
         </div>
       </DetailSection>
     </section>

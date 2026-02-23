@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Group } from "@visx/group";
 import { scaleLinear } from "@visx/scale";
 import type { Stats } from "../types";
@@ -23,6 +24,7 @@ const AXES: Array<{ key: keyof Stats; label: string }> = [
 
 const MAX_SCORE = 30;
 const RING_COUNT = 5;
+const ANIMATION_DURATION_MS = 420;
 
 function toPolygonPoints(points: Point[]) {
   return points.map((point) => `${point.x},${point.y}`).join(" ");
@@ -31,6 +33,11 @@ function toPolygonPoints(points: Point[]) {
 export function StatsRadarChart({ stats, size = 280 }: StatsRadarChartProps) {
   const center = size / 2;
   const chartRadius = size * 0.34;
+  const animationKey = AXES.map((axis) => stats[axis.key]).join("-");
+  const [animationState, setAnimationState] = useState({
+    key: animationKey,
+    progress: 0,
+  });
 
   const radiusScale = scaleLinear<number>({
     domain: [0, MAX_SCORE],
@@ -59,9 +66,40 @@ export function StatsRadarChart({ stats, size = 280 }: StatsRadarChartProps) {
   const axisEnds = AXES.map((_, axisIndex) =>
     getPoint(axisIndex, MAX_SCORE, MAX_SCORE),
   );
-  const statPoints = AXES.map((axis, axisIndex) =>
+  const targetStatPoints = AXES.map((axis, axisIndex) =>
     getPoint(axisIndex, stats[axis.key], MAX_SCORE),
   );
+
+  useEffect(() => {
+    let animationFrame = 0;
+    const start = performance.now();
+
+    const step = (timestamp: number) => {
+      const elapsed = timestamp - start;
+      const linearProgress = Math.min(elapsed / ANIMATION_DURATION_MS, 1);
+      const easedProgress = 1 - (1 - linearProgress) ** 4;
+
+      setAnimationState({ key: animationKey, progress: easedProgress });
+
+      if (linearProgress < 1) {
+        animationFrame = requestAnimationFrame(step);
+      }
+    };
+
+    animationFrame = requestAnimationFrame(step);
+
+    return () => {
+      cancelAnimationFrame(animationFrame);
+    };
+  }, [animationKey, size]);
+
+  const animationProgress =
+    animationState.key === animationKey ? animationState.progress : 70;
+
+  const animatedStatPoints = targetStatPoints.map((point) => ({
+    x: center + (point.x - center) * animationProgress,
+    y: center + (point.y - center) * animationProgress,
+  }));
 
   return (
     <div className="flex justify-center">
@@ -96,18 +134,20 @@ export function StatsRadarChart({ stats, size = 280 }: StatsRadarChartProps) {
           ))}
 
           <polygon
-            points={toPolygonPoints(statPoints)}
+            points={toPolygonPoints(animatedStatPoints)}
             className="fill-slate-400/35 stroke-slate-600 dark:fill-slate-500/25 dark:stroke-slate-300"
             strokeWidth={2}
+            style={{ opacity: 0.35 + animationProgress * 0.65 }}
           />
 
-          {statPoints.map((point, index) => (
+          {animatedStatPoints.map((point, index) => (
             <circle
               key={`point-${AXES[index].key}`}
               cx={point.x}
               cy={point.y}
-              r={3}
+              r={2 + animationProgress}
               className="fill-slate-700 dark:fill-slate-200"
+              style={{ opacity: 0.45 + animationProgress * 0.55 }}
             />
           ))}
 

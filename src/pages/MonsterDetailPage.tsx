@@ -214,9 +214,12 @@ export function MonsterDetailPage() {
       </DetailSection>
 
       <DetailSection title="Ability Scores">
-        <div className="space-y-6">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
           <StatBlock stats={monster.stats} />
-          <StatsRadarChart stats={monster.stats} />
+
+          <div className="rounded-md border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-900/50">
+            <StatsRadarChart stats={monster.stats} size={250} />
+          </div>
         </div>
       </DetailSection>
 
