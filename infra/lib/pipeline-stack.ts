@@ -59,7 +59,7 @@ export class FrontendPipelineStack extends Stack {
           "cd infra",
           "npm ci",
           "npm run build",
-          "npx cdk synth",
+          `npx cdk synth -c deployPipeline=true -c connectionArn='${props.connectionArn}' -c repo='${props.repoString}' -c branch='${props.branch}' -c viteApiBaseUrl='${props.viteApiBaseUrl}'`,
         ],
         primaryOutputDirectory: "infra/cdk.out",
       }),
