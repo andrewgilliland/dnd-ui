@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Group } from "@visx/group";
 import type { Monster, MonsterType } from "../types";
 import { Surface } from "./Surface";
+import colors from "tailwindcss/colors";
 
 interface MonsterTypeDonutChartProps {
   monsters: Monster[];
@@ -17,21 +18,63 @@ interface TypeSlice {
   color: string;
 }
 
+interface DonutLegendProps {
+  slices: TypeSlice[];
+  hoveredIndex: number | null;
+  setHoveredIndex: (index: number | null) => void;
+}
+
+function DonutLegend({
+  slices,
+  hoveredIndex,
+  setHoveredIndex,
+}: DonutLegendProps) {
+  return (
+    <ul className="grid grid-cols-2 gap-x-6 gap-y-1.5 text-sm sm:grid-cols-1">
+      {slices.map((slice, index) => {
+        const isHovered = hoveredIndex === index;
+        return (
+          <li
+            key={slice.type}
+            className={[
+              "flex items-center gap-2 transition-opacity duration-150",
+              hoveredIndex !== null && !isHovered ? "opacity-40" : "",
+            ].join(" ")}
+            onMouseEnter={() => setHoveredIndex(index)}
+            onMouseLeave={() => setHoveredIndex(null)}
+          >
+            <span
+              className="inline-block h-3 w-3 shrink-0 rounded-sm"
+              style={{ backgroundColor: slice.color }}
+            />
+            <span className="text-slate-700 dark:text-slate-300">
+              {slice.type}
+            </span>
+            <span className="ml-auto tabular-nums text-slate-500 dark:text-slate-400">
+              {slice.count}
+            </span>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
 const TYPE_COLORS: Record<MonsterType, string> = {
-  Aberration: "#7c3aed",
-  Beast: "#65a30d",
-  Celestial: "#f59e0b",
-  Construct: "#78716c",
-  Dragon: "#dc2626", // red-600
-  Elemental: "#38bdf8", // sky-400
-  Fey: "#a855f7", // violet-500
-  Fiend: "#b91c1c", // red-800
-  Giant: "#ea580c", // orange-600
-  Humanoid: "#2563eb", // blue-600
-  Monstrosity: "#fb923c", // orange-400
-  Ooze: "#16a34a", // green-700
-  Plant: "#15803d", // green-800
-  Undead: "#64748b", // slate-500
+  Aberration: colors.violet[500],
+  Beast: colors.green[500],
+  Celestial: colors.yellow[500],
+  Construct: colors.gray[500],
+  Dragon: colors.red[600],
+  Elemental: colors.sky[400],
+  Fey: colors.violet[500],
+  Fiend: colors.red[800],
+  Giant: colors.orange[600],
+  Humanoid: colors.blue[600],
+  Monstrosity: colors.orange[400],
+  Ooze: colors.green[700],
+  Plant: colors.green[800],
+  Undead: colors.slate[500],
 };
 
 const ANIMATION_DURATION_MS = 520;
@@ -210,34 +253,11 @@ export function MonsterTypeDonutChart({
         </svg>
 
         {/* Legend */}
-        <ul className="grid grid-cols-2 gap-x-6 gap-y-1.5 text-sm sm:grid-cols-1">
-          {slices.map((slice, index) => {
-            const isHovered = hoveredIndex === index;
-
-            return (
-              <li
-                key={slice.type}
-                className={[
-                  "flex items-center gap-2 transition-opacity duration-150",
-                  hoveredIndex !== null && !isHovered ? "opacity-40" : "",
-                ].join(" ")}
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(null)}
-              >
-                <span
-                  className="inline-block h-3 w-3 shrink-0 rounded-xs"
-                  style={{ backgroundColor: slice.color }}
-                />
-                <span className="text-slate-700 dark:text-slate-300">
-                  {slice.type}
-                </span>
-                <span className="ml-auto tabular-nums text-slate-500 dark:text-slate-400">
-                  {slice.count}
-                </span>
-              </li>
-            );
-          })}
-        </ul>
+        <DonutLegend
+          slices={slices}
+          hoveredIndex={hoveredIndex}
+          setHoveredIndex={setHoveredIndex}
+        />
       </div>
     </Surface>
   );
