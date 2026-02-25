@@ -11,6 +11,7 @@ import {
   MonsterComparisonBarChart,
   type MonsterComparisonMetric,
 } from "../components/MonsterComparisonBarChart";
+import { MonsterTypeDonutChart } from "../components/MonsterTypeDonutChart";
 import { MonsterCard } from "../components/MonsterCard";
 import { PageHeader } from "../components/PageHeader";
 import { Surface } from "../components/Surface";
@@ -264,11 +265,14 @@ export function MonstersPage() {
       />
 
       {!isLoading && !errorMessage && monsters.length > 1 ? (
-        <MonsterComparisonBarChart
-          monsters={monsters}
-          metric={comparisonMetric}
-          onMetricChange={setComparisonMetric}
-        />
+        <>
+          <MonsterTypeDonutChart monsters={monsters} />
+          <MonsterComparisonBarChart
+            monsters={monsters}
+            metric={comparisonMetric}
+            onMetricChange={setComparisonMetric}
+          />
+        </>
       ) : null}
 
       {errorMessage ? (
