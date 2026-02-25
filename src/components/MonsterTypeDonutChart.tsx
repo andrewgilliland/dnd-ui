@@ -22,16 +22,16 @@ const TYPE_COLORS: Record<MonsterType, string> = {
   Beast: "#65a30d",
   Celestial: "#f59e0b",
   Construct: "#78716c",
-  Dragon: "#dc2626",
-  Elemental: "#0ea5e9",
-  Fey: "#a855f7",
-  Fiend: "#b91c1c",
-  Giant: "#92400e",
-  Humanoid: "#2563eb",
-  Monstrosity: "#ea580c",
-  Ooze: "#16a34a",
-  Plant: "#15803d",
-  Undead: "#6b7280",
+  Dragon: "#dc2626", // red-600
+  Elemental: "#38bdf8", // sky-400
+  Fey: "#a855f7", // violet-500
+  Fiend: "#b91c1c", // red-800
+  Giant: "#ea580c", // orange-600
+  Humanoid: "#2563eb", // blue-600
+  Monstrosity: "#fb923c", // orange-400
+  Ooze: "#16a34a", // green-700
+  Plant: "#15803d", // green-800
+  Undead: "#64748b", // slate-500
 };
 
 const ANIMATION_DURATION_MS = 520;
@@ -225,7 +225,7 @@ export function MonsterTypeDonutChart({
                 onMouseLeave={() => setHoveredIndex(null)}
               >
                 <span
-                  className="inline-block h-3 w-3 shrink-0 rounded-sm"
+                  className="inline-block h-3 w-3 shrink-0 rounded-xs"
                   style={{ backgroundColor: slice.color }}
                 />
                 <span className="text-slate-700 dark:text-slate-300">

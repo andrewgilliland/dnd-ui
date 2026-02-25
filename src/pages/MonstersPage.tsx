@@ -265,14 +265,14 @@ export function MonstersPage() {
       />
 
       {!isLoading && !errorMessage && monsters.length > 1 ? (
-        <>
+        <div className="mt-6 grid gap-6 lg:grid-cols-2">
           <MonsterTypeDonutChart monsters={monsters} />
           <MonsterComparisonBarChart
             monsters={monsters}
             metric={comparisonMetric}
             onMetricChange={setComparisonMetric}
           />
-        </>
+        </div>
       ) : null}
 
       {errorMessage ? (
