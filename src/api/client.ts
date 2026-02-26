@@ -45,17 +45,29 @@ function buildUrl(path: string, query: Record<string, QueryValue> = {}) {
   return url;
 }
 
+async function getIdToken(): Promise<string | null> {
+  try {
+    const { fetchAuthSession } = await import("aws-amplify/auth");
+    const session = await fetchAuthSession();
+    return session.tokens?.idToken?.toString() ?? null;
+  } catch {
+    return null;
+  }
+}
+
 async function getJson<T>(
   path: string,
   query: Record<string, QueryValue> = {},
   options: RequestOptions = {},
 ) {
   const url = buildUrl(path, query);
+  const idToken = await getIdToken();
   const response = await fetch(url, {
     method: "GET",
     signal: options.signal,
     headers: {
       Accept: "application/json",
+      ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}),
     },
   });
 

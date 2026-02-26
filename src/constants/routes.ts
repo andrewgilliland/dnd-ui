@@ -7,4 +7,8 @@ export const ROUTES = {
   monsters: "/monsters",
   monsterDetail: (id: number | string) => `/monsters/${id}`,
   notFound: "/404",
+  login: "/login",
+  signUp: "/sign-up",
+  confirmSignUp: "/confirm-sign-up",
+  forgotPassword: "/forgot-password",
 } as const;
