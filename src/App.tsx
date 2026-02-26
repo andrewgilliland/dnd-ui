@@ -1,7 +1,8 @@
 import { Navigate, Route, Routes } from "react-router";
 import { ROUTES } from "./constants/routes";
 import { AuthProvider } from "./context/AuthProvider";
-import { Layout } from "./components/Layout";
+import { AuthLayout } from "./components/AuthLayout";
+import { AppLayout } from "./components/AppLayout";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { CharacterDetailPage } from "./pages/CharacterDetailPage";
 import { CharactersPage } from "./pages/CharactersPage";
@@ -21,14 +22,19 @@ function App() {
     <AuthProvider>
       <Routes>
         {/* Public auth routes */}
-        <Route path={ROUTES.login} element={<LoginPage />} />
-        <Route path={ROUTES.signUp} element={<SignUpPage />} />
-        <Route path={ROUTES.confirmSignUp} element={<ConfirmSignUpPage />} />
-        <Route path={ROUTES.forgotPassword} element={<ForgotPasswordPage />} />
+        <Route element={<AuthLayout />}>
+          <Route path={ROUTES.login} element={<LoginPage />} />
+          <Route path={ROUTES.signUp} element={<SignUpPage />} />
+          <Route path={ROUTES.confirmSignUp} element={<ConfirmSignUpPage />} />
+          <Route
+            path={ROUTES.forgotPassword}
+            element={<ForgotPasswordPage />}
+          />
+        </Route>
 
         {/* Protected app routes */}
         <Route element={<ProtectedRoute />}>
-          <Route element={<Layout />}>
+          <Route element={<AppLayout />}>
             <Route path={ROUTES.home} element={<HomePage />} />
             <Route path={ROUTES.characters} element={<CharactersPage />} />
             <Route

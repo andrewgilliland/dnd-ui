@@ -1,7 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { useLocation, useNavigate, Link } from "react-router";
 import { Surface } from "../components/Surface";
-import { ThemeToggle } from "../components/ThemeToggle";
 import { ROUTES } from "../constants/routes";
 import { useAuth } from "../hooks/useAuth";
 
@@ -34,17 +33,8 @@ export function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
-      <div className="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-4 dark:border-slate-800 dark:bg-slate-900 sm:px-6">
-        <span className="text-lg font-semibold tracking-tight">
-          D&amp;D Compendium
-        </span>
-        <ThemeToggle />
-      </div>
-
-      <div className="flex items-center justify-center px-4 py-16">
-        <div className="w-full max-w-sm">
-          <h1 className="mb-6 text-center text-2xl font-bold">Sign In</h1>
+    <>
+      <h1 className="mb-6 text-center text-2xl font-bold">Sign In</h1>
 
           <Surface as="div" className="p-6">
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -121,8 +111,6 @@ export function LoginPage() {
               </Link>
             </p>
           </div>
-        </div>
-      </div>
-    </div>
+    </>
   );
 }

@@ -1,7 +1,7 @@
 import { Outlet } from "react-router";
 import { AppHeader } from "./AppHeader";
 
-export function Layout() {
+export function AppLayout() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       <AppHeader />
