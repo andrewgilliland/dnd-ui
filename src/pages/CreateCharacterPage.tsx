@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
+import { Dices } from "lucide-react";
 import { useNavigate } from "react-router";
 import { createCharacter, getClasses, getRaces } from "../api/client";
 import { BackLink } from "../components/BackLink";
@@ -41,6 +42,36 @@ const DEFAULT_STATS: CharacterStats = {
   intelligence: 10,
   wisdom: 10,
   charisma: 10,
+};
+
+// Roll 4d6, drop the lowest — standard D&D 5e method
+function rollStat(): number {
+  const rolls = Array.from(
+    { length: 4 },
+    () => Math.floor(Math.random() * 6) + 1,
+  );
+  rolls.sort((a, b) => a - b);
+  return rolls.slice(1).reduce((sum, n) => sum + n, 0);
+}
+
+function rollStats(): CharacterStats {
+  return {
+    strength: rollStat(),
+    dexterity: rollStat(),
+    constitution: rollStat(),
+    intelligence: rollStat(),
+    wisdom: rollStat(),
+    charisma: rollStat(),
+  };
+}
+
+const STANDARD_ARRAY: CharacterStats = {
+  strength: 15,
+  dexterity: 14,
+  constitution: 13,
+  intelligence: 12,
+  wisdom: 10,
+  charisma: 8,
 };
 
 const inputClass =
@@ -243,9 +274,28 @@ export function CreateCharacterPage() {
           {/* Right column — stats */}
           <div>
             <Surface as="div" className="p-6">
-              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                Ability Scores
-              </h3>
+              <div className="mb-4 flex items-center justify-between gap-2">
+                <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Ability Scores
+                </h3>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setStats(rollStats())}
+                    className="inline-flex items-center gap-1.5 rounded-md bg-violet-600 px-2.5 py-1 text-xs font-medium text-white transition hover:bg-violet-700 dark:bg-violet-500 dark:hover:bg-violet-400"
+                  >
+                    <Dices className="h-3.5 w-3.5" />
+                    Roll
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setStats(STANDARD_ARRAY)}
+                    className="rounded-md border border-slate-300 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+                  >
+                    Standard Array
+                  </button>
+                </div>
+              </div>
 
               <div className="space-y-3">
                 {STAT_FIELDS.map(({ key, label }) => (
