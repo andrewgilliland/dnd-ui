@@ -7,6 +7,8 @@ import type {
 } from "../types/api";
 import type { Character, Item, Monster } from "../types";
 
+type CreateCharacterBody = Omit<Character, "id">;
+
 const API_BASE_URL =
   (import.meta.env.VITE_API_BASE_URL as string | undefined) ??
   "http://127.0.0.1:8000";
@@ -53,6 +55,40 @@ async function getIdToken(): Promise<string | null> {
   } catch {
     return null;
   }
+}
+
+async function postJson<TBody, TResponse>(
+  path: string,
+  body: TBody,
+  options: RequestOptions = {},
+): Promise<TResponse> {
+  const url = buildUrl(path);
+  const idToken = await getIdToken();
+  const response = await fetch(url, {
+    method: "POST",
+    signal: options.signal,
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}),
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    let message = `Request failed (${response.status})`;
+    try {
+      const errorBody = (await response.json()) as { detail?: string };
+      if (typeof errorBody.detail === "string") {
+        message = errorBody.detail;
+      }
+    } catch {
+      // no-op, keep generic message
+    }
+    throw new ApiError(response.status, message);
+  }
+
+  return (await response.json()) as TResponse;
 }
 
 async function getJson<T>(
@@ -128,6 +164,17 @@ export function getCharacters(
   options: RequestOptions = {},
 ) {
   return getJson<CharactersResponse>("/api/v1/characters", params, options);
+}
+
+export function createCharacter(
+  body: CreateCharacterBody,
+  options: RequestOptions = {},
+) {
+  return postJson<CreateCharacterBody, Character>(
+    "/api/v1/characters",
+    body,
+    options,
+  );
 }
 
 export function getCharacterById(

@@ -1,6 +1,7 @@
 export const ROUTES = {
   home: "/",
   characters: "/characters",
+  createCharacter: "/characters/create",
   characterDetail: (id: number | string) => `/characters/${id}`,
   items: "/items",
   itemDetail: (id: number | string) => `/items/${id}`,

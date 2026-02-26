@@ -6,6 +6,7 @@ import { AppLayout } from "./components/AppLayout";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { CharacterDetailPage } from "./pages/CharacterDetailPage";
 import { CharactersPage } from "./pages/CharactersPage";
+import { CreateCharacterPage } from "./pages/CreateCharacterPage";
 import { ConfirmSignUpPage } from "./pages/ConfirmSignUpPage";
 import { ForgotPasswordPage } from "./pages/ForgotPasswordPage";
 import { HomePage } from "./pages/HomePage";
@@ -37,6 +38,10 @@ function App() {
           <Route element={<AppLayout />}>
             <Route path={ROUTES.home} element={<HomePage />} />
             <Route path={ROUTES.characters} element={<CharactersPage />} />
+            <Route
+              path={ROUTES.createCharacter}
+              element={<CreateCharacterPage />}
+            />
             <Route
               path={`${ROUTES.characters}/:id`}
               element={<CharacterDetailPage />}

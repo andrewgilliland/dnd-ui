@@ -212,14 +212,22 @@ export function CharactersPage() {
 
   return (
     <section>
-      <PageHeader
-        title="Characters"
-        subtitle={
-          isLoading
-            ? "Loading characters..."
-            : `${characters.length} of ${total} heroes and villains.`
-        }
-      />
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <PageHeader
+          title="Characters"
+          subtitle={
+            isLoading
+              ? "Loading characters..."
+              : `${characters.length} of ${total} heroes and villains.`
+          }
+        />
+        <Link
+          to={ROUTES.createCharacter}
+          className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-300"
+        >
+          + Create Character
+        </Link>
+      </div>
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
         <ListViewToggle
