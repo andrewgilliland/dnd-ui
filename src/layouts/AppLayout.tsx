@@ -1,5 +1,5 @@
 import { Outlet } from "react-router";
-import { AppHeader } from "./AppHeader";
+import { AppHeader } from "../components/AppHeader";
 
 export function AppLayout() {
   return (
