@@ -34,7 +34,7 @@ export type DamageType =
   | "Thunder";
 
 export interface MonsterSpeed {
-  walk: number;
+  walk?: number;
   climb?: number;
   fly?: number;
   swim?: number;
@@ -46,7 +46,7 @@ export interface MonsterSenses {
   darkvision?: number;
   tremorsense?: number;
   truesight?: number;
-  passive_perception: number;
+  passive_perception?: number;
 }
 
 export interface MonsterAbility {
@@ -59,7 +59,11 @@ export interface MonsterAction {
   description: string;
   attack_bonus?: number;
   damage_dice?: string;
-  damage_type?: DamageType;
+  damage_type?: string;
+}
+
+export interface MonsterLegendaryAction extends MonsterAction {
+  action_cost?: number;
 }
 
 export interface Monster {
@@ -69,20 +73,25 @@ export interface Monster {
   type: MonsterType;
   alignment: Alignment;
   armor_class: number;
+  armor_description?: string;
   hit_points: number;
   hit_dice: string;
   speed: MonsterSpeed;
   stats: MonsterStats;
   saving_throws?: Record<string, number>;
   skills?: Record<string, number>;
-  damage_immunities?: DamageType[];
+  damage_immunities?: string[];
+  damage_resistances?: string[];
+  damage_vulnerabilities?: string[];
   condition_immunities?: string[];
   senses: MonsterSenses;
   languages: string[];
   challenge_rating: number;
-  experience_points: number;
-  special_abilities: MonsterAbility[];
-  actions: MonsterAction[];
+  experience_points?: number;
+  proficiency_bonus?: number;
+  special_abilities?: MonsterAbility[];
+  actions?: MonsterAction[];
+  legendary_actions?: MonsterLegendaryAction[];
 }
 
 export type Monsters = Monster[];
