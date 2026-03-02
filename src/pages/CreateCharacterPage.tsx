@@ -35,6 +35,40 @@ const STAT_FIELDS: { key: keyof CharacterStats; label: string }[] = [
   { key: "charisma", label: "Charisma" },
 ];
 
+const SAVING_THROW_FIELDS: { key: keyof CharacterStats; label: string }[] = [
+  { key: "strength", label: "Strength" },
+  { key: "dexterity", label: "Dexterity" },
+  { key: "constitution", label: "Constitution" },
+  { key: "intelligence", label: "Intelligence" },
+  { key: "wisdom", label: "Wisdom" },
+  { key: "charisma", label: "Charisma" },
+];
+
+const ALL_SKILLS: {
+  key: string;
+  label: string;
+  ability: keyof CharacterStats;
+}[] = [
+  { key: "acrobatics", label: "Acrobatics", ability: "dexterity" },
+  { key: "animal_handling", label: "Animal Handling", ability: "wisdom" },
+  { key: "arcana", label: "Arcana", ability: "intelligence" },
+  { key: "athletics", label: "Athletics", ability: "strength" },
+  { key: "deception", label: "Deception", ability: "charisma" },
+  { key: "history", label: "History", ability: "intelligence" },
+  { key: "insight", label: "Insight", ability: "wisdom" },
+  { key: "intimidation", label: "Intimidation", ability: "charisma" },
+  { key: "investigation", label: "Investigation", ability: "intelligence" },
+  { key: "medicine", label: "Medicine", ability: "wisdom" },
+  { key: "nature", label: "Nature", ability: "intelligence" },
+  { key: "perception", label: "Perception", ability: "wisdom" },
+  { key: "performance", label: "Performance", ability: "charisma" },
+  { key: "persuasion", label: "Persuasion", ability: "charisma" },
+  { key: "religion", label: "Religion", ability: "intelligence" },
+  { key: "sleight_of_hand", label: "Sleight of Hand", ability: "dexterity" },
+  { key: "stealth", label: "Stealth", ability: "dexterity" },
+  { key: "survival", label: "Survival", ability: "wisdom" },
+];
+
 const DEFAULT_STATS: CharacterStats = {
   strength: 10,
   dexterity: 10,
@@ -74,11 +108,25 @@ const STANDARD_ARRAY: CharacterStats = {
   charisma: 8,
 };
 
+function mod(score: number) {
+  return Math.floor((score - 10) / 2);
+}
+
+function parseCSV(value: string): string[] {
+  return value
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
 const inputClass =
   "w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500";
 
 const labelClass =
   "mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300";
+
+const sectionHeadingClass =
+  "mb-4 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400";
 
 export function CreateCharacterPage() {
   const navigate = useNavigate();
@@ -86,12 +134,37 @@ export function CreateCharacterPage() {
   const [classes, setClasses] = useState<string[]>([]);
   const [races, setRaces] = useState<string[]>([]);
 
+  // Core details
   const [name, setName] = useState("");
   const [race, setRace] = useState<CharacterRace | "">("");
   const [characterClass, setCharacterClass] = useState<CharacterClass | "">("");
   const [alignment, setAlignment] = useState<Alignment | "">("");
   const [description, setDescription] = useState("");
+  const [level, setLevel] = useState(1);
+
+  // Ability scores
   const [stats, setStats] = useState<CharacterStats>(DEFAULT_STATS);
+
+  // Combat
+  const [armorClass, setArmorClass] = useState(10);
+  const [maxHp, setMaxHp] = useState(10);
+  const [walkSpeed, setWalkSpeed] = useState(30);
+  const [proficiencyBonus, setProficiencyBonus] = useState(2);
+
+  // Proficiencies & traits
+  const [savingThrowProficiencies, setSavingThrowProficiencies] = useState<
+    Set<string>
+  >(new Set());
+  const [skillProficiencies, setSkillProficiencies] = useState<Set<string>>(
+    new Set(),
+  );
+  const [armorProf, setArmorProf] = useState("");
+  const [weaponProf, setWeaponProf] = useState("");
+  const [toolProf, setToolProf] = useState("");
+  const [languages, setLanguages] = useState("");
+
+  // Senses
+  const [darkvision, setDarkvision] = useState("");
 
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -124,20 +197,90 @@ export function CreateCharacterPage() {
     }));
   };
 
+  const toggleSet = (
+    _set: Set<string>,
+    setter: React.Dispatch<React.SetStateAction<Set<string>>>,
+    key: string,
+  ) => {
+    setter((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) {
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
+      return next;
+    });
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!race || !characterClass || !alignment) return;
     setError(null);
     setIsSubmitting(true);
+
     try {
+      // Compute saving throws from stats + proficiencies
+      const saving_throws: Record<string, number> = {};
+      for (const { key } of SAVING_THROW_FIELDS) {
+        const base = mod(stats[key]);
+        saving_throws[key] = savingThrowProficiencies.has(key)
+          ? base + proficiencyBonus
+          : base;
+      }
+
+      // Compute skill bonuses
+      const skillsData = ALL_SKILLS.map(({ key, ability }) => {
+        const base = mod(stats[ability]);
+        const proficient = skillProficiencies.has(key);
+        return {
+          skill: key,
+          bonus: base + (proficient ? proficiencyBonus : 0),
+          proficient,
+        };
+      });
+
+      // Compute passive scores
+      const perceptionBonus =
+        skillsData.find((s) => s.skill === "perception")?.bonus ?? 0;
+      const investigationBonus =
+        skillsData.find((s) => s.skill === "investigation")?.bonus ?? 0;
+      const insightBonus =
+        skillsData.find((s) => s.skill === "insight")?.bonus ?? 0;
+
       const newCharacter = await createCharacter({
         name,
         race: race as CharacterRace,
         class: characterClass as CharacterClass,
         alignment: alignment as Alignment,
         description,
+        level,
         stats,
+        proficiency_bonus: proficiencyBonus,
+        initiative: mod(stats.dexterity),
+        armor_class: armorClass,
+        speed: { walk: walkSpeed },
+        hit_points: { current: maxHp, max: maxHp, temp: null },
+        saving_throws,
+        saving_throw_proficiencies: Array.from(savingThrowProficiencies),
+        skills: skillsData,
+        passive_scores: {
+          passive_perception: 10 + perceptionBonus,
+          passive_investigation: 10 + investigationBonus,
+          passive_insight: 10 + insightBonus,
+        },
+        senses: darkvision ? { darkvision: Number(darkvision) } : {},
+        defenses: [],
+        condition_immunities: [],
+        proficiencies: {
+          armor: parseCSV(armorProf),
+          weapons: parseCSV(weaponProf),
+          tools: parseCSV(toolProf),
+          languages: parseCSV(languages),
+        },
+        actions: [],
       });
+
       void navigate(ROUTES.characterDetail(newCharacter.id));
     } catch (err) {
       setError(
@@ -161,12 +304,11 @@ export function CreateCharacterPage() {
 
       <form onSubmit={handleSubmit} className="mt-6">
         <div className="grid gap-6 lg:grid-cols-3">
-          {/* Left column — core details */}
-          <div className="space-y-5 lg:col-span-2">
+          {/* Left / centre columns — details, combat, proficiencies */}
+          <div className="space-y-6 lg:col-span-2">
+            {/* ── Details ── */}
             <Surface as="div" className="p-6">
-              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                Details
-              </h3>
+              <h3 className={sectionHeadingClass}>Details</h3>
 
               <div className="space-y-4">
                 <div>
@@ -184,7 +326,7 @@ export function CreateCharacterPage() {
                   />
                 </div>
 
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 sm:grid-cols-3">
                   <div>
                     <label htmlFor="race" className={labelClass}>
                       Race
@@ -230,6 +372,22 @@ export function CreateCharacterPage() {
                       ))}
                     </select>
                   </div>
+
+                  <div>
+                    <label htmlFor="level" className={labelClass}>
+                      Level
+                    </label>
+                    <input
+                      id="level"
+                      type="number"
+                      min={1}
+                      max={20}
+                      required
+                      value={level}
+                      onChange={(e) => setLevel(Number(e.target.value))}
+                      className={inputClass}
+                    />
+                  </div>
                 </div>
 
                 <div>
@@ -260,7 +418,7 @@ export function CreateCharacterPage() {
                   </label>
                   <textarea
                     id="description"
-                    rows={4}
+                    rows={3}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     className={inputClass}
@@ -269,13 +427,251 @@ export function CreateCharacterPage() {
                 </div>
               </div>
             </Surface>
+
+            {/* ── Combat ── */}
+            <Surface as="div" className="p-6">
+              <h3 className={sectionHeadingClass}>Combat</h3>
+
+              <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
+                <div>
+                  <label htmlFor="armorClass" className={labelClass}>
+                    Armor Class
+                  </label>
+                  <input
+                    id="armorClass"
+                    type="number"
+                    min={1}
+                    max={30}
+                    required
+                    value={armorClass}
+                    onChange={(e) => setArmorClass(Number(e.target.value))}
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="maxHp" className={labelClass}>
+                    Max HP
+                  </label>
+                  <input
+                    id="maxHp"
+                    type="number"
+                    min={1}
+                    required
+                    value={maxHp}
+                    onChange={(e) => setMaxHp(Number(e.target.value))}
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="walkSpeed" className={labelClass}>
+                    Speed (ft.)
+                  </label>
+                  <input
+                    id="walkSpeed"
+                    type="number"
+                    min={0}
+                    step={5}
+                    required
+                    value={walkSpeed}
+                    onChange={(e) => setWalkSpeed(Number(e.target.value))}
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="proficiencyBonus" className={labelClass}>
+                    Prof. Bonus
+                  </label>
+                  <input
+                    id="proficiencyBonus"
+                    type="number"
+                    min={1}
+                    max={6}
+                    required
+                    value={proficiencyBonus}
+                    onChange={(e) =>
+                      setProficiencyBonus(Number(e.target.value))
+                    }
+                    className={inputClass}
+                  />
+                </div>
+              </div>
+            </Surface>
+
+            {/* ── Saving Throws ── */}
+            <Surface as="div" className="p-6">
+              <h3 className={sectionHeadingClass}>
+                Saving Throw Proficiencies
+              </h3>
+              <p className="mb-3 text-xs text-slate-500 dark:text-slate-400">
+                Select the saving throws your character is proficient in.
+                Bonuses are computed automatically.
+              </p>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {SAVING_THROW_FIELDS.map(({ key, label }) => {
+                  const base = mod(stats[key]);
+                  const isProficient = savingThrowProficiencies.has(key);
+                  const total = base + (isProficient ? proficiencyBonus : 0);
+                  return (
+                    <label
+                      key={key}
+                      className="flex cursor-pointer items-center gap-2 text-sm text-slate-800 dark:text-slate-200"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isProficient}
+                        onChange={() =>
+                          toggleSet(
+                            savingThrowProficiencies,
+                            setSavingThrowProficiencies,
+                            key,
+                          )
+                        }
+                        className="h-4 w-4 rounded border-slate-400 accent-red-700"
+                      />
+                      <span className={isProficient ? "font-semibold" : ""}>
+                        {label}
+                      </span>
+                      <span className="ml-auto text-xs text-slate-500 dark:text-slate-400">
+                        {total >= 0 ? "+" : ""}
+                        {total}
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
+            </Surface>
+
+            {/* ── Skills ── */}
+            <Surface as="div" className="p-6">
+              <h3 className={sectionHeadingClass}>Skill Proficiencies</h3>
+              <p className="mb-3 text-xs text-slate-500 dark:text-slate-400">
+                Select skills your character is proficient in. Bonuses are
+                computed from ability scores.
+              </p>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {ALL_SKILLS.map(({ key, label, ability }) => {
+                  const base = mod(stats[ability]);
+                  const isProficient = skillProficiencies.has(key);
+                  const total = base + (isProficient ? proficiencyBonus : 0);
+                  return (
+                    <label
+                      key={key}
+                      className="flex cursor-pointer items-center gap-2 text-sm text-slate-800 dark:text-slate-200"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isProficient}
+                        onChange={() =>
+                          toggleSet(
+                            skillProficiencies,
+                            setSkillProficiencies,
+                            key,
+                          )
+                        }
+                        className="h-4 w-4 rounded border-slate-400 accent-red-700"
+                      />
+                      <span className={isProficient ? "font-semibold" : ""}>
+                        {label}
+                      </span>
+                      <span className="ml-auto text-xs text-slate-500 dark:text-slate-400">
+                        {total >= 0 ? "+" : ""}
+                        {total}
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
+            </Surface>
+
+            {/* ── Proficiencies & Traits ── */}
+            <Surface as="div" className="p-6">
+              <h3 className={sectionHeadingClass}>
+                Proficiencies &amp; Traits
+              </h3>
+              <p className="mb-4 text-xs text-slate-500 dark:text-slate-400">
+                Enter comma-separated values for each category.
+              </p>
+
+              <div className="space-y-4">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="armorProf" className={labelClass}>
+                      Armor
+                    </label>
+                    <input
+                      id="armorProf"
+                      type="text"
+                      value={armorProf}
+                      onChange={(e) => setArmorProf(e.target.value)}
+                      className={inputClass}
+                      placeholder="Light Armor, Medium Armor…"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="weaponProf" className={labelClass}>
+                      Weapons
+                    </label>
+                    <input
+                      id="weaponProf"
+                      type="text"
+                      value={weaponProf}
+                      onChange={(e) => setWeaponProf(e.target.value)}
+                      className={inputClass}
+                      placeholder="Simple Weapons, Martial Weapons…"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="toolProf" className={labelClass}>
+                      Tools
+                    </label>
+                    <input
+                      id="toolProf"
+                      type="text"
+                      value={toolProf}
+                      onChange={(e) => setToolProf(e.target.value)}
+                      className={inputClass}
+                      placeholder="Thieves' Tools, Dragonchess Set…"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="languages" className={labelClass}>
+                      Languages
+                    </label>
+                    <input
+                      id="languages"
+                      type="text"
+                      value={languages}
+                      onChange={(e) => setLanguages(e.target.value)}
+                      className={inputClass}
+                      placeholder="Common, Elvish…"
+                    />
+                  </div>
+                </div>
+
+                <div className="max-w-xs">
+                  <label htmlFor="darkvision" className={labelClass}>
+                    Darkvision (ft.)
+                  </label>
+                  <input
+                    id="darkvision"
+                    type="number"
+                    min={0}
+                    step={30}
+                    value={darkvision}
+                    onChange={(e) => setDarkvision(e.target.value)}
+                    className={inputClass}
+                    placeholder="Leave blank if none"
+                  />
+                </div>
+              </div>
+            </Surface>
           </div>
 
-          {/* Right column — stats */}
+          {/* Right column — ability scores */}
           <div>
             <Surface as="div" className="p-6">
               <div className="mb-4 flex items-center justify-between gap-2">
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                <h3 className={sectionHeadingClass.replace("mb-4 ", "")}>
                   Ability Scores
                 </h3>
                 <div className="flex gap-2">
@@ -298,26 +694,33 @@ export function CreateCharacterPage() {
               </div>
 
               <div className="space-y-3">
-                {STAT_FIELDS.map(({ key, label }) => (
-                  <div key={key} className="flex items-center gap-3">
-                    <label
-                      htmlFor={key}
-                      className="w-28 shrink-0 text-sm font-medium text-slate-700 dark:text-slate-300"
-                    >
-                      {label}
-                    </label>
-                    <input
-                      id={key}
-                      type="number"
-                      min={1}
-                      max={30}
-                      required
-                      value={stats[key]}
-                      onChange={(e) => handleStatChange(key, e.target.value)}
-                      className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-center text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
-                    />
-                  </div>
-                ))}
+                {STAT_FIELDS.map(({ key, label }) => {
+                  const m = mod(stats[key]);
+                  return (
+                    <div key={key} className="flex items-center gap-3">
+                      <label
+                        htmlFor={key}
+                        className="w-28 shrink-0 text-sm font-medium text-slate-700 dark:text-slate-300"
+                      >
+                        {label}
+                      </label>
+                      <input
+                        id={key}
+                        type="number"
+                        min={1}
+                        max={30}
+                        required
+                        value={stats[key]}
+                        onChange={(e) => handleStatChange(key, e.target.value)}
+                        className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-center text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                      />
+                      <span className="w-8 shrink-0 text-right text-xs text-slate-500 dark:text-slate-400">
+                        {m >= 0 ? "+" : ""}
+                        {m}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </Surface>
           </div>
