@@ -41,7 +41,10 @@ export function CharactersPage() {
   const { data: classesData } = useClasses();
   const { data: racesData } = useRaces();
 
-  const characters = charactersData?.characters ?? [];
+  const characters = useMemo(
+    () => charactersData?.characters ?? [],
+    [charactersData],
+  );
   const total = charactersData?.total ?? 0;
   const errorMessage = error instanceof Error ? error.message : null;
 
