@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { ApiError, getCharacterById } from "../api/client";
+import { ApiError } from "../api/client";
 import { BackLink } from "../components/BackLink";
 import { NotFoundState } from "../components/NotFoundState";
 import { StatsRadarChart } from "../components/StatsRadarChart";
 import { Surface } from "../components/Surface";
 import { ROUTES } from "../constants/routes";
+import { useCharacter } from "../hooks/useCharacter";
 import type { Character, CharacterAction } from "../types";
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -122,58 +122,7 @@ function ActionEntry({ action }: { action: CharacterAction }) {
 export function CharacterDetailPage() {
   const { id } = useParams();
   const characterId = Number(id);
-
-  const [character, setCharacter] = useState<Character | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<ApiError | Error | null>(null);
-
-  useEffect(() => {
-    const abortController = new AbortController();
-
-    if (!Number.isFinite(characterId)) {
-      setCharacter(null);
-      setError(null);
-      setIsLoading(false);
-
-      return () => {
-        abortController.abort();
-      };
-    }
-
-    const loadCharacter = async () => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const response = await getCharacterById(characterId, {
-          signal: abortController.signal,
-        });
-        setCharacter(response);
-      } catch (caughtError) {
-        if (abortController.signal.aborted) {
-          return;
-        }
-
-        setCharacter(null);
-
-        if (caughtError instanceof Error) {
-          setError(caughtError);
-        } else {
-          setError(new Error("Failed to load character."));
-        }
-      } finally {
-        if (!abortController.signal.aborted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    void loadCharacter();
-
-    return () => {
-      abortController.abort();
-    };
-  }, [characterId]);
+  const { data: character, isLoading, error } = useCharacter(characterId);
 
   if (!Number.isFinite(characterId)) {
     return (

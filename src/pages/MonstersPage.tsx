@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Shield, Sword, Heart } from "lucide-react";
 import { Link } from "react-router";
-import { getMonsters } from "../api/client";
 import { CardDensityToggle } from "../components/CardDensityToggle";
 import { DataTable, type DataTableColumn } from "../components/DataTable";
 import { ListFilters } from "../components/ListFilters";
@@ -18,6 +17,7 @@ import { Surface } from "../components/Surface";
 import { ROUTES } from "../constants/routes";
 import { useCardDensity } from "../hooks/useCardDensity";
 import { useListView } from "../hooks/useListView";
+import { useMonsters, useMonstersMetadata } from "../hooks/useMonsters";
 import { useQueryParamUpdater } from "../hooks/useQueryParamUpdater";
 import type { Monster } from "../types";
 import {
@@ -34,104 +34,44 @@ export function MonstersPage() {
   const selectedType = searchParams.get("type") ?? "";
   const selectedCr = searchParams.get("cr") ?? "";
 
-  const [monsters, setMonsters] = useState<Monster[]>([]);
-  const [total, setTotal] = useState(0);
-  const [typeValues, setTypeValues] = useState<string[]>([]);
-  const [crValues, setCrValues] = useState<number[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [comparisonMetric, setComparisonMetric] =
     useState<MonsterComparisonMetric>("hit_points");
 
-  useEffect(() => {
-    const abortController = new AbortController();
+  const crValue = selectedCr.length > 0 ? Number(selectedCr) : undefined;
 
-    const loadMonsterMetadata = async () => {
-      try {
-        const response = await getMonsters(
-          { skip: 0, limit: 100 },
-          { signal: abortController.signal },
-        );
+  const {
+    data: monstersData,
+    isLoading,
+    error,
+  } = useMonsters({
+    skip: 0,
+    limit: 100,
+    type: selectedType || undefined,
+    name: query.trim() || undefined,
+    min_cr: crValue,
+    max_cr: crValue,
+  });
 
-        setTypeValues(
-          uniqueSortedStrings(response.monsters.map((entry) => entry.type)),
-        );
-        setCrValues(
-          uniqueSortedNumbers(
-            response.monsters.map((entry) => entry.challenge_rating),
-          ),
-        );
-      } catch {
-        // Leave metadata empty and derive from list data as fallback.
-      }
-    };
+  const { data: metadataData } = useMonstersMetadata();
 
-    void loadMonsterMetadata();
+  const monsters = monstersData?.monsters ?? [];
+  const total = monstersData?.total ?? 0;
+  const errorMessage = error instanceof Error ? error.message : null;
 
-    return () => {
-      abortController.abort();
-    };
-  }, []);
-
-  useEffect(() => {
-    const abortController = new AbortController();
-
-    const loadMonsters = async () => {
-      setIsLoading(true);
-      setErrorMessage(null);
-
-      const crValue = selectedCr.length > 0 ? Number(selectedCr) : undefined;
-
-      try {
-        const response = await getMonsters(
-          {
-            skip: 0,
-            limit: 100,
-            type: selectedType || undefined,
-            name: query.trim() || undefined,
-            min_cr: crValue,
-            max_cr: crValue,
-          },
-          { signal: abortController.signal },
-        );
-
-        setMonsters(response.monsters);
-        setTotal(response.total);
-
-        if (typeValues.length === 0) {
-          setTypeValues(
-            uniqueSortedStrings(response.monsters.map((entry) => entry.type)),
-          );
-        }
-
-        if (crValues.length === 0) {
-          setCrValues(
-            uniqueSortedNumbers(
-              response.monsters.map((entry) => entry.challenge_rating),
-            ),
-          );
-        }
-      } catch (error) {
-        if (abortController.signal.aborted) {
-          return;
-        }
-
-        const message =
-          error instanceof Error ? error.message : "Failed to load monsters.";
-        setErrorMessage(message);
-      } finally {
-        if (!abortController.signal.aborted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    void loadMonsters();
-
-    return () => {
-      abortController.abort();
-    };
-  }, [query, selectedType, selectedCr, typeValues.length, crValues.length]);
+  const typeValues = useMemo(
+    () =>
+      uniqueSortedStrings(
+        (metadataData?.monsters ?? monsters).map((m) => m.type),
+      ),
+    [metadataData, monsters],
+  );
+  const crValues = useMemo(
+    () =>
+      uniqueSortedNumbers(
+        (metadataData?.monsters ?? monsters).map((m) => m.challenge_rating),
+      ),
+    [metadataData, monsters],
+  );
 
   const typeOptions = useMemo(() => toFilterOptions(typeValues), [typeValues]);
   const crOptions = useMemo(() => toFilterOptions(crValues), [crValues]);

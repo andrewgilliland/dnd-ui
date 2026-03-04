@@ -1,68 +1,16 @@
-import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { ApiError, getItemById } from "../api/client";
+import { ApiError } from "../api/client";
 import { DetailPageHeader } from "../components/DetailPageHeader";
 import { DetailSection } from "../components/DetailSection";
 import { NotFoundState } from "../components/NotFoundState";
 import { Surface } from "../components/Surface";
 import { ROUTES } from "../constants/routes";
-import type { Item } from "../types";
+import { useItem } from "../hooks/useItem";
 
 export function ItemDetailPage() {
   const { id } = useParams();
   const itemId = Number(id);
-
-  const [item, setItem] = useState<Item | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<ApiError | Error | null>(null);
-
-  useEffect(() => {
-    const abortController = new AbortController();
-
-    if (!Number.isFinite(itemId)) {
-      setItem(null);
-      setError(null);
-      setIsLoading(false);
-
-      return () => {
-        abortController.abort();
-      };
-    }
-
-    const loadItem = async () => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const response = await getItemById(itemId, {
-          signal: abortController.signal,
-        });
-        setItem(response);
-      } catch (caughtError) {
-        if (abortController.signal.aborted) {
-          return;
-        }
-
-        setItem(null);
-
-        if (caughtError instanceof Error) {
-          setError(caughtError);
-        } else {
-          setError(new Error("Failed to load item."));
-        }
-      } finally {
-        if (!abortController.signal.aborted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    void loadItem();
-
-    return () => {
-      abortController.abort();
-    };
-  }, [itemId]);
+  const { data: item, isLoading, error } = useItem(itemId);
 
   if (!Number.isFinite(itemId)) {
     return (

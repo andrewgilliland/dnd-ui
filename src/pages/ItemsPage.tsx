@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
   BadgeDollarSign,
   Fingerprint,
@@ -8,7 +8,7 @@ import {
   ScrollText,
 } from "lucide-react";
 import { Link } from "react-router";
-import { getItems } from "../api/client";
+import { useItems, useItemsMetadata } from "../hooks/useItems";
 import { CardDensityToggle } from "../components/CardDensityToggle";
 import { DataTable, type DataTableColumn } from "../components/DataTable";
 import { ItemCard } from "../components/ItemCard";
@@ -32,101 +32,37 @@ export function ItemsPage() {
   const selectedType = searchParams.get("type") ?? "";
   const selectedRarity = searchParams.get("rarity") ?? "";
 
-  const [items, setItems] = useState<Item[]>([]);
-  const [total, setTotal] = useState(0);
-  const [typeValues, setTypeValues] = useState<string[]>([]);
-  const [rarityValues, setRarityValues] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const {
+    data: itemsData,
+    isLoading,
+    error,
+  } = useItems({
+    skip: 0,
+    limit: 100,
+    type: selectedType || undefined,
+    rarity: selectedRarity || undefined,
+    name: query.trim() || undefined,
+  });
+  const { data: metadataData } = useItemsMetadata();
 
-  useEffect(() => {
-    const abortController = new AbortController();
+  const items = itemsData?.items ?? [];
+  const total = itemsData?.total ?? 0;
+  const errorMessage = error instanceof Error ? error.message : null;
 
-    const loadItemMetadata = async () => {
-      try {
-        const response = await getItems(
-          { skip: 0, limit: 100 },
-          { signal: abortController.signal },
-        );
-
-        setTypeValues(
-          uniqueSortedStrings(response.items.map((entry) => entry.type)),
-        );
-        setRarityValues(
-          uniqueSortedStrings(response.items.map((entry) => entry.rarity)),
-        );
-      } catch {
-        // Leave metadata empty and derive from list data as fallback.
-      }
-    };
-
-    void loadItemMetadata();
-
-    return () => {
-      abortController.abort();
-    };
-  }, []);
-
-  useEffect(() => {
-    const abortController = new AbortController();
-
-    const loadItems = async () => {
-      setIsLoading(true);
-      setErrorMessage(null);
-
-      try {
-        const response = await getItems(
-          {
-            skip: 0,
-            limit: 100,
-            type: selectedType || undefined,
-            rarity: selectedRarity || undefined,
-            name: query.trim() || undefined,
-          },
-          { signal: abortController.signal },
-        );
-
-        setItems(response.items);
-        setTotal(response.total);
-
-        if (typeValues.length === 0) {
-          setTypeValues(
-            uniqueSortedStrings(response.items.map((entry) => entry.type)),
-          );
-        }
-
-        if (rarityValues.length === 0) {
-          setRarityValues(
-            uniqueSortedStrings(response.items.map((entry) => entry.rarity)),
-          );
-        }
-      } catch (error) {
-        if (abortController.signal.aborted) {
-          return;
-        }
-
-        const message =
-          error instanceof Error ? error.message : "Failed to load items.";
-        setErrorMessage(message);
-      } finally {
-        if (!abortController.signal.aborted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    void loadItems();
-
-    return () => {
-      abortController.abort();
-    };
-  }, [
-    query,
-    selectedType,
-    selectedRarity,
-    typeValues.length,
-    rarityValues.length,
-  ]);
+  const typeValues = useMemo(
+    () =>
+      uniqueSortedStrings(
+        (metadataData?.items ?? items).map((entry) => entry.type),
+      ),
+    [metadataData, items],
+  );
+  const rarityValues = useMemo(
+    () =>
+      uniqueSortedStrings(
+        (metadataData?.items ?? items).map((entry) => entry.rarity),
+      ),
+    [metadataData, items],
+  );
 
   const typeOptions = useMemo(() => toFilterOptions(typeValues), [typeValues]);
   const rarityOptions = useMemo(

@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { ApiError, getMonsterById } from "../api/client";
+import { ApiError } from "../api/client";
 import { BackLink } from "../components/BackLink";
 import { NotFoundState } from "../components/NotFoundState";
 import { StatsRadarChart } from "../components/StatsRadarChart";
 import { Surface } from "../components/Surface";
 import { ROUTES } from "../constants/routes";
+import { useMonster } from "../hooks/useMonster";
 import type { Monster, MonsterLegendaryAction } from "../types";
 
 function capitalize(str: string) {
@@ -113,49 +113,7 @@ function BadgeList({
 export function MonsterDetailPage() {
   const { id } = useParams();
   const monsterId = Number(id);
-
-  const [monster, setMonster] = useState<Monster | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<ApiError | Error | null>(null);
-
-  useEffect(() => {
-    const abortController = new AbortController();
-
-    if (!Number.isFinite(monsterId)) {
-      setMonster(null);
-      setError(null);
-      setIsLoading(false);
-      return () => {
-        abortController.abort();
-      };
-    }
-
-    const loadMonster = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const response = await getMonsterById(monsterId, {
-          signal: abortController.signal,
-        });
-        setMonster(response);
-      } catch (caughtError) {
-        if (abortController.signal.aborted) return;
-        setMonster(null);
-        setError(
-          caughtError instanceof Error
-            ? caughtError
-            : new Error("Failed to load monster."),
-        );
-      } finally {
-        if (!abortController.signal.aborted) setIsLoading(false);
-      }
-    };
-
-    void loadMonster();
-    return () => {
-      abortController.abort();
-    };
-  }, [monsterId]);
+  const { data: monster, isLoading, error } = useMonster(monsterId);
 
   if (!Number.isFinite(monsterId)) {
     return (

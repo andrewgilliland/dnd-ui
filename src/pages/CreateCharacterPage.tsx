@@ -1,7 +1,9 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { Dices } from "lucide-react";
 import { useNavigate } from "react-router";
-import { createCharacter, getClasses, getRaces } from "../api/client";
+import { createCharacter } from "../api/client";
+import { useClasses } from "../hooks/useClasses";
+import { useRaces } from "../hooks/useRaces";
 import { BackLink } from "../components/BackLink";
 import { PageHeader } from "../components/PageHeader";
 import { Surface } from "../components/Surface";
@@ -131,8 +133,10 @@ const sectionHeadingClass =
 export function CreateCharacterPage() {
   const navigate = useNavigate();
 
-  const [classes, setClasses] = useState<string[]>([]);
-  const [races, setRaces] = useState<string[]>([]);
+  const { data: classesData } = useClasses();
+  const { data: racesData } = useRaces();
+  const classes = classesData?.classes ?? [];
+  const races = racesData?.races ?? [];
 
   // Core details
   const [name, setName] = useState("");
@@ -168,26 +172,6 @@ export function CreateCharacterPage() {
 
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  useEffect(() => {
-    const abortController = new AbortController();
-    const loadMetadata = async () => {
-      try {
-        const [classesRes, racesRes] = await Promise.all([
-          getClasses({ signal: abortController.signal }),
-          getRaces({ signal: abortController.signal }),
-        ]);
-        setClasses(classesRes.classes);
-        setRaces(racesRes.races);
-      } catch {
-        // Leave empty — form still works without pre-populated options
-      }
-    };
-    void loadMetadata();
-    return () => {
-      abortController.abort();
-    };
-  }, []);
 
   const handleStatChange = (key: keyof CharacterStats, value: string) => {
     const parsed = parseInt(value, 10);

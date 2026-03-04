@@ -1,7 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { BookOpen, Fingerprint, Globe2, Scale, User } from "lucide-react";
 import { Link } from "react-router";
-import { getCharacters, getClasses, getRaces } from "../api/client";
+import { useCharacters } from "../hooks/useCharacters";
+import { useClasses } from "../hooks/useClasses";
+import { useRaces } from "../hooks/useRaces";
 import { CardDensityToggle } from "../components/CardDensityToggle";
 import { CharacterCard } from "../components/CharacterCard";
 import { DataTable, type DataTableColumn } from "../components/DataTable";
@@ -25,99 +27,36 @@ export function CharactersPage() {
   const selectedClass = searchParams.get("class") ?? "";
   const selectedRace = searchParams.get("race") ?? "";
 
-  const [characters, setCharacters] = useState<Character[]>([]);
-  const [total, setTotal] = useState(0);
-  const [classValues, setClassValues] = useState<string[]>([]);
-  const [raceValues, setRaceValues] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const {
+    data: charactersData,
+    isLoading,
+    error,
+  } = useCharacters({
+    skip: 0,
+    limit: 100,
+    class: selectedClass || undefined,
+    race: selectedRace || undefined,
+    name: query.trim() || undefined,
+  });
+  const { data: classesData } = useClasses();
+  const { data: racesData } = useRaces();
 
-  useEffect(() => {
-    const abortController = new AbortController();
+  const characters = charactersData?.characters ?? [];
+  const total = charactersData?.total ?? 0;
+  const errorMessage = error instanceof Error ? error.message : null;
 
-    const loadCharacterMetadata = async () => {
-      try {
-        const [classesResponse, racesResponse] = await Promise.all([
-          getClasses({ signal: abortController.signal }),
-          getRaces({ signal: abortController.signal }),
-        ]);
-
-        setClassValues(uniqueSortedStrings(classesResponse.classes));
-        setRaceValues(uniqueSortedStrings(racesResponse.races));
-      } catch {
-        // Leave metadata empty and derive from list data as fallback.
-      }
-    };
-
-    void loadCharacterMetadata();
-
-    return () => {
-      abortController.abort();
-    };
-  }, []);
-
-  useEffect(() => {
-    const abortController = new AbortController();
-
-    const loadCharacters = async () => {
-      setIsLoading(true);
-      setErrorMessage(null);
-
-      try {
-        const response = await getCharacters(
-          {
-            skip: 0,
-            limit: 100,
-            class: selectedClass || undefined,
-            race: selectedRace || undefined,
-            name: query.trim() || undefined,
-          },
-          { signal: abortController.signal },
-        );
-
-        setCharacters(response.characters);
-        setTotal(response.total);
-
-        if (classValues.length === 0) {
-          setClassValues(
-            uniqueSortedStrings(
-              response.characters.map((entry) => entry.class),
-            ),
-          );
-        }
-
-        if (raceValues.length === 0) {
-          setRaceValues(
-            uniqueSortedStrings(response.characters.map((entry) => entry.race)),
-          );
-        }
-      } catch (error) {
-        if (abortController.signal.aborted) {
-          return;
-        }
-
-        const message =
-          error instanceof Error ? error.message : "Failed to load characters.";
-        setErrorMessage(message);
-      } finally {
-        if (!abortController.signal.aborted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    void loadCharacters();
-
-    return () => {
-      abortController.abort();
-    };
-  }, [
-    query,
-    selectedClass,
-    selectedRace,
-    classValues.length,
-    raceValues.length,
-  ]);
+  const classValues = useMemo(
+    () =>
+      uniqueSortedStrings(
+        classesData?.classes ?? characters.map((c) => c.class),
+      ),
+    [classesData, characters],
+  );
+  const raceValues = useMemo(
+    () =>
+      uniqueSortedStrings(racesData?.races ?? characters.map((c) => c.race)),
+    [racesData, characters],
+  );
 
   const classOptions = useMemo(
     () => toFilterOptions(classValues),
