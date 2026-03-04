@@ -54,7 +54,7 @@ export function MonstersPage() {
 
   const { data: metadataData } = useMonstersMetadata();
 
-  const monsters = monstersData?.monsters ?? [];
+  const monsters = useMemo(() => monstersData?.monsters ?? [], [monstersData]);
   const total = monstersData?.total ?? 0;
   const errorMessage = error instanceof Error ? error.message : null;
 

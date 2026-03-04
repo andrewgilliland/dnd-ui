@@ -45,7 +45,7 @@ export function ItemsPage() {
   });
   const { data: metadataData } = useItemsMetadata();
 
-  const items = itemsData?.items ?? [];
+  const items = useMemo(() => itemsData?.items ?? [], [itemsData]);
   const total = itemsData?.total ?? 0;
   const errorMessage = error instanceof Error ? error.message : null;
 
