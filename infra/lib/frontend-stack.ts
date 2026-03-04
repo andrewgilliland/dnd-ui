@@ -26,18 +26,26 @@ import {
 } from "aws-cdk-lib/aws-s3-deployment";
 import { Construct } from "constructs";
 
+type Environment = "dev" | "staging" | "prod";
+
+interface FrontendStackProps extends StackProps {
+  environment: Environment;
+}
+
 export class FrontendStack extends Stack {
-  constructor(scope: Construct, id: string, props?: StackProps) {
+  constructor(scope: Construct, id: string, props: FrontendStackProps) {
     super(scope, id, props);
 
-    const siteBucket = new Bucket(this, "SiteBucket", {
+    const { environment } = props;
+
+    const siteBucket = new Bucket(this, `dnd-ui-${environment}`, {
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
       encryption: BucketEncryption.S3_MANAGED,
       enforceSSL: true,
       removalPolicy: RemovalPolicy.RETAIN,
     });
 
-    const distribution = new Distribution(this, "SiteDistribution", {
+    const distribution = new Distribution(this, `dnd-ui-${environment}-distribution`, {
       defaultRootObject: "index.html",
       defaultBehavior: {
         origin: S3BucketOrigin.withOriginAccessControl(siteBucket),
@@ -64,7 +72,7 @@ export class FrontendStack extends Stack {
 
     const siteBuildPath = path.resolve(__dirname, "../../dist");
 
-    new BucketDeployment(this, "DeployHtml", {
+    new BucketDeployment(this, `dnd-ui-${environment}-deploy-html`, {
       sources: [Source.asset(siteBuildPath)],
       destinationBucket: siteBucket,
       distribution,
@@ -78,7 +86,7 @@ export class FrontendStack extends Stack {
       prune: false,
     });
 
-    new BucketDeployment(this, "DeployStaticAssets", {
+    new BucketDeployment(this, `dnd-ui-${environment}-deploy-static-assets`, {
       sources: [Source.asset(siteBuildPath)],
       destinationBucket: siteBucket,
       distribution,
@@ -88,11 +96,11 @@ export class FrontendStack extends Stack {
       ],
     });
 
-    new CfnOutput(this, "CloudFrontDistributionId", {
+    new CfnOutput(this, `dnd-ui-${environment}-distribution-id`, {
       value: distribution.distributionId,
     });
 
-    new CfnOutput(this, "CloudFrontDomainName", {
+    new CfnOutput(this, `dnd-ui-${environment}-domain-name`, {
       value: distribution.distributionDomainName,
     });
   }
