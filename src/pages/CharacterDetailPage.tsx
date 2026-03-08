@@ -318,7 +318,7 @@ export function CharacterDetailPage() {
             <>
               <Divider />
               <div className="px-6 py-4">
-                <h2 className="mb-3 font-serif text-xl font-semibold text-red-800 dark:text-red-400">
+                <h2 className="mb-3 text-xl font-semibold text-red-800 dark:text-red-400">
                   Proficiencies
                 </h2>
                 <div className="space-y-1">
@@ -364,7 +364,7 @@ export function CharacterDetailPage() {
             <>
               <Divider />
               <div className="px-6 py-4">
-                <h2 className="mb-3 font-serif text-xl font-semibold text-red-800 dark:text-red-400">
+                <h2 className="mb-3 text-xl font-semibold text-red-800 dark:text-red-400">
                   Skills
                 </h2>
                 <div className="grid grid-cols-2 gap-x-6 gap-y-0.5 sm:grid-cols-3">
@@ -406,7 +406,7 @@ export function CharacterDetailPage() {
             <>
               <Divider />
               <div className="px-6 py-4 pb-6">
-                <h2 className="mb-3 font-serif text-xl font-semibold text-red-800 dark:text-red-400">
+                <h2 className="mb-3 text-xl font-semibold text-red-800 dark:text-red-400">
                   Actions
                 </h2>
                 <ul className="space-y-2">
