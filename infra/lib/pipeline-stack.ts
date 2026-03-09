@@ -83,8 +83,8 @@ export class FrontendPipelineStack extends Stack {
       }),
     );
 
-    new Pipeline(this, `dnd-ui-${environment}-pipeline`, {
-      pipelineName: `dnd-ui-${environment}-pipeline`,
+    new Pipeline(this, `dnd-ui-${environment}`, {
+      pipelineName: `dnd-ui-${environment}`,
       stages: [
         {
           stageName: "Source",
