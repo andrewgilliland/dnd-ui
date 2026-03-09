@@ -36,12 +36,12 @@ export function HomePage() {
           <Link
             key={section.title}
             to={section.to}
-            className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:border-slate-300 hover:shadow dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700"
+            className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:border-slate-300 hover:shadow dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-slate-700"
           >
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-zinc-100">
               {section.title}
             </h3>
-            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+            <p className="mt-2 text-sm text-slate-600 dark:text-zinc-400">
               {section.description}
             </p>
           </Link>

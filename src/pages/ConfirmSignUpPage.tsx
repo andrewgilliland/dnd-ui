@@ -34,7 +34,7 @@ export function ConfirmSignUpPage() {
   return (
     <>
       <h1 className="mb-2 text-center text-2xl font-bold">Confirm Account</h1>
-      <p className="mb-6 text-center text-sm text-slate-600 dark:text-slate-400">
+      <p className="mb-6 text-center text-sm text-slate-600 dark:text-zinc-400">
         Enter the verification code sent to your email.
       </p>
 
@@ -43,7 +43,7 @@ export function ConfirmSignUpPage() {
           <div>
             <label
               htmlFor="email"
-              className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300"
+              className="mb-1 block text-sm font-medium text-slate-700 dark:text-zinc-300"
             >
               Email
             </label>
@@ -54,7 +54,7 @@ export function ConfirmSignUpPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500"
+              className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-500"
               placeholder="you@example.com"
             />
           </div>
@@ -62,7 +62,7 @@ export function ConfirmSignUpPage() {
           <div>
             <label
               htmlFor="code"
-              className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300"
+              className="mb-1 block text-sm font-medium text-slate-700 dark:text-zinc-300"
             >
               Verification Code
             </label>
@@ -74,7 +74,7 @@ export function ConfirmSignUpPage() {
               required
               value={code}
               onChange={(e) => setCode(e.target.value)}
-              className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500"
+              className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-500"
               placeholder="123456"
             />
           </div>
@@ -86,18 +86,18 @@ export function ConfirmSignUpPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700 disabled:opacity-50 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-300"
+            className="w-full rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-slate-300"
           >
             {isSubmitting ? "Confirming..." : "Confirm Account"}
           </button>
         </form>
       </Surface>
 
-      <p className="mt-4 text-center text-sm text-slate-600 dark:text-slate-400">
+      <p className="mt-4 text-center text-sm text-slate-600 dark:text-zinc-400">
         Already confirmed?{" "}
         <Link
           to={ROUTES.login}
-          className="font-medium text-slate-900 underline underline-offset-4 dark:text-slate-100"
+          className="font-medium text-slate-900 underline underline-offset-4 dark:text-zinc-100"
         >
           Sign in
         </Link>
