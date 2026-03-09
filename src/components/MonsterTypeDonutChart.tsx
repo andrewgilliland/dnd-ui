@@ -47,10 +47,10 @@ function DonutLegend({
               className="inline-block h-3 w-3 shrink-0 rounded-sm"
               style={{ backgroundColor: slice.color }}
             />
-            <span className="text-slate-700 dark:text-slate-300">
+            <span className="text-slate-700 dark:text-zinc-300">
               {slice.type}
             </span>
-            <span className="ml-auto tabular-nums text-slate-500 dark:text-slate-400">
+            <span className="ml-auto tabular-nums text-slate-500 dark:text-zinc-400">
               {slice.count}
             </span>
           </li>
@@ -183,10 +183,10 @@ export function MonsterTypeDonutChart({
 
   return (
     <Surface as="section" className="mt-6 p-4">
-      <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+      <h3 className="text-base font-semibold text-slate-900 dark:text-zinc-100">
         Monster Types
       </h3>
-      <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+      <p className="mt-1 text-xs text-slate-500 dark:text-zinc-400">
         Distribution of {monsters.length} monsters across creature types.
       </p>
 
@@ -223,7 +223,7 @@ export function MonsterTypeDonutChart({
                   opacity={hoveredIndex === null || isHovered ? 1 : 0.4}
                   stroke="var(--color-white)"
                   strokeWidth={2}
-                  className="cursor-pointer transition-opacity duration-150 dark:stroke-slate-900"
+                  className="cursor-pointer transition-opacity duration-150 dark:stroke-zinc-900"
                   onMouseEnter={() => setHoveredIndex(index)}
                   onMouseLeave={() => setHoveredIndex(null)}
                 />
@@ -235,7 +235,7 @@ export function MonsterTypeDonutChart({
               x={center}
               y={center - 6}
               textAnchor="middle"
-              className="fill-slate-900 text-2xl font-bold dark:fill-slate-100"
+              className="fill-slate-900 text-2xl font-bold dark:fill-zinc-100"
               style={{ fontSize: 24, fontWeight: 700 }}
             >
               {monsters.length}
@@ -244,7 +244,7 @@ export function MonsterTypeDonutChart({
               x={center}
               y={center + 14}
               textAnchor="middle"
-              className="fill-slate-500 dark:fill-slate-400"
+              className="fill-slate-500 dark:fill-zinc-400"
               style={{ fontSize: 11 }}
             >
               total
