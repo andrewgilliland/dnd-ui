@@ -1,72 +1,115 @@
-import { Stack, StackProps, Stage, StageProps } from "aws-cdk-lib";
+import { Stack, StackProps } from "aws-cdk-lib";
+import { Artifact, Pipeline } from "aws-cdk-lib/aws-codepipeline";
 import {
-  CodePipeline,
-  CodePipelineSource,
-  ShellStep,
-} from "aws-cdk-lib/pipelines";
+  CodeStarConnectionsSourceAction,
+  CodeBuildAction,
+} from "aws-cdk-lib/aws-codepipeline-actions";
+import {
+  PipelineProject,
+  BuildSpec,
+  LinuxBuildImage,
+  BuildEnvironmentVariableType,
+} from "aws-cdk-lib/aws-codebuild";
+import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { Construct } from "constructs";
 import { FrontendStack } from "./frontend-stack";
 
-interface FrontendAppStageProps extends StageProps {
-  stackName?: string;
-}
-
-class FrontendAppStage extends Stage {
-  readonly frontendStack: FrontendStack;
-
-  constructor(scope: Construct, id: string, props: FrontendAppStageProps) {
-    super(scope, id, props);
-
-    this.frontendStack = new FrontendStack(
-      this,
-      props.stackName ?? "FrontendStack",
-      {
-        env: props.env,
-      },
-    );
-  }
-}
+type Environment = "dev" | "staging" | "prod";
 
 export interface FrontendPipelineStackProps extends StackProps {
   readonly repoString: string;
   readonly branch: string;
   readonly connectionArn: string;
   readonly viteApiBaseUrl: string;
+  readonly environment: Environment;
+  readonly frontendStack: FrontendStack;
 }
 
 export class FrontendPipelineStack extends Stack {
   constructor(scope: Construct, id: string, props: FrontendPipelineStackProps) {
     super(scope, id, props);
 
-    const source = CodePipelineSource.connection(
-      props.repoString,
-      props.branch,
+    const {
+      repoString,
+      branch,
+      connectionArn,
+      viteApiBaseUrl,
+      environment,
+      frontendStack,
+    } = props;
+    const [owner, repo] = repoString.split("/");
+
+    const sourceArtifact = new Artifact("Source");
+
+    const buildProject = new PipelineProject(
+      this,
+      `dnd-ui-${environment}-build`,
       {
-        connectionArn: props.connectionArn,
+        projectName: `dnd-ui-${environment}-build`,
+        buildSpec: BuildSpec.fromSourceFilename("buildspec.yml"),
+        environment: {
+          buildImage: LinuxBuildImage.STANDARD_7_0,
+        },
+        environmentVariables: {
+          VITE_API_BASE_URL: {
+            value: viteApiBaseUrl,
+            type: BuildEnvironmentVariableType.PLAINTEXT,
+          },
+          ENVIRONMENT: {
+            value: environment,
+            type: BuildEnvironmentVariableType.PLAINTEXT,
+          },
+        },
       },
     );
 
-    const pipeline = new CodePipeline(this, "FrontendPipeline", {
-      pipelineName: "dnd-ui-frontend-pipeline",
-      synth: new ShellStep("Synth", {
-        input: source,
-        env: {
-          VITE_API_BASE_URL: props.viteApiBaseUrl,
-          CONNECTION_ARN: props.connectionArn,
-          REPO_STRING: props.repoString,
-          BRANCH: props.branch,
-        },
-        commands: ["bash infra/scripts/pipeline-synth.sh"],
-        primaryOutputDirectory: "infra/cdk.out",
+    frontendStack.siteBucket.grantReadWrite(buildProject);
+
+    buildProject.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["ssm:GetParameter"],
+        resources: [
+          `arn:aws:ssm:${this.region}:${this.account}:parameter/dnd-ui/${environment}/*`,
+        ],
       }),
-      selfMutation: true,
-    });
+    );
 
-    const appStage = new FrontendAppStage(this, "Production", {
-      env: props.env,
-      stackName: "FrontendStack",
-    });
+    buildProject.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["cloudfront:CreateInvalidation"],
+        resources: [
+          `arn:aws:cloudfront::${this.account}:distribution/${frontendStack.distribution.distributionId}`,
+        ],
+      }),
+    );
 
-    pipeline.addStage(appStage);
+    new Pipeline(this, `dnd-ui-${environment}-pipeline`, {
+      pipelineName: `dnd-ui-${environment}-pipeline`,
+      stages: [
+        {
+          stageName: "Source",
+          actions: [
+            new CodeStarConnectionsSourceAction({
+              actionName: "GitHub_Source",
+              owner,
+              repo,
+              branch,
+              connectionArn,
+              output: sourceArtifact,
+            }),
+          ],
+        },
+        {
+          stageName: "Build_and_Deploy",
+          actions: [
+            new CodeBuildAction({
+              actionName: "Build_and_Deploy",
+              project: buildProject,
+              input: sourceArtifact,
+            }),
+          ],
+        },
+      ],
+    });
   }
 }
