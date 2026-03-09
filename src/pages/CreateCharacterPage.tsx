@@ -122,13 +122,13 @@ function parseCSV(value: string): string[] {
 }
 
 const inputClass =
-  "w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500";
+  "w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-500";
 
 const labelClass =
-  "mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300";
+  "mb-1 block text-sm font-medium text-slate-700 dark:text-zinc-300";
 
 const sectionHeadingClass =
-  "mb-4 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400";
+  "mb-4 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-zinc-400";
 
 export function CreateCharacterPage() {
   const navigate = useNavigate();
@@ -486,7 +486,7 @@ export function CreateCharacterPage() {
               <h3 className={sectionHeadingClass}>
                 Saving Throw Proficiencies
               </h3>
-              <p className="mb-3 text-xs text-slate-500 dark:text-slate-400">
+              <p className="mb-3 text-xs text-slate-500 dark:text-zinc-400">
                 Select the saving throws your character is proficient in.
                 Bonuses are computed automatically.
               </p>
@@ -498,7 +498,7 @@ export function CreateCharacterPage() {
                   return (
                     <label
                       key={key}
-                      className="flex cursor-pointer items-center gap-2 text-sm text-slate-800 dark:text-slate-200"
+                      className="flex cursor-pointer items-center gap-2 text-sm text-slate-800 dark:text-zinc-200"
                     >
                       <input
                         type="checkbox"
@@ -515,7 +515,7 @@ export function CreateCharacterPage() {
                       <span className={isProficient ? "font-semibold" : ""}>
                         {label}
                       </span>
-                      <span className="ml-auto text-xs text-slate-500 dark:text-slate-400">
+                      <span className="ml-auto text-xs text-slate-500 dark:text-zinc-400">
                         {total >= 0 ? "+" : ""}
                         {total}
                       </span>
@@ -528,7 +528,7 @@ export function CreateCharacterPage() {
             {/* ── Skills ── */}
             <Surface as="div" className="p-6">
               <h3 className={sectionHeadingClass}>Skill Proficiencies</h3>
-              <p className="mb-3 text-xs text-slate-500 dark:text-slate-400">
+              <p className="mb-3 text-xs text-slate-500 dark:text-zinc-400">
                 Select skills your character is proficient in. Bonuses are
                 computed from ability scores.
               </p>
@@ -540,7 +540,7 @@ export function CreateCharacterPage() {
                   return (
                     <label
                       key={key}
-                      className="flex cursor-pointer items-center gap-2 text-sm text-slate-800 dark:text-slate-200"
+                      className="flex cursor-pointer items-center gap-2 text-sm text-slate-800 dark:text-zinc-200"
                     >
                       <input
                         type="checkbox"
@@ -557,7 +557,7 @@ export function CreateCharacterPage() {
                       <span className={isProficient ? "font-semibold" : ""}>
                         {label}
                       </span>
-                      <span className="ml-auto text-xs text-slate-500 dark:text-slate-400">
+                      <span className="ml-auto text-xs text-slate-500 dark:text-zinc-400">
                         {total >= 0 ? "+" : ""}
                         {total}
                       </span>
@@ -572,7 +572,7 @@ export function CreateCharacterPage() {
               <h3 className={sectionHeadingClass}>
                 Proficiencies &amp; Traits
               </h3>
-              <p className="mb-4 text-xs text-slate-500 dark:text-slate-400">
+              <p className="mb-4 text-xs text-slate-500 dark:text-zinc-400">
                 Enter comma-separated values for each category.
               </p>
 
@@ -670,7 +670,7 @@ export function CreateCharacterPage() {
                   <button
                     type="button"
                     onClick={() => setStats(STANDARD_ARRAY)}
-                    className="rounded-md border border-slate-300 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+                    className="rounded-md border border-slate-300 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-slate-700"
                   >
                     Standard Array
                   </button>
@@ -684,7 +684,7 @@ export function CreateCharacterPage() {
                     <div key={key} className="flex items-center gap-3">
                       <label
                         htmlFor={key}
-                        className="w-28 shrink-0 text-sm font-medium text-slate-700 dark:text-slate-300"
+                        className="w-28 shrink-0 text-sm font-medium text-slate-700 dark:text-zinc-300"
                       >
                         {label}
                       </label>
@@ -696,9 +696,9 @@ export function CreateCharacterPage() {
                         required
                         value={stats[key]}
                         onChange={(e) => handleStatChange(key, e.target.value)}
-                        className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-center text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                        className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-center text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
                       />
-                      <span className="w-8 shrink-0 text-right text-xs text-slate-500 dark:text-slate-400">
+                      <span className="w-8 shrink-0 text-right text-xs text-slate-500 dark:text-zinc-400">
                         {m >= 0 ? "+" : ""}
                         {m}
                       </span>
@@ -718,14 +718,14 @@ export function CreateCharacterPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="rounded-md bg-slate-900 px-5 py-2 text-sm font-medium text-white transition hover:bg-slate-700 disabled:opacity-50 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-300"
+            className="rounded-md bg-slate-900 px-5 py-2 text-sm font-medium text-white transition hover:bg-slate-700 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-slate-300"
           >
             {isSubmitting ? "Creating…" : "Create Character"}
           </button>
           <button
             type="button"
             onClick={() => void navigate(ROUTES.characters)}
-            className="rounded-md border border-slate-300 bg-white px-5 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+            className="rounded-md border border-slate-300 bg-white px-5 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-slate-800"
           >
             Cancel
           </button>

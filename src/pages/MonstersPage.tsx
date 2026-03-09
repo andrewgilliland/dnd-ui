@@ -84,7 +84,7 @@ export function MonstersPage() {
         header: "Name",
         sortable: true,
         sortValue: (monster) => monster.name,
-        cellClassName: `${tableCellClass} font-medium text-slate-900 dark:text-slate-100`,
+        cellClassName: `${tableCellClass} font-medium text-slate-900 dark:text-zinc-100`,
         render: (monster) => monster.name,
       },
       {
@@ -149,7 +149,7 @@ export function MonstersPage() {
         render: (monster) => (
           <Link
             to={ROUTES.monsterDetail(monster.id)}
-            className="font-medium text-slate-900 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-900 dark:text-slate-100 dark:decoration-slate-600 dark:hover:decoration-slate-200"
+            className="font-medium text-slate-900 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-900 dark:text-zinc-100 dark:decoration-zinc-600 dark:hover:decoration-slate-200"
           >
             View
           </Link>
@@ -217,7 +217,7 @@ export function MonstersPage() {
 
       {errorMessage ? (
         <Surface as="section" className="mt-6 p-6 text-center">
-          <p className="text-slate-700 dark:text-slate-300">{errorMessage}</p>
+          <p className="text-slate-700 dark:text-zinc-300">{errorMessage}</p>
         </Surface>
       ) : null}
 
@@ -230,7 +230,7 @@ export function MonstersPage() {
           </div>
         ) : (
           <Surface as="section" className="mt-6 p-6 text-center">
-            <p className="text-slate-700 dark:text-slate-300">Loading...</p>
+            <p className="text-slate-700 dark:text-zinc-300">Loading...</p>
           </Surface>
         )
       ) : null}
@@ -259,7 +259,7 @@ export function MonstersPage() {
 
       {!isLoading && !errorMessage && monsters.length === 0 ? (
         <Surface as="section" className="mt-6 p-6 text-center">
-          <p className="text-slate-700 dark:text-slate-300">
+          <p className="text-slate-700 dark:text-zinc-300">
             No monsters match your current filters.
           </p>
         </Surface>

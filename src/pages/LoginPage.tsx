@@ -41,7 +41,7 @@ export function LoginPage() {
               <div>
                 <label
                   htmlFor="email"
-                  className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300"
+                  className="mb-1 block text-sm font-medium text-slate-700 dark:text-zinc-300"
                 >
                   Email
                 </label>
@@ -52,7 +52,7 @@ export function LoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500"
+                  className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-500"
                   placeholder="you@example.com"
                 />
               </div>
@@ -60,7 +60,7 @@ export function LoginPage() {
               <div>
                 <label
                   htmlFor="password"
-                  className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300"
+                  className="mb-1 block text-sm font-medium text-slate-700 dark:text-zinc-300"
                 >
                   Password
                 </label>
@@ -71,7 +71,7 @@ export function LoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500"
+                  className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-500"
                   placeholder="••••••••"
                 />
               </div>
@@ -85,19 +85,19 @@ export function LoginPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700 disabled:opacity-50 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-300"
+                className="w-full rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-slate-300"
               >
                 {isSubmitting ? "Signing in..." : "Sign In"}
               </button>
             </form>
           </Surface>
 
-          <div className="mt-4 space-y-2 text-center text-sm text-slate-600 dark:text-slate-400">
+          <div className="mt-4 space-y-2 text-center text-sm text-slate-600 dark:text-zinc-400">
             <p>
               Don't have an account?{" "}
               <Link
                 to={ROUTES.signUp}
-                className="font-medium text-slate-900 underline underline-offset-4 dark:text-slate-100"
+                className="font-medium text-slate-900 underline underline-offset-4 dark:text-zinc-100"
               >
                 Sign up
               </Link>
@@ -105,7 +105,7 @@ export function LoginPage() {
             <p>
               <Link
                 to={ROUTES.forgotPassword}
-                className="font-medium text-slate-900 underline underline-offset-4 dark:text-slate-100"
+                className="font-medium text-slate-900 underline underline-offset-4 dark:text-zinc-100"
               >
                 Forgot password?
               </Link>

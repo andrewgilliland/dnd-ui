@@ -41,7 +41,7 @@ interface DataTableProps<Row> {
 }
 
 const headerCellBaseClassName =
-  "px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400";
+  "px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-zinc-400";
 
 const cx = (...classNames: Array<string | undefined | null | false>) =>
   classNames.filter(Boolean).join(" ");
@@ -69,7 +69,7 @@ export function DataTable<Row>({
     <Surface as="section" className={cx("overflow-x-auto", className)}>
       <table className="min-w-full border-collapse">
         <thead>
-          <tr className="border-b border-slate-200 dark:border-slate-800">
+          <tr className="border-b border-slate-200 dark:border-zinc-800">
             {columns.map((column) => (
               <th
                 key={column.key}
@@ -83,7 +83,7 @@ export function DataTable<Row>({
                 className={[
                   headerCellBaseClassName,
                   stickyHeader
-                    ? "sticky top-0 z-10 bg-white dark:bg-slate-900"
+                    ? "sticky top-0 z-10 bg-white dark:bg-zinc-900"
                     : "",
                   column.headerClassName,
                 ]
@@ -124,7 +124,7 @@ export function DataTable<Row>({
             <tr>
               <td
                 colSpan={columns.length}
-                className="px-4 py-6 text-center text-sm text-slate-500 dark:text-slate-400"
+                className="px-4 py-6 text-center text-sm text-slate-500 dark:text-zinc-400"
               >
                 {emptyState ?? "No results found."}
               </td>
@@ -133,7 +133,7 @@ export function DataTable<Row>({
             sortedRows.map((row) => (
               <tr
                 key={getRowKey(row)}
-                className="border-b border-slate-100 text-slate-700 last:border-b-0 dark:border-slate-800 dark:text-slate-300"
+                className="border-b border-slate-100 text-slate-700 last:border-b-0 dark:border-zinc-800 dark:text-zinc-300"
               >
                 {columns.map((column) => (
                   <td key={column.key} className={cx(column.cellClassName)}>

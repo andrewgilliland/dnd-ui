@@ -7,7 +7,7 @@ interface SurfaceProps {
 }
 
 const baseClassName =
-  "rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900";
+  "rounded-lg border border-slate-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900";
 
 export function Surface({
   children,
