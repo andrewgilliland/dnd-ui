@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { NavLink, useNavigate } from "react-router";
+import { NavLink, Link, useNavigate } from "react-router";
+import { Settings } from "lucide-react";
 import { ROUTES } from "../constants/routes";
 import { useAuth } from "../hooks/useAuth";
 import { ThemeToggle } from "./ThemeToggle";
@@ -14,8 +15,8 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   [
     "rounded-md px-3 py-2 text-sm font-medium transition",
     isActive
-      ? "bg-slate-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-      : "text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-zinc-300 dark:hover:bg-slate-800 dark:hover:text-slate-100",
+      ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+      : "text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-100",
   ].join(" ");
 
 export function AppHeader() {
@@ -29,7 +30,7 @@ export function AppHeader() {
   };
 
   return (
-    <header className="border-b border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+    <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
       <div className="mx-auto w-full max-w-6xl px-4 py-4 sm:px-6">
         <div className="flex items-center justify-between">
           <h1 className="text-lg font-semibold tracking-tight sm:text-xl">
@@ -37,19 +38,26 @@ export function AppHeader() {
           </h1>
 
           <div className="flex items-center gap-2">
-            <div className="hidden sm:block">
-              <ThemeToggle />
-            </div>
+            <Link
+              to={ROUTES.settings}
+              aria-label="Settings"
+              className="group rounded-md border border-zinc-300 bg-white p-2.5 text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
+            >
+              <Settings
+                aria-hidden="true"
+                className="h-4 w-4 transform transition-transform duration-200 ease-in-out group-hover:rotate-90"
+              />
+            </Link>
             <button
               type="button"
               onClick={handleSignOut}
-              className="hidden rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-slate-700 sm:block"
+              className="hidden rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700 sm:block"
             >
               Sign Out
             </button>
             <button
               type="button"
-              className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-slate-700 sm:hidden"
+              className="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700 sm:hidden"
               aria-label="Toggle navigation menu"
               aria-expanded={isMobileMenuOpen}
               aria-controls="mobile-navigation"
@@ -87,12 +95,12 @@ export function AppHeader() {
               {link.label}
             </NavLink>
           ))}
-          <div className="mt-1 flex items-center justify-between border-t border-slate-200 pt-2 dark:border-zinc-700">
+          <div className="mt-1 flex items-center justify-between border-t border-zinc-200 pt-2 dark:border-zinc-700">
             <ThemeToggle />
             <button
               type="button"
               onClick={handleSignOut}
-              className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-slate-700"
+              className="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
             >
               Sign Out
             </button>
