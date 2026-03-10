@@ -15,6 +15,7 @@ import { LoginPage } from "./pages/LoginPage";
 import { MonsterDetailPage } from "./pages/MonsterDetailPage";
 import { MonstersPage } from "./pages/MonstersPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
+import { SettingsPage } from "./pages/SettingsPage";
 import { SignUpPage } from "./pages/SignUpPage";
 
 export function AppRouter() {
@@ -52,6 +53,7 @@ export function AppRouter() {
             element={<MonsterDetailPage />}
           />
 
+          <Route path={ROUTES.settings} element={<SettingsPage />} />
           <Route path={ROUTES.notFound} element={<NotFoundPage />} />
           <Route path="*" element={<Navigate to={ROUTES.notFound} replace />} />
         </Route>
