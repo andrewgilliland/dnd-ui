@@ -11,7 +11,7 @@ export function useMonsters(params: MonsterListParams = {}) {
 export function useMonstersMetadata() {
   return useQuery({
     queryKey: ["monsters-metadata"],
-    queryFn: () => getMonsters({ skip: 0, limit: 500 }),
+    queryFn: () => getMonsters({ skip: 0, limit: 100 }),
     staleTime: Infinity,
   });
 }

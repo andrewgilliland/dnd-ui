@@ -11,7 +11,7 @@ export function useItems(params: ItemListParams = {}) {
 export function useItemsMetadata() {
   return useQuery({
     queryKey: ["items-metadata"],
-    queryFn: () => getItems({ skip: 0, limit: 500 }),
+    queryFn: () => getItems({ skip: 0, limit: 100 }),
     staleTime: Infinity,
   });
 }
