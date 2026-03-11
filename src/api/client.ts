@@ -198,6 +198,24 @@ export function getMonsterById(
   return getJson<Monster>(`/api/v1/monsters/${monsterId}`, {}, options);
 }
 
+export interface RandomMonsterParams {
+  type?: string;
+  size?: string;
+  min_cr?: number;
+  max_cr?: number;
+}
+
+export function getRandomMonster(
+  params: RandomMonsterParams = {},
+  options: RequestOptions = {},
+) {
+  return getJson<Monster>(
+    "/api/v1/monsters/random",
+    params as Record<string, QueryValue>,
+    options,
+  );
+}
+
 export function getItems(
   params: ItemListParams = {},
   options: RequestOptions = {},

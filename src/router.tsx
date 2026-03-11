@@ -14,6 +14,7 @@ import { ItemsPage } from "./pages/ItemsPage";
 import { LoginPage } from "./pages/LoginPage";
 import { MonsterDetailPage } from "./pages/MonsterDetailPage";
 import { MonstersPage } from "./pages/MonstersPage";
+import { RandomMonsterPage } from "./pages/RandomMonsterPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { SignUpPage } from "./pages/SignUpPage";
@@ -48,6 +49,7 @@ export function AppRouter() {
           <Route path={`${ROUTES.items}/:id`} element={<ItemDetailPage />} />
 
           <Route path={ROUTES.monsters} element={<MonstersPage />} />
+          <Route path={ROUTES.randomMonster} element={<RandomMonsterPage />} />
           <Route
             path={`${ROUTES.monsters}/:id`}
             element={<MonsterDetailPage />}
