@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Shield, Sword, Heart } from "lucide-react";
+import { Shield, Sword, Heart, Shuffle } from "lucide-react";
 import { Link } from "react-router";
 import { CardDensityToggle } from "../components/CardDensityToggle";
 import { DataTable, type DataTableColumn } from "../components/DataTable";
@@ -161,14 +161,23 @@ export function MonstersPage() {
 
   return (
     <section>
-      <PageHeader
-        title="Monsters"
-        subtitle={
-          isLoading
-            ? "Loading monsters..."
-            : `${monsters.length} of ${total} creatures in the bestiary.`
-        }
-      />
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <PageHeader
+          title="Monsters"
+          subtitle={
+            isLoading
+              ? "Loading monsters..."
+              : `${monsters.length} of ${total} creatures in the bestiary.`
+          }
+        />
+        <Link
+          to={ROUTES.randomMonster}
+          className="inline-flex items-center gap-2 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+        >
+          <Shuffle aria-hidden="true" className="h-4 w-4" />
+          Random Monster
+        </Link>
+      </div>
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
         <ListViewToggle
