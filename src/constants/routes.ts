@@ -6,6 +6,7 @@ export const ROUTES = {
   items: "/items",
   itemDetail: (id: number | string) => `/items/${id}`,
   monsters: "/monsters",
+  randomMonster: "/monsters/random",
   monsterDetail: (id: number | string) => `/monsters/${id}`,
   settings: "/settings",
   notFound: "/404",
