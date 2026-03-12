@@ -1,5 +1,4 @@
 import { Outlet } from "react-router";
-import { ThemeToggle } from "../components/ThemeToggle";
 
 export function AuthLayout() {
   return (
@@ -8,7 +7,6 @@ export function AuthLayout() {
         <span className="text-lg font-semibold tracking-tight">
           D&amp;D Compendium
         </span>
-        <ThemeToggle />
       </div>
 
       <div className="flex items-center justify-center px-4 py-16">
