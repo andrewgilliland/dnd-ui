@@ -9,6 +9,7 @@ const navLinks = [
   { to: ROUTES.characters, label: "Characters" },
   { to: ROUTES.items, label: "Items" },
   { to: ROUTES.monsters, label: "Monsters" },
+  { to: ROUTES.spells, label: "Spells" },
 ] as const;
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>

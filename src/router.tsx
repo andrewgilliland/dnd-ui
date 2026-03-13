@@ -15,6 +15,8 @@ import { LoginPage } from "./pages/LoginPage";
 import { MonsterDetailPage } from "./pages/MonsterDetailPage";
 import { MonstersPage } from "./pages/MonstersPage";
 import { RandomMonsterPage } from "./pages/RandomMonsterPage";
+import { SpellDetailPage } from "./pages/SpellDetailPage";
+import { SpellsPage } from "./pages/SpellsPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { SignUpPage } from "./pages/SignUpPage";
@@ -47,6 +49,9 @@ export function AppRouter() {
 
           <Route path={ROUTES.items} element={<ItemsPage />} />
           <Route path={`${ROUTES.items}/:id`} element={<ItemDetailPage />} />
+
+          <Route path={ROUTES.spells} element={<SpellsPage />} />
+          <Route path={`${ROUTES.spells}/:id`} element={<SpellDetailPage />} />
 
           <Route path={ROUTES.monsters} element={<MonstersPage />} />
           <Route path={ROUTES.randomMonster} element={<RandomMonsterPage />} />

@@ -1,4 +1,4 @@
-import type { Character, Item, Monster } from "./index";
+import type { Character, Item, Monster, Spell } from "./index";
 
 export interface CharactersResponse {
   characters: Character[];
@@ -16,6 +16,13 @@ export interface MonstersResponse {
 
 export interface ItemsResponse {
   items: Item[];
+  total: number;
+  skip: number;
+  limit: number;
+}
+
+export interface SpellsResponse {
+  spells: Spell[];
   total: number;
   skip: number;
   limit: number;
