@@ -52,7 +52,7 @@ function PropLine({
   children: React.ReactNode;
 }) {
   return (
-    <p className="text-sm text-slate-800 dark:text-zinc-200">
+    <p className="text-sm text-zinc-800 dark:text-zinc-200">
       <span className="font-bold text-red-800 dark:text-red-400">{label} </span>
       {children}
     </p>
@@ -71,8 +71,8 @@ function ActionEntry({
       ? ` (Costs ${action.action_cost} Actions)`
       : "";
   return (
-    <li className="text-sm text-slate-800 dark:text-zinc-200">
-      <span className="font-bold italic text-slate-900 dark:text-zinc-100">
+    <li className="text-sm text-zinc-800 dark:text-zinc-200">
+      <span className="font-bold italic text-zinc-900 dark:text-zinc-100">
         {action.name}
         {costLabel}.
       </span>{" "}
@@ -89,7 +89,7 @@ function BadgeList({
   color?: "slate" | "red" | "orange" | "yellow";
 }) {
   const colors: Record<string, string> = {
-    slate: "bg-slate-100 text-slate-700 dark:bg-zinc-800 dark:text-zinc-300",
+    slate: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
     red: "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300",
     orange:
       "bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300",
@@ -129,7 +129,7 @@ export function MonsterDetailPage() {
   if (isLoading) {
     return (
       <Surface as="section" className="p-8 text-center">
-        <p className="text-slate-700 dark:text-zinc-300">Loading monster...</p>
+        <p className="text-zinc-700 dark:text-zinc-300">Loading monster...</p>
       </Surface>
     );
   }
@@ -148,7 +148,7 @@ export function MonsterDetailPage() {
   if (error) {
     return (
       <Surface as="section" className="p-8 text-center">
-        <p className="text-slate-700 dark:text-zinc-300">{error.message}</p>
+        <p className="text-zinc-700 dark:text-zinc-300">{error.message}</p>
       </Surface>
     );
   }
@@ -184,10 +184,10 @@ export function MonsterDetailPage() {
         <Surface className="divide-y divide-red-700/30 overflow-hidden dark:divide-red-800/40">
           {/* Header */}
           <div className="px-6 pt-6 pb-4">
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-zinc-50">
+            <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
               {monster.name}
             </h1>
-            <p className="mt-0.5 italic text-slate-600 dark:text-zinc-400">
+            <p className="mt-0.5 italic text-zinc-600 dark:text-zinc-400">
               {capitalize(monster.size)} {capitalize(monster.type)},{" "}
               {capitalize(monster.alignment)}
             </p>
@@ -220,10 +220,10 @@ export function MonsterDetailPage() {
                     <span className="text-xs font-bold text-red-800 dark:text-red-400">
                       {label}
                     </span>
-                    <span className="mt-0.5 text-sm font-semibold text-slate-900 dark:text-zinc-100">
+                    <span className="mt-0.5 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                       {score}
                     </span>
-                    <span className="text-xs text-slate-600 dark:text-zinc-400">
+                    <span className="text-xs text-zinc-600 dark:text-zinc-400">
                       ({mod})
                     </span>
                   </div>
@@ -311,9 +311,9 @@ export function MonsterDetailPage() {
                     {monster.special_abilities.map((ability) => (
                       <li
                         key={ability.name}
-                        className="text-sm text-slate-800 dark:text-zinc-200"
+                        className="text-sm text-zinc-800 dark:text-zinc-200"
                       >
-                        <span className="font-bold italic text-slate-900 dark:text-zinc-100">
+                        <span className="font-bold italic text-zinc-900 dark:text-zinc-100">
                           {ability.name}.
                         </span>{" "}
                         {ability.description}
@@ -350,7 +350,7 @@ export function MonsterDetailPage() {
                   <h2 className="mb-2 text-xl font-semibold text-red-800 dark:text-red-400">
                     Legendary Actions
                   </h2>
-                  <p className="mb-3 text-sm text-slate-700 dark:text-zinc-300">
+                  <p className="mb-3 text-sm text-zinc-700 dark:text-zinc-300">
                     {monster.name} can take 3 legendary actions, choosing from
                     the options below. Only one legendary action option can be
                     used at a time and only at the end of another

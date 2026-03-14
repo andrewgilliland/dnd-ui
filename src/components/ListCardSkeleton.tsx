@@ -21,20 +21,20 @@ export function ListCardSkeleton({
         <div className="flex-1 space-y-2">
           <div
             className={[
-              "w-2/3 rounded bg-slate-200 dark:bg-zinc-700",
+              "w-2/3 rounded bg-zinc-200 dark:bg-zinc-700",
               isCompact ? "h-4" : "h-5",
             ].join(" ")}
           />
           <div
             className={[
-              "w-1/2 rounded bg-slate-200 dark:bg-zinc-700",
+              "w-1/2 rounded bg-zinc-200 dark:bg-zinc-700",
               isCompact ? "h-3" : "h-4",
             ].join(" ")}
           />
         </div>
         <div
           className={[
-            "w-12 rounded bg-slate-200 dark:bg-zinc-700",
+            "w-12 rounded bg-zinc-200 dark:bg-zinc-700",
             isCompact ? "h-5" : "h-6",
           ].join(" ")}
         />
@@ -43,13 +43,13 @@ export function ListCardSkeleton({
       <div className={["space-y-2", isCompact ? "mt-2" : "mt-3"].join(" ")}>
         <div
           className={[
-            "w-full rounded bg-slate-200 dark:bg-zinc-700",
+            "w-full rounded bg-zinc-200 dark:bg-zinc-700",
             isCompact ? "h-3" : "h-4",
           ].join(" ")}
         />
         <div
           className={[
-            "w-5/6 rounded bg-slate-200 dark:bg-zinc-700",
+            "w-5/6 rounded bg-zinc-200 dark:bg-zinc-700",
             isCompact ? "h-3" : "h-4",
           ].join(" ")}
         />
@@ -57,7 +57,7 @@ export function ListCardSkeleton({
 
       <div
         className={[
-          "w-24 rounded bg-slate-200 dark:bg-zinc-700",
+          "w-24 rounded bg-zinc-200 dark:bg-zinc-700",
           isCompact ? "mt-3 h-3" : "mt-4 h-4",
         ].join(" ")}
       />

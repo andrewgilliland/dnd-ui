@@ -30,7 +30,7 @@ export function SpellDetailPage() {
   if (isLoading) {
     return (
       <Surface as="section" className="p-8 text-center">
-        <p className="text-slate-700 dark:text-zinc-300">Loading spell...</p>
+        <p className="text-zinc-700 dark:text-zinc-300">Loading spell...</p>
       </Surface>
     );
   }
@@ -49,7 +49,7 @@ export function SpellDetailPage() {
   if (error) {
     return (
       <Surface as="section" className="p-8 text-center">
-        <p className="text-slate-700 dark:text-zinc-300">{error.message}</p>
+        <p className="text-zinc-700 dark:text-zinc-300">{error.message}</p>
       </Surface>
     );
   }
@@ -75,34 +75,34 @@ export function SpellDetailPage() {
       />
 
       <DetailSection title="Overview">
-        <dl className="grid grid-cols-1 gap-3 text-sm text-slate-700 dark:text-zinc-300 sm:grid-cols-2">
+        <dl className="grid grid-cols-1 gap-3 text-sm text-zinc-700 dark:text-zinc-300 sm:grid-cols-2">
           <div>
-            <dt className="font-medium text-slate-500 dark:text-zinc-400">
+            <dt className="font-medium text-zinc-500 dark:text-zinc-400">
               Casting Time
             </dt>
             <dd>{spell.casting_time}</dd>
           </div>
           <div>
-            <dt className="font-medium text-slate-500 dark:text-zinc-400">
+            <dt className="font-medium text-zinc-500 dark:text-zinc-400">
               Range
             </dt>
             <dd>{spell.range}</dd>
           </div>
           <div>
-            <dt className="font-medium text-slate-500 dark:text-zinc-400">
+            <dt className="font-medium text-zinc-500 dark:text-zinc-400">
               Duration
             </dt>
             <dd>{spell.duration}</dd>
           </div>
           <div>
-            <dt className="font-medium text-slate-500 dark:text-zinc-400">
+            <dt className="font-medium text-zinc-500 dark:text-zinc-400">
               Components
             </dt>
             <dd className="mt-1 flex flex-wrap gap-1">
               {spell.components.map((c) => (
                 <span
                   key={c}
-                  className="rounded bg-slate-100 px-1.5 py-0.5 text-xs font-medium text-slate-700 dark:bg-zinc-700 dark:text-zinc-200"
+                  className="rounded bg-zinc-100 px-1.5 py-0.5 text-xs font-medium text-zinc-700 dark:bg-zinc-700 dark:text-zinc-200"
                 >
                   {c}
                 </span>
@@ -121,7 +121,7 @@ export function SpellDetailPage() {
           </div>
           {spell.material ? (
             <div className="sm:col-span-2">
-              <dt className="font-medium text-slate-500 dark:text-zinc-400">
+              <dt className="font-medium text-zinc-500 dark:text-zinc-400">
                 Material
               </dt>
               <dd>{spell.material}</dd>
@@ -131,14 +131,14 @@ export function SpellDetailPage() {
       </DetailSection>
 
       <DetailSection title="Description">
-        <p className="whitespace-pre-wrap text-slate-700 dark:text-zinc-300">
+        <p className="whitespace-pre-wrap text-zinc-700 dark:text-zinc-300">
           {spell.description}
         </p>
       </DetailSection>
 
       {spell.higher_levels ? (
         <DetailSection title="At Higher Levels">
-          <p className="whitespace-pre-wrap text-slate-700 dark:text-zinc-300">
+          <p className="whitespace-pre-wrap text-zinc-700 dark:text-zinc-300">
             {spell.higher_levels}
           </p>
         </DetailSection>
@@ -149,7 +149,7 @@ export function SpellDetailPage() {
           {spell.classes.map((cls) => (
             <span
               key={cls}
-              className="rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-700 dark:bg-zinc-700 dark:text-zinc-200"
+              className="rounded-full bg-zinc-100 px-3 py-1 text-sm font-medium text-zinc-700 dark:bg-zinc-700 dark:text-zinc-200"
             >
               {cls}
             </span>

@@ -30,7 +30,7 @@ export function SpellCard({
         <div>
           <h3
             className={[
-              "font-semibold text-slate-900 dark:text-zinc-100",
+              "font-semibold text-zinc-900 dark:text-zinc-100",
               isCompact ? "text-base" : "text-lg",
             ].join(" ")}
           >
@@ -38,7 +38,7 @@ export function SpellCard({
           </h3>
           <p
             className={[
-              "text-slate-600 dark:text-zinc-400",
+              "text-zinc-600 dark:text-zinc-400",
               isCompact ? "mt-0.5 text-xs" : "mt-1 text-sm",
             ].join(" ")}
           >
@@ -61,18 +61,18 @@ export function SpellCard({
 
       <dl
         className={[
-          "grid grid-cols-2 gap-2 text-slate-700 dark:text-zinc-300",
+          "grid grid-cols-2 gap-2 text-zinc-700 dark:text-zinc-300",
           isCompact ? "mt-2 text-xs" : "mt-3 text-sm",
         ].join(" ")}
       >
         <div>
-          <dt className="font-medium text-slate-500 dark:text-zinc-400">
+          <dt className="font-medium text-zinc-500 dark:text-zinc-400">
             Casting Time
           </dt>
           <dd>{spell.casting_time}</dd>
         </div>
         <div>
-          <dt className="font-medium text-slate-500 dark:text-zinc-400">
+          <dt className="font-medium text-zinc-500 dark:text-zinc-400">
             Range
           </dt>
           <dd>{spell.range}</dd>
@@ -82,7 +82,7 @@ export function SpellCard({
       <Link
         to={ROUTES.spellDetail(spell.id)}
         className={[
-          "inline-flex font-medium text-slate-900 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-900 dark:text-zinc-100 dark:decoration-zinc-600 dark:hover:decoration-slate-200",
+          "inline-flex font-medium text-zinc-900 underline decoration-zinc-300 underline-offset-4 hover:decoration-zinc-900 dark:text-zinc-100 dark:decoration-zinc-600 dark:hover:decoration-zinc-200",
           isCompact ? "mt-3 text-xs" : "mt-4 text-sm",
         ].join(" ")}
       >

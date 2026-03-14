@@ -52,7 +52,7 @@ export function ForgotPasswordPage() {
   return (
     <>
       <h1 className="mb-2 text-center text-2xl font-bold">Reset Password</h1>
-      <p className="mb-6 text-center text-sm text-slate-600 dark:text-zinc-400">
+      <p className="mb-6 text-center text-sm text-zinc-600 dark:text-zinc-400">
         {step === "request"
           ? "Enter your email to receive a reset code."
           : "Enter the code sent to your email and your new password."}
@@ -64,7 +64,7 @@ export function ForgotPasswordPage() {
             <div>
               <label
                 htmlFor="email"
-                className="mb-1 block text-sm font-medium text-slate-700 dark:text-zinc-300"
+                className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
               >
                 Email
               </label>
@@ -75,7 +75,7 @@ export function ForgotPasswordPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-500"
+                className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-500"
                 placeholder="you@example.com"
               />
             </div>
@@ -87,7 +87,7 @@ export function ForgotPasswordPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-slate-300"
+              className="w-full rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
             >
               {isSubmitting ? "Sending..." : "Send Reset Code"}
             </button>
@@ -97,7 +97,7 @@ export function ForgotPasswordPage() {
             <div>
               <label
                 htmlFor="code"
-                className="mb-1 block text-sm font-medium text-slate-700 dark:text-zinc-300"
+                className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
               >
                 Reset Code
               </label>
@@ -109,7 +109,7 @@ export function ForgotPasswordPage() {
                 required
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-500"
+                className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-500"
                 placeholder="123456"
               />
             </div>
@@ -117,7 +117,7 @@ export function ForgotPasswordPage() {
             <div>
               <label
                 htmlFor="new-password"
-                className="mb-1 block text-sm font-medium text-slate-700 dark:text-zinc-300"
+                className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
               >
                 New Password
               </label>
@@ -128,7 +128,7 @@ export function ForgotPasswordPage() {
                 required
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-500"
+                className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-500"
                 placeholder="••••••••"
               />
             </div>
@@ -140,7 +140,7 @@ export function ForgotPasswordPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-slate-300"
+              className="w-full rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
             >
               {isSubmitting ? "Resetting..." : "Reset Password"}
             </button>
@@ -148,10 +148,10 @@ export function ForgotPasswordPage() {
         )}
       </Surface>
 
-      <p className="mt-4 text-center text-sm text-slate-600 dark:text-zinc-400">
+      <p className="mt-4 text-center text-sm text-zinc-600 dark:text-zinc-400">
         <Link
           to={ROUTES.login}
-          className="font-medium text-slate-900 underline underline-offset-4 dark:text-zinc-100"
+          className="font-medium text-zinc-900 underline underline-offset-4 dark:text-zinc-100"
         >
           Back to Sign In
         </Link>

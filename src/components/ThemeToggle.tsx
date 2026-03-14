@@ -11,12 +11,12 @@ export function ThemeToggle() {
   const { themeMode, setThemeMode } = useTheme();
 
   return (
-    <div className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-zinc-200">
+    <div className="flex items-center gap-2 text-sm font-medium text-zinc-700 dark:text-zinc-200">
       <span>Theme</span>
       <div
         role="radiogroup"
         aria-label="Theme mode"
-        className="inline-flex rounded-md border border-slate-300 bg-white p-1 dark:border-zinc-600 dark:bg-zinc-800"
+        className="inline-flex rounded-md border border-zinc-300 bg-white p-1 dark:border-zinc-600 dark:bg-zinc-800"
       >
         {THEME_OPTIONS.map((option) => {
           const isActive = themeMode === option.value;
@@ -32,8 +32,8 @@ export function ThemeToggle() {
               className={[
                 "inline-flex items-center gap-1 rounded px-2 py-1 text-xs transition",
                 isActive
-                  ? "bg-slate-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-                  : "text-slate-700 hover:bg-slate-100 dark:text-zinc-300 dark:hover:bg-slate-700",
+                  ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                  : "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-700",
               ].join(" ")}
             >
               <Icon aria-hidden="true" className="h-3.5 w-3.5" />
