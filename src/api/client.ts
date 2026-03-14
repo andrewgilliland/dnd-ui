@@ -4,8 +4,9 @@ import type {
   ItemsResponse,
   MonstersResponse,
   RacesResponse,
+  SpellsResponse,
 } from "../types/api";
-import type { Character, Item, Monster } from "../types";
+import type { Character, Item, Monster, Spell } from "../types";
 
 type CreateCharacterBody = Omit<Character, "id">;
 
@@ -225,6 +226,48 @@ export function getItems(
 
 export function getItemById(itemId: number, options: RequestOptions = {}) {
   return getJson<Item>(`/api/v1/items/${itemId}`, {}, options);
+}
+
+export interface SpellListParams {
+  [key: string]: QueryValue;
+  skip?: number;
+  limit?: number;
+  name?: string;
+  school?: string;
+  spell_class?: string;
+  concentration?: boolean;
+  ritual?: boolean;
+  min_level?: number;
+  max_level?: number;
+}
+
+export function getSpells(
+  params: SpellListParams = {},
+  options: RequestOptions = {},
+) {
+  return getJson<SpellsResponse>("/api/v1/spells", params, options);
+}
+
+export function getSpellById(spellId: number, options: RequestOptions = {}) {
+  return getJson<Spell>(`/api/v1/spells/${spellId}`, {}, options);
+}
+
+export interface RandomSpellParams {
+  school?: string;
+  spell_class?: string;
+  min_level?: number;
+  max_level?: number;
+}
+
+export function getRandomSpell(
+  params: RandomSpellParams = {},
+  options: RequestOptions = {},
+) {
+  return getJson<Spell>(
+    "/api/v1/spells/random",
+    params as Record<string, QueryValue>,
+    options,
+  );
 }
 
 export function getClasses(options: RequestOptions = {}) {

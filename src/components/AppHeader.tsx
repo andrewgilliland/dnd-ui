@@ -1,14 +1,22 @@
 import { useState } from "react";
 import { NavLink, Link, useNavigate } from "react-router";
-import { Settings } from "lucide-react";
+import {
+  Menu,
+  Package,
+  Settings,
+  Skull,
+  Sparkles,
+  Users,
+  X,
+} from "lucide-react";
 import { ROUTES } from "../constants/routes";
 import { useAuth } from "../hooks/useAuth";
-import { ThemeToggle } from "./ThemeToggle";
 
 const navLinks = [
-  { to: ROUTES.characters, label: "Characters" },
-  { to: ROUTES.items, label: "Items" },
-  { to: ROUTES.monsters, label: "Monsters" },
+  { to: ROUTES.characters, label: "Characters", Icon: Users },
+  { to: ROUTES.items, label: "Items", Icon: Package },
+  { to: ROUTES.monsters, label: "Monsters", Icon: Skull },
+  { to: ROUTES.spells, label: "Spells", Icon: Sparkles },
 ] as const;
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
@@ -57,7 +65,7 @@ export function AppHeader() {
             </button>
             <button
               type="button"
-              className="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700 sm:hidden"
+              className="rounded-md border border-zinc-300 bg-white p-2.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700 sm:hidden"
               aria-label="Toggle navigation menu"
               aria-expanded={isMobileMenuOpen}
               aria-controls="mobile-navigation"
@@ -65,15 +73,22 @@ export function AppHeader() {
                 setIsMobileMenuOpen((currentValue) => !currentValue)
               }
             >
-              {isMobileMenuOpen ? "Close" : "Menu"}
+              {isMobileMenuOpen ? (
+                <X aria-hidden="true" className="h-4 w-4" />
+              ) : (
+                <Menu aria-hidden="true" className="h-4 w-4" />
+              )}
             </button>
           </div>
         </div>
 
         <nav className="mt-3 hidden flex-wrap items-center gap-2 sm:flex">
-          {navLinks.map((link) => (
-            <NavLink key={link.to} to={link.to} className={navLinkClass}>
-              {link.label}
+          {navLinks.map(({ to, label, Icon }) => (
+            <NavLink key={to} to={to} className={navLinkClass}>
+              <span className="inline-flex items-center gap-1.5">
+                <Icon aria-hidden="true" className="h-4 w-4" />
+                {label}
+              </span>
             </NavLink>
           ))}
         </nav>
@@ -85,18 +100,20 @@ export function AppHeader() {
             isMobileMenuOpen ? "" : "hidden",
           ].join(" ")}
         >
-          {navLinks.map((link) => (
+          {navLinks.map(({ to, label, Icon }) => (
             <NavLink
-              key={link.to}
-              to={link.to}
+              key={to}
+              to={to}
               className={navLinkClass}
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              {link.label}
+              <span className="inline-flex items-center gap-1.5">
+                <Icon aria-hidden="true" className="h-4 w-4" />
+                {label}
+              </span>
             </NavLink>
           ))}
           <div className="mt-1 flex items-center justify-between border-t border-zinc-200 pt-2 dark:border-zinc-700">
-            <ThemeToggle />
             <button
               type="button"
               onClick={handleSignOut}
