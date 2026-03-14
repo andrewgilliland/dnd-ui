@@ -8,6 +8,8 @@ export const ROUTES = {
   monsters: "/monsters",
   randomMonster: "/monsters/random",
   monsterDetail: (id: number | string) => `/monsters/${id}`,
+  spells: "/spells",
+  spellDetail: (id: number | string) => `/spells/${id}`,
   settings: "/settings",
   notFound: "/404",
   login: "/login",
