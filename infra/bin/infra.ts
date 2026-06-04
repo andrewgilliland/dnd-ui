@@ -28,8 +28,8 @@ new GitHubOidcStack(app, "DndUiOidcStack", {
   repoOwner: "andrewgilliland",
   repoName: "dnd-ui",
   environments: [
-    { environment: "dev", branch: "dev", frontendStack: devStack },
-    { environment: "staging", branch: "staging", frontendStack: stagingStack },
-    { environment: "prod", branch: "main", frontendStack: prodStack },
+    { environment: "dev", frontendStack: devStack },
+    { environment: "staging", frontendStack: stagingStack },
+    { environment: "prod", frontendStack: prodStack },
   ],
 });

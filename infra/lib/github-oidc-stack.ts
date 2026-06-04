@@ -11,7 +11,6 @@ import { FrontendStack } from "./frontend-stack";
 
 interface EnvironmentConfig {
   environment: "dev" | "staging" | "prod";
-  branch: string;
   frontendStack: FrontendStack;
 }
 
@@ -27,30 +26,24 @@ export class GitHubOidcStack extends Stack {
 
     const { repoOwner, repoName, environments } = props;
 
-    const provider = new OpenIdConnectProvider(this, "GitHubOidcProvider", {
-      url: "https://token.actions.githubusercontent.com",
-      clientIds: ["sts.amazonaws.com"],
-    });
+    const provider = OpenIdConnectProvider.fromOpenIdConnectProviderArn(
+      this,
+      "GitHubOidcProvider",
+      `arn:aws:iam::${this.account}:oidc-provider/token.actions.githubusercontent.com`,
+    );
 
-    for (const { environment, branch, frontendStack } of environments) {
-      const deployRole = new Role(
-        this,
-        `dnd-ui-${environment}-deploy-role`,
-        {
-          roleName: `dnd-ui-${environment}-github-deploy`,
-          assumedBy: new WebIdentityPrincipal(
-            provider.openIdConnectProviderArn,
-            {
-              StringEquals: {
-                "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
-              },
-              StringLike: {
-                "token.actions.githubusercontent.com:sub": `repo:${repoOwner}/${repoName}:ref:refs/heads/${branch}`,
-              },
-            },
-          ),
-        },
-      );
+    for (const { environment, frontendStack } of environments) {
+      const deployRole = new Role(this, `dnd-ui-${environment}-deploy-role`, {
+        roleName: `dnd-ui-${environment}-github-deploy`,
+        assumedBy: new WebIdentityPrincipal(provider.openIdConnectProviderArn, {
+          StringEquals: {
+            "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
+          },
+          StringLike: {
+                "token.actions.githubusercontent.com:sub": `repo:${repoOwner}/${repoName}:environment:${environment}`,
+          },
+        }),
+      });
 
       deployRole.addToPolicy(
         new PolicyStatement({
