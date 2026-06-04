@@ -85,7 +85,7 @@ export function SpellsPage() {
         ),
         sortable: true,
         sortValue: (spell) => spell.name,
-        cellClassName: `${tableCellClass} font-medium text-slate-900 dark:text-zinc-100`,
+        cellClassName: `${tableCellClass} font-medium text-zinc-900 dark:text-zinc-100`,
         render: (spell) => spell.name,
       },
       {
@@ -150,7 +150,7 @@ export function SpellsPage() {
               Yes
             </span>
           ) : (
-            <span className="text-slate-400 dark:text-zinc-500">—</span>
+            <span className="text-zinc-400 dark:text-zinc-500">—</span>
           ),
       },
       {
@@ -163,7 +163,7 @@ export function SpellsPage() {
               Yes
             </span>
           ) : (
-            <span className="text-slate-400 dark:text-zinc-500">—</span>
+            <span className="text-zinc-400 dark:text-zinc-500">—</span>
           ),
       },
       {
@@ -173,7 +173,7 @@ export function SpellsPage() {
         render: (spell) => (
           <Link
             to={ROUTES.spellDetail(spell.id)}
-            className="font-medium text-slate-900 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-900 dark:text-zinc-100 dark:decoration-zinc-600 dark:hover:decoration-slate-200"
+            className="font-medium text-zinc-900 underline decoration-zinc-300 underline-offset-4 hover:decoration-zinc-900 dark:text-zinc-100 dark:decoration-zinc-600 dark:hover:decoration-zinc-200"
           >
             View
           </Link>
@@ -230,7 +230,7 @@ export function SpellsPage() {
 
       {errorMessage ? (
         <Surface as="section" className="mt-6 p-6 text-center">
-          <p className="text-slate-700 dark:text-zinc-300">{errorMessage}</p>
+          <p className="text-zinc-700 dark:text-zinc-300">{errorMessage}</p>
         </Surface>
       ) : null}
 
@@ -243,7 +243,7 @@ export function SpellsPage() {
           </div>
         ) : (
           <Surface as="section" className="mt-6 p-6 text-center">
-            <p className="text-slate-700 dark:text-zinc-300">Loading...</p>
+            <p className="text-zinc-700 dark:text-zinc-300">Loading...</p>
           </Surface>
         )
       ) : null}
@@ -268,7 +268,7 @@ export function SpellsPage() {
 
       {!isLoading && !errorMessage && spells.length === 0 ? (
         <Surface as="section" className="mt-6 p-6 text-center">
-          <p className="text-slate-700 dark:text-zinc-300">
+          <p className="text-zinc-700 dark:text-zinc-300">
             No spells match your current filters.
           </p>
         </Surface>

@@ -52,7 +52,7 @@ function PropLine({
   children: React.ReactNode;
 }) {
   return (
-    <p className="text-sm text-slate-800 dark:text-zinc-200">
+    <p className="text-sm text-zinc-800 dark:text-zinc-200">
       <span className="font-bold text-red-800 dark:text-red-400">{label} </span>
       {children}
     </p>
@@ -67,7 +67,7 @@ function BadgeList({
   color?: "slate" | "red" | "green" | "blue";
 }) {
   const colors: Record<string, string> = {
-    slate: "bg-slate-100 text-slate-700 dark:bg-zinc-800 dark:text-zinc-300",
+    slate: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
     red: "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300",
     green:
       "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300",
@@ -89,25 +89,25 @@ function BadgeList({
 
 function ActionEntry({ action }: { action: CharacterAction }) {
   return (
-    <li className="text-sm text-slate-800 dark:text-zinc-200">
-      <span className="font-bold italic text-slate-900 dark:text-zinc-100">
+    <li className="text-sm text-zinc-800 dark:text-zinc-200">
+      <span className="font-bold italic text-zinc-900 dark:text-zinc-100">
         {action.name}.
       </span>{" "}
       {action.description}
       {(action.attack_bonus != null || action.damage || action.range) && (
         <span className="ml-2 inline-flex flex-wrap gap-1">
           {action.attack_bonus != null && (
-            <span className="rounded bg-slate-100 px-1.5 py-0.5 text-xs font-medium text-slate-700 dark:bg-zinc-800 dark:text-zinc-300">
+            <span className="rounded bg-zinc-100 px-1.5 py-0.5 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
               +{action.attack_bonus} to hit
             </span>
           )}
           {action.damage && (
-            <span className="rounded bg-slate-100 px-1.5 py-0.5 text-xs font-medium text-slate-700 dark:bg-zinc-800 dark:text-zinc-300">
+            <span className="rounded bg-zinc-100 px-1.5 py-0.5 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
               {action.damage}
             </span>
           )}
           {action.range && (
-            <span className="rounded bg-slate-100 px-1.5 py-0.5 text-xs font-medium text-slate-700 dark:bg-zinc-800 dark:text-zinc-300">
+            <span className="rounded bg-zinc-100 px-1.5 py-0.5 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
               {action.range}
             </span>
           )}
@@ -138,7 +138,7 @@ export function CharacterDetailPage() {
   if (isLoading) {
     return (
       <Surface as="section" className="p-8 text-center">
-        <p className="text-slate-700 dark:text-zinc-300">
+        <p className="text-zinc-700 dark:text-zinc-300">
           Loading character...
         </p>
       </Surface>
@@ -159,7 +159,7 @@ export function CharacterDetailPage() {
   if (error) {
     return (
       <Surface as="section" className="p-8 text-center">
-        <p className="text-slate-700 dark:text-zinc-300">{error.message}</p>
+        <p className="text-zinc-700 dark:text-zinc-300">{error.message}</p>
       </Surface>
     );
   }
@@ -194,14 +194,14 @@ export function CharacterDetailPage() {
         <Surface className="divide-y divide-red-700/30 overflow-hidden dark:divide-red-800/40">
           {/* Header */}
           <div className="px-6 pt-6 pb-4">
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-zinc-50">
+            <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
               {character.name}
             </h1>
-            <p className="mt-0.5 italic text-slate-600 dark:text-zinc-400">
+            <p className="mt-0.5 italic text-zinc-600 dark:text-zinc-400">
               {character.race} {character.class}, {character.alignment}
             </p>
             {character.description && (
-              <p className="mt-2 text-sm text-slate-600 dark:text-zinc-400">
+              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
                 {character.description}
               </p>
             )}
@@ -238,10 +238,10 @@ export function CharacterDetailPage() {
                     <span className="text-xs font-bold text-red-800 dark:text-red-400">
                       {label}
                     </span>
-                    <span className="mt-0.5 text-sm font-semibold text-slate-900 dark:text-zinc-100">
+                    <span className="mt-0.5 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                       {score}
                     </span>
-                    <span className="text-xs text-slate-600 dark:text-zinc-400">
+                    <span className="text-xs text-zinc-600 dark:text-zinc-400">
                       ({mod})
                     </span>
                   </div>
@@ -371,7 +371,7 @@ export function CharacterDetailPage() {
                   {character.skills.map((s) => (
                     <p
                       key={s.skill}
-                      className="text-sm text-slate-800 dark:text-zinc-200"
+                      className="text-sm text-zinc-800 dark:text-zinc-200"
                     >
                       {s.proficient && (
                         <span
@@ -384,13 +384,13 @@ export function CharacterDetailPage() {
                       <span
                         className={
                           s.proficient
-                            ? "font-semibold text-slate-900 dark:text-zinc-100"
+                            ? "font-semibold text-zinc-900 dark:text-zinc-100"
                             : ""
                         }
                       >
                         {capitalize(s.skill)}
                       </span>{" "}
-                      <span className="text-slate-500 dark:text-zinc-400">
+                      <span className="text-zinc-500 dark:text-zinc-400">
                         {s.bonus >= 0 ? "+" : ""}
                         {s.bonus}
                       </span>
