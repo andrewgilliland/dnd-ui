@@ -44,10 +44,10 @@ export function MonsterComparisonBarChart({
   return (
     <Surface as="section" className="mt-6 p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h3 className="text-base font-semibold text-slate-900 dark:text-zinc-100">
+        <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
           Monster Comparison
         </h3>
-        <div className="inline-flex rounded-md border border-slate-300 dark:border-zinc-700">
+        <div className="inline-flex rounded-md border border-zinc-300 dark:border-zinc-700">
           {metricOptions.map((option) => {
             const isActive = option.key === metric;
 
@@ -60,8 +60,8 @@ export function MonsterComparisonBarChart({
                   "px-3 py-1.5 text-xs font-medium transition-colors",
                   "first:rounded-l-md last:rounded-r-md",
                   isActive
-                    ? "bg-slate-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-                    : "bg-white text-slate-700 hover:bg-slate-100 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-slate-800",
+                    ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                    : "bg-white text-zinc-700 hover:bg-zinc-100 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800",
                 ].join(" ")}
               >
                 {option.shortLabel}
@@ -71,7 +71,7 @@ export function MonsterComparisonBarChart({
         </div>
       </div>
 
-      <p className="mt-2 text-xs text-slate-500 dark:text-zinc-400">
+      <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
         Top {chartRows.length} filtered monsters by{" "}
         {metricOptions.find((option) => option.key === metric)?.label}.
       </p>
@@ -86,19 +86,19 @@ export function MonsterComparisonBarChart({
               <Link
                 to={ROUTES.monsterDetail(monster.id)}
                 aria-label={`View ${monster.name} details`}
-                className="grid grid-cols-[minmax(0,10rem)_minmax(0,1fr)_3rem] items-center gap-3 rounded px-1 py-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-500"
+                className="grid grid-cols-[minmax(0,10rem)_minmax(0,1fr)_3rem] items-center gap-3 rounded px-1 py-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-500"
               >
-                <span className="truncate text-xs font-medium text-slate-700 underline decoration-slate-300 underline-offset-2 hover:decoration-slate-900 dark:text-zinc-200 dark:decoration-zinc-600 dark:hover:decoration-slate-200">
+                <span className="truncate text-xs font-medium text-zinc-700 underline decoration-zinc-300 underline-offset-2 hover:decoration-zinc-900 dark:text-zinc-200 dark:decoration-zinc-600 dark:hover:decoration-zinc-200">
                   {monster.name}
                 </span>
-                <div className="h-3 rounded bg-slate-200 transition-colors hover:bg-slate-300 dark:bg-zinc-800 dark:hover:bg-slate-700">
+                <div className="h-3 rounded bg-zinc-200 transition-colors hover:bg-zinc-300 dark:bg-zinc-800 dark:hover:bg-zinc-700">
                   <div
-                    className="h-full rounded bg-slate-500 dark:bg-zinc-400"
+                    className="h-full rounded bg-zinc-500 dark:bg-zinc-400"
                     style={{ width: `${widthPercent}%` }}
                     aria-hidden="true"
                   />
                 </div>
-                <span className="text-right text-xs font-semibold text-slate-700 dark:text-zinc-200">
+                <span className="text-right text-xs font-semibold text-zinc-700 dark:text-zinc-200">
                   {value}
                 </span>
               </Link>

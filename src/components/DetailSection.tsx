@@ -14,7 +14,7 @@ export function DetailSection({
 }: DetailSectionProps) {
   return (
     <Surface className={["p-6", className].filter(Boolean).join(" ")}>
-      <h3 className="text-lg font-semibold text-slate-900 dark:text-zinc-100">
+      <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
         {title}
       </h3>
       <div className="mt-4">{children}</div>

@@ -136,7 +136,7 @@ export function StatsRadarChart({ stats, size = 280 }: StatsRadarChartProps) {
               key={`ring-${index + 1}`}
               points={toPolygonPoints(ringPoints)}
               fill="none"
-              className="stroke-slate-300 dark:stroke-zinc-700"
+              className="stroke-zinc-300 dark:stroke-zinc-700"
               strokeWidth={1}
             />
           ))}
@@ -148,14 +148,14 @@ export function StatsRadarChart({ stats, size = 280 }: StatsRadarChartProps) {
               y1={center}
               x2={axisEnd.x}
               y2={axisEnd.y}
-              className="stroke-slate-300 dark:stroke-zinc-700"
+              className="stroke-zinc-300 dark:stroke-zinc-700"
               strokeWidth={1}
             />
           ))}
 
           <polygon
             points={toPolygonPoints(animatedStatPoints)}
-            className="fill-slate-400/35 stroke-slate-600 dark:fill-zinc-500/25 dark:stroke-zinc-300"
+            className="fill-zinc-400/35 stroke-zinc-600 dark:fill-zinc-500/25 dark:stroke-zinc-300"
             strokeWidth={2}
             style={{ opacity: 0.35 + animationProgress * 0.65 }}
           />
@@ -174,7 +174,7 @@ export function StatsRadarChart({ stats, size = 280 }: StatsRadarChartProps) {
                 cx={point.x}
                 cy={point.y}
                 r={2 + animationProgress}
-                className="fill-slate-700 dark:fill-zinc-200"
+                className="fill-zinc-700 dark:fill-zinc-200"
                 style={{ opacity: 0.45 + animationProgress * 0.55 }}
               />
               <circle cx={point.x} cy={point.y} r={10} fill="transparent" />
@@ -189,14 +189,14 @@ export function StatsRadarChart({ stats, size = 280 }: StatsRadarChartProps) {
                 width={tooltipWidth}
                 height={tooltipHeight}
                 rx={6}
-                className="fill-slate-900/75 dark:fill-zinc-100/75"
+                className="fill-zinc-900/75 dark:fill-zinc-100/75"
               />
               <text
                 x={tooltipX + tooltipWidth / 2}
                 y={tooltipY + tooltipHeight / 2}
                 textAnchor="middle"
                 dominantBaseline="middle"
-                className="fill-slate-100 text-xs font-semibold dark:fill-zinc-900"
+                className="fill-zinc-100 text-xs font-semibold dark:fill-zinc-900"
               >
                 {tooltipText}
               </text>
@@ -213,7 +213,7 @@ export function StatsRadarChart({ stats, size = 280 }: StatsRadarChartProps) {
                 y={labelPoint.y}
                 textAnchor="middle"
                 dominantBaseline="middle"
-                className="fill-slate-600 text-xs font-semibold dark:fill-zinc-300"
+                className="fill-zinc-600 text-xs font-semibold dark:fill-zinc-300"
               >
                 {axis.label}
               </text>
