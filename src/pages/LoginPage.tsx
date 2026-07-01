@@ -1,11 +1,11 @@
 import { useState, type FormEvent } from "react";
-import { useLocation, useNavigate, Link } from "react-router";
+import { useLocation, useNavigate, Link, Navigate } from "react-router";
 import { Surface } from "../components/Surface";
 import { ROUTES } from "../constants/routes";
 import { useAuth } from "../hooks/useAuth";
 
 export function LoginPage() {
-  const { signIn } = useAuth();
+  const { signIn, user, isLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const from =
@@ -32,85 +32,91 @@ export function LoginPage() {
     }
   };
 
+  if (isLoading) {
+    return null;
+  }
+
+  if (user) {
+    return <Navigate to={ROUTES.home} replace />;
+  }
+
   return (
     <>
       <h1 className="mb-6 text-center text-2xl font-bold">Sign In</h1>
 
-          <Surface as="div" className="p-6">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label
-                  htmlFor="email"
-                  className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-                >
-                  Email
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-500"
-                  placeholder="you@example.com"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="password"
-                  className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-                >
-                  Password
-                </label>
-                <input
-                  id="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-500"
-                  placeholder="••••••••"
-                />
-              </div>
-
-              {error && (
-                <p className="text-sm text-red-600 dark:text-red-400">
-                  {error}
-                </p>
-              )}
-
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
-              >
-                {isSubmitting ? "Signing in..." : "Sign In"}
-              </button>
-            </form>
-          </Surface>
-
-          <div className="mt-4 space-y-2 text-center text-sm text-zinc-600 dark:text-zinc-400">
-            <p>
-              Don't have an account?{" "}
-              <Link
-                to={ROUTES.signUp}
-                className="font-medium text-zinc-900 underline underline-offset-4 dark:text-zinc-100"
-              >
-                Sign up
-              </Link>
-            </p>
-            <p>
-              <Link
-                to={ROUTES.forgotPassword}
-                className="font-medium text-zinc-900 underline underline-offset-4 dark:text-zinc-100"
-              >
-                Forgot password?
-              </Link>
-            </p>
+      <Surface as="div" className="p-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label
+              htmlFor="email"
+              className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+            >
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              autoComplete="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-500"
+              placeholder="you@example.com"
+            />
           </div>
+
+          <div>
+            <label
+              htmlFor="password"
+              className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+            >
+              Password
+            </label>
+            <input
+              id="password"
+              type="password"
+              autoComplete="current-password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-500"
+              placeholder="••••••••"
+            />
+          </div>
+
+          {error && (
+            <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+          )}
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+          >
+            {isSubmitting ? "Signing in..." : "Sign In"}
+          </button>
+        </form>
+      </Surface>
+
+      <div className="mt-4 space-y-2 text-center text-sm text-zinc-600 dark:text-zinc-400">
+        <p>
+          Don't have an account?{" "}
+          <Link
+            to={ROUTES.signUp}
+            className="font-medium text-zinc-900 underline underline-offset-4 dark:text-zinc-100"
+          >
+            Sign up
+          </Link>
+        </p>
+        <p>
+          <Link
+            to={ROUTES.forgotPassword}
+            className="font-medium text-zinc-900 underline underline-offset-4 dark:text-zinc-100"
+          >
+            Forgot password?
+          </Link>
+        </p>
+      </div>
     </>
   );
 }
