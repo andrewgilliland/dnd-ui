@@ -239,7 +239,7 @@ export function DataTable<Row, Key extends string | number = string | number>({
             sortedRows.map((row) => (
               <tr
                 key={getRowKey(row)}
-                className="border-b border-zinc-100 text-zinc-700 last:border-b-0 dark:border-zinc-800 dark:text-zinc-300"
+                className="border-b border-zinc-100 text-zinc-700 odd:bg-white even:bg-zinc-50 last:border-b-0 dark:border-zinc-800 dark:text-zinc-300 dark:odd:bg-zinc-900 dark:even:bg-zinc-800/70"
               >
                 {renderedColumns.map((column) => (
                   <td key={column.key} className={cx(column.cellClassName)}>
