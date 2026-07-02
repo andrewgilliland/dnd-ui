@@ -1,4 +1,4 @@
-import type { Character, Item, Monster, Spell } from "./index";
+import type { Character, Item, Monster, Party, Spell } from "./index";
 
 export interface CharactersResponse {
   characters: Character[];
@@ -34,4 +34,11 @@ export interface ClassesResponse {
 
 export interface RacesResponse {
   races: string[];
+}
+
+export interface PartiesResponse {
+  parties: Party[];
+  total: number;
+  skip: number;
+  limit: number;
 }

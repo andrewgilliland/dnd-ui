@@ -3,10 +3,18 @@ import type {
   ClassesResponse,
   ItemsResponse,
   MonstersResponse,
+  PartiesResponse,
   RacesResponse,
   SpellsResponse,
 } from "../types/api";
-import type { Character, Item, Monster, Spell } from "../types";
+import type {
+  Character,
+  CreatePartyRequest,
+  Item,
+  Monster,
+  Party,
+  Spell,
+} from "../types";
 
 type CreateCharacterBody = Omit<Character, "id">;
 
@@ -276,4 +284,27 @@ export function getClasses(options: RequestOptions = {}) {
 
 export function getRaces(options: RequestOptions = {}) {
   return getJson<RacesResponse>("/api/v1/races", {}, options);
+}
+
+export interface PartyListParams {
+  [key: string]: QueryValue;
+  skip?: number;
+  limit?: number;
+  name?: string;
+  campaign_id?: string;
+  status?: string;
+}
+
+export function getParties(
+  params: PartyListParams = {},
+  options: RequestOptions = {},
+) {
+  return getJson<PartiesResponse>("/api/v1/parties", params, options);
+}
+
+export function createParty(
+  body: CreatePartyRequest,
+  options: RequestOptions = {},
+) {
+  return postJson<CreatePartyRequest, Party>("/api/v1/parties", body, options);
 }
