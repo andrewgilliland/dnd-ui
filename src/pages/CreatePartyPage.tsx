@@ -6,12 +6,7 @@ import { PageHeader } from "../components/PageHeader";
 import { Surface } from "../components/Surface";
 import { ROUTES } from "../constants/routes";
 import { useCharacters } from "../hooks/useCharacters";
-import type {
-  Character,
-  CreatePartyRequest,
-  Party,
-  PartyRole,
-} from "../types";
+import type { Character, CreatePartyRequest, Party, PartyRole } from "../types";
 
 const PARTY_ROLES: PartyRole[] = [
   "tank",
@@ -285,8 +280,8 @@ export function CreatePartyPage() {
 
           {selectedCharacters.length === 0 && !isLoadingCharacters ? (
             <p className="text-sm text-zinc-600 dark:text-zinc-400">
-              The selected characters could not be loaded. Return to
-              Characters and try again.
+              The selected characters could not be loaded. Return to Characters
+              and try again.
             </p>
           ) : (
             <ul className="space-y-3">
@@ -301,8 +296,8 @@ export function CreatePartyPage() {
                         {character.name}
                       </p>
                       <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                        {character.race} {character.class} (Lvl {character.level}
-                        )
+                        {character.race} {character.class} (Lvl{" "}
+                        {character.level})
                       </p>
                     </div>
                     <span className="rounded-md bg-zinc-100 px-2 py-1 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
@@ -312,7 +307,10 @@ export function CreatePartyPage() {
 
                   <div className="mt-3 grid gap-3 sm:grid-cols-2">
                     <div>
-                      <label htmlFor={`role-${character.id}`} className={labelClass}>
+                      <label
+                        htmlFor={`role-${character.id}`}
+                        className={labelClass}
+                      >
                         Role
                       </label>
                       <select
