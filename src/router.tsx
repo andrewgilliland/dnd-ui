@@ -7,6 +7,7 @@ import { CharacterDetailPage } from "./pages/CharacterDetailPage";
 import { CharactersPage } from "./pages/CharactersPage";
 import { ConfirmSignUpPage } from "./pages/ConfirmSignUpPage";
 import { CreateCharacterPage } from "./pages/CreateCharacterPage";
+import { CreatePartyPage } from "./pages/CreatePartyPage";
 import { ForgotPasswordPage } from "./pages/ForgotPasswordPage";
 import { HomePage } from "./pages/HomePage";
 import { ItemDetailPage } from "./pages/ItemDetailPage";
@@ -42,6 +43,7 @@ export function AppRouter() {
             path={ROUTES.createCharacter}
             element={<CreateCharacterPage />}
           />
+          <Route path={ROUTES.createParty} element={<CreatePartyPage />} />
           <Route
             path={`${ROUTES.characters}/:id`}
             element={<CharacterDetailPage />}

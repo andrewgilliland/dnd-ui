@@ -11,6 +11,7 @@ export const ROUTES = {
   spells: "/spells",
   spellDetail: (id: number | string) => `/spells/${id}`,
   settings: "/settings",
+  createParty: "/party/create",
   notFound: "/404",
   login: "/login",
   signUp: "/sign-up",

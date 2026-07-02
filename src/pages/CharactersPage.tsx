@@ -1,6 +1,6 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { BookOpen, Fingerprint, Globe2, Scale, User } from "lucide-react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useCharacters } from "../hooks/useCharacters";
 import { useClasses } from "../hooks/useClasses";
 import { useRaces } from "../hooks/useRaces";
@@ -20,9 +20,13 @@ import type { Character } from "../types";
 import { toFilterOptions, uniqueSortedStrings } from "../utils/filterOptions";
 
 export function CharactersPage() {
+  const navigate = useNavigate();
   const { searchParams, updateParam } = useQueryParamUpdater();
   const { cardDensity, setCardDensity } = useCardDensity();
   const { listViewMode, setListViewMode } = useListView();
+  const [selectedCharacterIds, setSelectedCharacterIds] = useState<number[]>(
+    [],
+  );
   const query = searchParams.get("q") ?? "";
   const selectedClass = searchParams.get("class") ?? "";
   const selectedRace = searchParams.get("race") ?? "";
@@ -44,6 +48,17 @@ export function CharactersPage() {
   const characters = useMemo(
     () => charactersData?.characters ?? [],
     [charactersData],
+  );
+  const selectedCharacters = useMemo(
+    () =>
+      characters.filter((character) =>
+        selectedCharacterIds.includes(character.id),
+      ),
+    [characters, selectedCharacterIds],
+  );
+  const selectedRowKeys = useMemo(
+    () => selectedCharacters.map((character) => character.id),
+    [selectedCharacters],
   );
   const total = charactersData?.total ?? 0;
   const errorMessage = error instanceof Error ? error.message : null;
@@ -238,12 +253,52 @@ export function CharactersPage() {
       ) : null}
 
       {!isLoading && listViewMode === "table" ? (
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            {selectedCharacters.length > 0
+              ? `${selectedCharacters.length} selected for a party draft.`
+              : "Select characters to build a party draft."}
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              disabled={selectedCharacters.length === 0}
+              onClick={() => {
+                setSelectedCharacterIds([]);
+              }}
+              className="rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+            >
+              Clear selection
+            </button>
+            <button
+              type="button"
+              disabled={selectedCharacters.length === 0}
+              onClick={() =>
+                navigate(ROUTES.createParty, {
+                  state: { selectedCharacterIds: selectedRowKeys },
+                })
+              }
+              className="rounded-md bg-zinc-900 px-3 py-2 text-sm font-medium text-white transition hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+            >
+              Create Party
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      {!isLoading && listViewMode === "table" ? (
         <DataTable
           className="mt-6"
           rows={characters}
           columns={characterTableColumns}
           getRowKey={(character) => character.id}
           stickyHeader
+          rowSelection={{
+            selectedRowKeys,
+            onSelectedRowKeysChange: (nextSelectedRowKeys) =>
+              setSelectedCharacterIds(nextSelectedRowKeys as number[]),
+            getRowSelectionLabel: (character) => character.name,
+          }}
         />
       ) : null}
 
