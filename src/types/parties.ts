@@ -1,15 +1,18 @@
 export type PartyStatus = "active" | "archived";
 
-export type PartyRole =
-  | "tank"
-  | "support"
-  | "healer"
-  | "scout"
-  | "face"
-  | "caster"
-  | "striker"
-  | "controller"
-  | "custom";
+export const PARTY_ROLES = [
+  "tank",
+  "support",
+  "healer",
+  "scout",
+  "face",
+  "caster",
+  "striker",
+  "controller",
+  "custom",
+] as const;
+
+export type PartyRole = (typeof PARTY_ROLES)[number];
 
 export interface PartyMember {
   characterId: number;
@@ -60,7 +63,9 @@ export interface Party {
 export interface CreatePartyRequest {
   name: string;
   campaignId?: string;
-  members: Array<Pick<PartyMember, "characterId" | "role" | "isLeader" | "marchingOrder">>;
+  members: Array<
+    Pick<PartyMember, "characterId" | "role" | "isLeader" | "marchingOrder">
+  >;
   notes?: string;
   tags?: string[];
 }

@@ -1,24 +1,12 @@
-import { useMemo, useState, type FormEvent } from "react";
+import { useMemo } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { ApiError, createParty } from "../api/client";
 import { BackLink } from "../components/BackLink";
 import { PageHeader } from "../components/PageHeader";
 import { Surface } from "../components/Surface";
 import { ROUTES } from "../constants/routes";
+import { useCreatePartyForm } from "../hooks/useCreatePartyForm";
 import { useCharacters } from "../hooks/useCharacters";
-import type { Character, CreatePartyRequest, Party, PartyRole } from "../types";
-
-const PARTY_ROLES: PartyRole[] = [
-  "tank",
-  "support",
-  "healer",
-  "scout",
-  "face",
-  "caster",
-  "striker",
-  "controller",
-  "custom",
-];
+import { PARTY_ROLES, type Character } from "../types";
 
 interface CreatePartyLocationState {
   selectedCharacterIds?: number[];
@@ -30,13 +18,6 @@ const inputClass =
 const labelClass =
   "mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300";
 
-function toTags(value: string): string[] {
-  return value
-    .split(",")
-    .map((tag) => tag.trim())
-    .filter(Boolean);
-}
-
 function bySelectedIds(selectedIds: number[], characters: Character[]) {
   const characterMap = new Map(
     characters.map((character) => [character.id, character]),
@@ -44,31 +25,6 @@ function bySelectedIds(selectedIds: number[], characters: Character[]) {
   return selectedIds
     .map((selectedId) => characterMap.get(selectedId))
     .filter((character): character is Character => Boolean(character));
-}
-
-function createLocalPartyDraft(payload: CreatePartyRequest): Party {
-  const now = new Date().toISOString();
-  return {
-    id: `local-${Date.now()}`,
-    name: payload.name,
-    createdByUserId: "local-user",
-    status: "active",
-    members: payload.members.map((member) => ({
-      ...member,
-      joinedAt: now,
-    })),
-    notes: payload.notes,
-    tags: payload.tags,
-    createdAt: now,
-    updatedAt: now,
-  };
-}
-
-function saveLocalPartyDraft(party: Party) {
-  const storageKey = "dnd-ui-party-drafts";
-  const existing = localStorage.getItem(storageKey);
-  const drafts = existing ? (JSON.parse(existing) as Party[]) : [];
-  localStorage.setItem(storageKey, JSON.stringify([party, ...drafts]));
 }
 
 export function CreatePartyPage() {
@@ -100,88 +56,31 @@ export function CreatePartyPage() {
     [allCharacters, selectedCharacterIds],
   );
 
-  const [name, setName] = useState("");
-  const [notes, setNotes] = useState("");
-  const [tagsInput, setTagsInput] = useState("");
-  const [leaderCharacterId, setLeaderCharacterId] = useState<number | null>(
-    selectedCharacterIds[0] ?? null,
-  );
-  const [rolesByCharacterId, setRolesByCharacterId] = useState<
-    Record<number, PartyRole | "">
-  >({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const canSubmit =
-    name.trim().length > 0 && selectedCharacters.length > 0 && !isSubmitting;
-
-  const handleRoleChange = (characterId: number, role: string) => {
-    setRolesByCharacterId((prev) => ({
-      ...prev,
-      [characterId]: (role as PartyRole | "") ?? "",
-    }));
-  };
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setError(null);
-
-    if (!name.trim()) {
-      setError("Party name is required.");
-      return;
-    }
-
-    if (selectedCharacters.length === 0) {
-      setError("Select at least one character before creating a party.");
-      return;
-    }
-
-    const payload: CreatePartyRequest = {
-      name: name.trim(),
-      members: selectedCharacters.map((character, index) => {
-        const role = rolesByCharacterId[character.id];
-        return {
-          characterId: character.id,
-          marchingOrder: index + 1,
-          isLeader: leaderCharacterId === character.id,
-          ...(role ? { role } : {}),
-        };
-      }),
-      ...(notes.trim() ? { notes: notes.trim() } : {}),
-      ...(tagsInput.trim() ? { tags: toTags(tagsInput) } : {}),
-    };
-
-    setIsSubmitting(true);
-
-    try {
-      await createParty(payload);
+  const {
+    canSubmit,
+    error,
+    handleRoleChange,
+    handleSubmit,
+    isSubmitting,
+    leaderCharacterId,
+    name,
+    notes,
+    rolesByCharacterId,
+    setLeaderCharacterId,
+    setName,
+    setNotes,
+    setTagsInput,
+    tagsInput,
+  } = useCreatePartyForm({
+    selectedCharacters,
+    initialLeaderCharacterId: selectedCharacterIds[0] ?? null,
+    onCreated: (result) => {
       navigate(ROUTES.characters, {
         replace: true,
-        state: { createdPartyName: payload.name },
+        state: result,
       });
-    } catch (submitError) {
-      if (submitError instanceof ApiError && submitError.status === 404) {
-        const localDraft = createLocalPartyDraft(payload);
-        saveLocalPartyDraft(localDraft);
-        navigate(ROUTES.characters, {
-          replace: true,
-          state: {
-            createdPartyName: payload.name,
-            createdPartySource: "local-draft",
-          },
-        });
-        return;
-      }
-
-      setError(
-        submitError instanceof Error
-          ? submitError.message
-          : "Failed to create party.",
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    },
+  });
 
   if (selectedCharacterIds.length === 0) {
     return (
